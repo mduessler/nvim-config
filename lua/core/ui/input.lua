@@ -1,15 +1,16 @@
 local require_safe = require("utils.require_safe")
 
 local mode = require_safe("core.ui.utils.mode")
+local signs = require_safe("config.signs")
 local str = require_safe("utils.str")
 local window = require_safe("core.ui.windows.utils")
 
-if not (mode and str and window) then
+if not (mode and signs and str and window) then
 	return
 end
 
 local M = {
-	start_icon = " ",
+	start_title = signs.ui.input.title .. signs.ui.padding,
 	max_window = 30,
 }
 
@@ -22,7 +23,7 @@ local function float_config(default_value, prompt)
 		height = 1,
 		style = "minimal",
 		border = "rounded",
-		title = prompt or "",
+		title = (M.start_title .. prompt) or "",
 	}
 end
 
@@ -73,15 +74,6 @@ M.input = function(opts, on_confirm)
 
 	vim.cmd("startinsert")
 	vim.api.nvim_win_set_cursor(win, { 1, #default })
-	vim.api.nvim_create_autocmd({ "TextChangedI", "CursorMovedI" }, {
-		buffer = bufnr,
-		callback = function()
-			local row, col = window.position(win)
-			if col <= #M.start_icon then
-				vim.api.nvim_win_set_cursor(win, { row, #M.start_icon })
-			end
-		end,
-	})
 
 	vim.api.nvim_create_autocmd("TextChangedI", {
 		buffer = bufnr,
