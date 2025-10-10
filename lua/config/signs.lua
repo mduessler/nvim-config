@@ -131,6 +131,9 @@ return {
 		selection = "",
 	},
 	ui = {
+        input= {
+            start_icon=""
+        },
 		modified = {
 			isModified = "",
 			isNotModified = "",
