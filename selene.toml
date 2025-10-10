@@ -1,0 +1,5 @@
+std="lua53+vim"
+
+[lints]
+mixed_table = "allow"
+global_usage = "allow"
