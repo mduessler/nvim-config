@@ -132,7 +132,7 @@ return {
 	},
 	ui = {
         input= {
-            start_icon=""
+            title=""
         },
 		modified = {
 			isModified = "",
