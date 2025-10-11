@@ -1,6 +1,6 @@
 #!/bin/sh
 
-. ./log
+. ./scripts/log
 
 install_rust() {
     if command -v rustc >/dev/null 2>&1; then

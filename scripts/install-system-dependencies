@@ -1,6 +1,6 @@
 #!/bin/sh
 
-. ./log
+. ./scripts/log
 
 identify_system_pck_mgr() {
     info "Identifing package manger."
