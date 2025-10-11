@@ -1,5 +1,7 @@
 #!/bin/sh
 
+. ./scripts/log
+
 install_nerd_fonts() {
     NERDPATH="${HOME}/.local/src"
     mkdir -p "${NERDPATH}"
