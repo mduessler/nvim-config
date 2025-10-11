@@ -2,36 +2,7 @@
 
 set -e
 
-log() {
-    LEVEL="$1"
-    shift
-    MSG="$*"
-    TIME=$(date +"%H:%M:%S")
-    case "$LEVEL" in
-        DEBUG) COLOR="\033[37m" ;;
-        INFO) COLOR="\033[34m" ;;
-        SUCCESS) COLOR="\033[32m" ;;
-        WARNING) COLOR="\033[33m" ;;
-        ERROR) COLOR="\033[31m" ;;
-        *) COLOR="\033[0m" ;;
-    esac
-    printf "%b[%s]%b %-7s| %b%s%b\n" "\033[36m" "${TIME}" "${COLOR}" "${LEVEL}" "\033[37m" "${MSG}" "\033[0m"
-}
-debug() {
-    log "DEBUG" "$*"
-}
-info() {
-    log "INFO" "$*"
-}
-success() {
-    log "SUCCESS" "$*"
-}
-warning() {
-    log "WARNING" "$*"
-}
-error() {
-    log "ERROR" "$*"
-}
+. ./scripts/log
 
 install_system_packages() {
     info "Identifing package manger."
@@ -124,4 +95,4 @@ main() {
     fi
 }
 
-main "$@"
+# main "$@"
