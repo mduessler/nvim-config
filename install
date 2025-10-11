@@ -24,14 +24,14 @@ EOF
 }
 
 main() {
-    if ! check_nvim_version; then
-        exit 1
-    fi
-
     if ! install_system_dependencies; then
         error "Stopping installation. Can't install system dependencies."
         exit 1
     fi
+    if ! check_nvim_version; then
+        exit 1
+    fi
+
     if ! install_selene; then
         warning "Can not install selene. Continue ..."
     fi
