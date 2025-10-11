@@ -11,7 +11,7 @@ SCRIPT_DIR="$(pwd)/scripts"
 . "${SCRIPT_DIR}/install/nerd-fonts"
 
 check_nvim_version() {
-    NVIM_VERSION_INFO=$(nvim --version 2>/dev/null | head -n1 | sed -E 's/^NVIM v([0-9]+\.[0-9]+(\.[0-9]+)?).*/\1/')
+    NVIM_VERSION_INFO=$(nvim --version 2>/dev/null | head -n1 | sed -E 's/^NVIM v([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
 
     IFS="." read -r MAJOR MINOR PATCH <<EOF
 $NVIM_VERSION_INFO
@@ -19,11 +19,11 @@ EOF
 
     debug "Installed nvim version is ${NVIM_VERSION_INFO}"
 
-    if [ "$MAJOR" -lt 0 ] || [ "$MINOR" -lt 11 ] || [ "$PATCH" -lt 4 ]; then
-        error "Neovim version is to low. Cancel installation"
-        return 1
+    if [ "$MAJOR" -gt 0 ] && [ "$MINOR" -gt 11 ] && [ "$PATCH" -gt 4 ]; then
+        return 0
     fi
-    return 0
+    error "Neovim version is to low. Cancel installation"
+    return 1
 }
 
 main() {
