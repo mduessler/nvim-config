@@ -1,0 +1,45 @@
+#!/bin/sh
+
+. ./scripts/log
+
+identify_system_pck_mgr() {
+    debug "Identifing package manger."
+    if command -v apt-get >/dev/null 2>&1; then
+        PKGS=""
+        MGR="apt-get"
+    elif command -v dnf >/dev/null 2>&1; then
+        PKGS="neovim git gcc clang python python-pip golang nodejs java-latest-openjdk-devel ninja-build libstdc++-static luarocks maven gcc-c++ pkg-config openssl-devel pre-commit lua-devel"
+        MGR="dnf"
+    else
+        warning "No valid package manager found."
+        return 1
+    fi
+    success "Identified '${MGR}' as package manager."
+    return 0
+}
+
+install_pcks() {
+    info "Installing dependencies."
+    debug "Updating repositories."
+    sudo "${MGR}" update || return 1
+
+    debug "Installing dependencies."
+    sudo "${MGR}" install -y ${PKGS} || reteurn 1
+
+    success "Installed system packages."
+    return 0
+}
+
+main() {
+    info "Installing system dependencies for neovim configuration."
+    if ! identify_system_pck_mgr; then
+        error "Can not install system dependencies. Aboart installation."
+        return 1
+    fi
+
+    if ! install_pcks; then
+        error "Can not install packages with the identified package manager. Aboarting."
+        return 1
+    fi
+    return 0
+}
