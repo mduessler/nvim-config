@@ -4,6 +4,7 @@ set -e
 
 . ./scripts/log
 . ./scripts/install-system-dependencies
+. ./scripts/install-selene
 
 install_lpeglabel() {
     if ! command -v lua >/dev/null 2>&1; then
@@ -13,32 +14,6 @@ install_lpeglabel() {
     info "Installing 'lpeglabel"
     luarocks install lpeglabel --local
     success "Installed 'lpeglabel'"
-}
-
-install_selene() {
-    info "Installing selene ..."
-    if ! command -v rustc >/dev/null 2>&1; then
-        warning "RUST not installed"
-        debug "Installing RUST."
-        if [ -z "$CARGO_HOME" ]; then
-            export CARGO_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/cargo"
-        fi
-        if [ -z "$RUSTUP_HOME" ]; then
-            export RUSTUP_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/rustup"
-        fi
-
-        debug "CARGO will be installed in ${CARGO_HOME}"
-        debug "Rust will be installed in ${RUSTUP_HOME}"
-
-        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-        info "Installed rust"
-
-        if ! echo ":$PATH:" | grep -q ":$CARGO_HOME/bin:"; then
-            export PATH="$CARGO_HOME/bin:$PATH"
-        fi
-    fi
-    cargo install selene
-    success "Installed selene"
 }
 
 install_nerd_fonts() {
@@ -64,9 +39,9 @@ main() {
         error "Stopping installation. Can't install system dependencies."
         exit 1
     fi
-
-    info "Installing neovim dependencies."
-    install_selene
+    if ! install_selene; then
+        warning "Can not install selene. Continue ..."
+    fi
 
     info "Installing lazy..."
     nvim --headless +qa
