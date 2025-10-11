@@ -24,7 +24,26 @@ install_nerd_fonts() {
     return 0
 }
 
+check_nvim_version() {
+    NVIM_VERSION_INFO=$(nvim --version 2>/dev/null | head -n1 | sed -E 's/^NVIM v([0-9]+\.[0-9]+(\.[0-9]+)?).*/\1/')
+
+    IFS="." read -r MAJOR MINOR PATCH <<EOF
+$NVIM_VERSION_INFO
+EOF
+
+    debug "Install nvim version is ${NVIM_VERSION_INFO}"
+
+    if [ "$MAJOR" -lt 0 ] || [ "$MINOR" -lt 11 ] || [ "$PATCH" -lt 4 ]; then
+        error "Neovim version is to low. Cancel installation"
+        return 1
+    fi
+    return 0
+}
+
 main() {
+    if ! check_nvim_version; then
+        exit 1
+    fi
 
     if ! install_system_dependencies; then
         error "Stopping installation. Can't install system dependencies."
