@@ -6,6 +6,7 @@ set -e
 . ./scripts/install-system-dependencies
 . ./scripts/install-selene
 . ./scripts/install-lpeglabel
+. ./scripts/install-nerd-fonts
 
 check_nvim_version() {
     NVIM_VERSION_INFO=$(nvim --version 2>/dev/null | head -n1 | sed -E 's/^NVIM v([0-9]+\.[0-9]+(\.[0-9]+)?).*/\1/')
