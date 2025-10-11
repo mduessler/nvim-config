@@ -15,7 +15,6 @@ SCRIPT_DIR="$(pwd)/scripts"
 . "${SCRIPT_DIR}/install/nerd-fonts"
 . "${SCRIPT_DIR}/install/nvim"
 
-
 main() {
     if [ "$1" = "--nerd-fonts" ]; then
         init_clone_process
@@ -48,6 +47,12 @@ main() {
 
     info "Installing plugins ... "
     nvim --headless "+Lazy! sync" +qa
+
+    info "Installing Treesitter languages."
+    nvim --headless +"TSUpdateSync" +qa
+
+    info "Installing mason packages"
+    nvim --headless +"MasonToolsUpdateSync" +qa
 
     if [ "$1" = "--nerd-fonts" ]; then
         install_nerd_fonts
