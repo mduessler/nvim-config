@@ -28,7 +28,7 @@ install_pck() {
 install_pcks() {
     info "Installing dependencies."
     debug "Updating repositories."
-    sudo "${MGR}" update || return 1
+    sudo "${MGR}" update -y || return 1
 
     debug "Installing dependencies."
     sudo "${MGR}" install -y "$@" || reteurn 1
