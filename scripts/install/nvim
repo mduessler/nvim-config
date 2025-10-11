@@ -27,7 +27,7 @@ install_nvim() {
         error "Could not install dependencies"
         return 1
     fi
-    GIT_DEST_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/src/"
+    GIT_DEST_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/src"
     [ -d "${GIT_DEST_DIR}" ] || mkdir -p "${GIT_DEST_DIR}"
     git clone https://github.com/neovim/neovim -b "v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ}" "${GIT_DEST_DIR}/neovim" || return 1
     debug "Cloned nvim repo"
