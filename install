@@ -20,7 +20,7 @@ install_nerd_fonts() {
         return 0
     fi
     info "Skipping nerd-fonts installation."
-    info "Please install nerd-fonts (https://github.com/ryanoasis/nerd-fonts)."
+    info "Please install nerd-fonts 'https://github.com/ryanoasis/nerd-fonts'."
     return 0
 }
 
@@ -44,9 +44,12 @@ main() {
     info "Installing plugins ... "
     nvim --headless "+Lazy! sync" +qa
 
-    if ! install_nerd_fonts "$1"; then
-        warning "Could not install nerd-fonts. Continue..."
+    if [ "$1" = "--nerd-fonts" ]; then
+        info "Skipping nerd-fonts installation."
+        info "Please install nerd-fonts 'https://github.com/ryanoasis/nerd-fonts'."
     fi
+    info "Setup nvim successfully. Enjoy it :)"
+    return 0
 }
 
 # main "$@"
