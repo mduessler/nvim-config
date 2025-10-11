@@ -3,7 +3,7 @@
 . ./scripts/log
 
 identify_system_pck_mgr() {
-    debug "Identifing package manger."
+    info "Identifing package manger."
     if command -v apt-get >/dev/null 2>&1; then
         PKGS=""
         MGR="apt-get"
