@@ -2,9 +2,25 @@
 
 . ./scripts/log
 
+clone_repo() {
+    debug "Cloning repo to '${NERDPATH}'"
+    git clone https://github.com/ryanoasis/nerd-fonts "${NERDPATH}" || return 1
+    info "Cloned repo"
+}
+
+init() {
+    NERDPATH="${XDG_DATA_HOME:-$HOME/.local/share}/src/nerd-fonts"
+    [ -d "${NERDPATH}" ] || mkdir -p "${NERDPATH}"
+}
+
 install_nerd_fonts() {
-    NERDPATH="${HOME}/.local/src"
-    mkdir -p "${NERDPATH}"
+    init
+
+    if ! clone_repo; then
+        warning "Can not clone 'https://github.com/ryanoasis/nerd-fonts'."
+        error "Cancel nerd-fonts installation."
+    fi
+
     info "Installing nerd-fonts to '${NERDPATH}'"
 
     git clone https://github.com/ryanoasis/nerd-fonts "${NERDPATH}" || return 1
