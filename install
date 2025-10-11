@@ -8,8 +8,6 @@ PATCH_REQ=4
 
 SCRIPT_DIR="$(pwd)/scripts"
 
-CARGO_BIN=""
-
 . "${SCRIPT_DIR}/log"
 . "${SCRIPT_DIR}/install/system-dependencies"
 . "${SCRIPT_DIR}/install/selene"
@@ -48,7 +46,7 @@ main() {
         NO_CARGO_HOME=1
         CARGO_HOME="${HOME}/.cargo"
     fi
-    echo ":$PATH:" | grep -q ":$CARGO_HOME/bin:" || export PATH="${CARGO_BIN}:${PATH}"
+    echo ":$PATH:" | grep -q ":$CARGO_HOME/bin:" || export PATH="$CARGO_HOME/bin:${PATH}"
 
     info "Installing plugins ... "
     timeout 300 nvim --headless "+Lazy! sync" +qa
