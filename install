@@ -8,6 +8,8 @@ PATCH_REQ=4
 
 SCRIPT_DIR="$(pwd)/scripts"
 
+CARGO_BIN=""
+
 . "${SCRIPT_DIR}/log"
 . "${SCRIPT_DIR}/install/system-dependencies"
 . "${SCRIPT_DIR}/install/selene"
@@ -42,6 +44,12 @@ main() {
         warning "Can not install lpeglabel. Continue ..."
     fi
 
+    if [ -z "${CARGO_HOME}" ]; then
+        NO_CARGO_HOME=1
+        CARGO_HOME="${HOME}/.cargo"
+    fi
+    echo ":$PATH:" | grep -q ":$CARGO_HOME/bin:" || export PATH="${CARGO_BIN}:${PATH}"
+
     info "Installing plugins ... "
     timeout 300 nvim --headless "+Lazy! sync" +qa
 
@@ -55,7 +63,8 @@ main() {
         install_nerd_fonts
     fi
 
-    info "Setup nvim successfully. Enjoy it :)"
+    [ "${NO_CARGO_HOME}" = 1 ] && info "You need to set a '${CARGO_HOME}/bin' in your path permanently to enable mason future updates."
+    success "Setup nvim successfully. Enjoy it :)"
     return 0
 }
 
