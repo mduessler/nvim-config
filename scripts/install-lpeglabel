@@ -1,10 +1,10 @@
 #!/bin/sh
 
 SCRIPT_PATH=${_}
-SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$SCRIPT_PATH")" && pwd)
+LOCAL_SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$SCRIPT_PATH")" && pwd)
 
-. "${SCRIPT_DIR}/log"
-. "${SCRIPT_DIR}/install-system-dependencies"
+. "${LOCAL_SCRIPT_DIR}/log"
+. "${LOCAL_SCRIPT_DIR}/install-system-dependencies"
 
 install_lua() {
     info "Trying to install lua."
