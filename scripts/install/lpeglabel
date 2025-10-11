@@ -9,9 +9,9 @@ install_lua() {
     info "Trying to install lua."
     identify_system_pkg_mgr
     if [ "$MGR" = "apt-get" ]; then
-        install_pck "lua5.4"
+        install_pck "lua5.4" || return 1
     elif [ "$MGR" = "dnf" ]; then
-        install_pck "lua"
+        install_pck "lua" || return 1
     fi
     info "Installed lua."
     return 0

@@ -23,8 +23,7 @@ identify_system_pkg_mgr() {
 install_pck() {
     identify_system_pkg_mgr
     info "Install $1."
-    install_pcks "$1"
-    success "Installed $1"
+    install_pcks "$1" || return 1
 }
 
 install_pcks() {
@@ -35,7 +34,7 @@ install_pcks() {
     debug "Installing dependencies."
     sudo "${SYSTEM_PKG_MGR}" install -y "$@" || return 1
 
-    success "Installed system packages."
+    success "Installed system packages '$*'"
     return 0
 }
 
