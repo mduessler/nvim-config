@@ -18,13 +18,20 @@ identify_system_pck_mgr() {
     return 0
 }
 
+install_pck() {
+    identify_system_pck_mgr
+    info "Install $1."
+    install_pcks "$1"
+    success "Installed $1"
+}
+
 install_pcks() {
     info "Installing dependencies."
     debug "Updating repositories."
     sudo "${MGR}" update || return 1
 
     debug "Installing dependencies."
-    sudo "${MGR}" install -y ${PKGS} || reteurn 1
+    sudo "${MGR}" install -y "$1" || reteurn 1
 
     success "Installed system packages."
     return 0
@@ -37,7 +44,7 @@ install_system_dependencies() {
         return 1
     fi
 
-    if ! install_pcks; then
+    if ! install_pcks $PKGS; then
         error "Can not install packages with the identified package manager. Aboarting."
         return 1
     fi
