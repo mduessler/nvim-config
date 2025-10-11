@@ -1,11 +1,11 @@
 #!/bin/sh
 
-[ -z "$SCRIPT_DIR" ] && SCRIPT_DIR=$(cd "$(dirname "$0")" >/dev/null 2>&1 && pwd)
+[ -z "$SCRIPT_DIR" ] && SCRIPT_DIR="${0}/../scripts"
 
-echo "$LOCAL_SCRIPT_DIR"
 
-. "${LOCAL_SCRIPT_DIR}/log"
-. "${LOCAL_SCRIPT_DIR}/install-system-dependencies"
+
+. "${SCRIPT_DIR}/log"
+. "${SCRIPT_DIR}/install/system-dependencies"
 
 install_lua() {
     info "Trying to install lua."

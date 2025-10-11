@@ -1,8 +1,8 @@
 #!/bin/sh
 
-[ -z "$SCRIPT_DIR" ] && SCRIPT_DIR=$(cd "$(dirname "$0")" >/dev/null 2>&1 && pwd)
+[ -z "$SCRIPT_DIR" ] && SCRIPT_DIR="${0}/../scripts"
 
-. "${LOCAL_SCRIPT_DIR}/log"
+. "${SCRIPT_DIR}/log"
 
 identify_system_pck_mgr() {
     info "Identifing package manger."
