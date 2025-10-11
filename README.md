@@ -16,8 +16,11 @@ developed with NVIM v0.11.4.
 
 ## Installation
 
-To install, just execute the `./install`. At the current state only an
-automatic Installation for fedora is implemented.
+To install, simply run the command `./install`.
+
+Currently, only an automatic installation for Fedora and Ubuntu is implemented.
+The installation script has been tested on Fedora 42 and Ubuntu 24.04. The
+installation should also work on distributions with the same package manager.
 
 ## Notes & Feedback 🎉
 
