@@ -27,7 +27,7 @@ EOF
 }
 
 main() {
-    if [ "$1" = "--nerd-fonts" ]; then
+    if [ "${1:-}" = "--nerd-fonts" ]; then
         init_clone_process
         info "Cloning nerd-fonts in background."
     else
@@ -59,7 +59,7 @@ main() {
     info "Installing plugins ... "
     nvim --headless "+Lazy! sync" +qa
 
-    if [ "$1" = "--nerd-fonts" ]; then
+    if [ "${1:-}" = "--nerd-fonts" ]; then
         install_nerd_fonts
     fi
 
