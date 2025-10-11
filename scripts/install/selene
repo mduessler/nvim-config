@@ -1,6 +1,6 @@
 #!/bin/sh
 
-[ -z "$SCRIPT_DIR" ] && SCRIPT_DIR="${0}/../scripts"
+[ -z "$SCRIPT_DIR" ] && SCRIPT_DIR="$(pwd)/../scripts"
 
 . "${SCRIPT_DIR}/log"
 

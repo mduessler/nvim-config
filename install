@@ -2,7 +2,7 @@
 
 set -e
 
-SCRIPT_DIR="${0}/scripts"
+SCRIPT_DIR="$(pwd)/scripts"
 
 . "${SCRIPT_DIR}/log"
 . "${SCRIPT_DIR}/install/system-dependencies"
