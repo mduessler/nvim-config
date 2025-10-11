@@ -1,7 +1,6 @@
 #!/bin/sh
 
-SCRIPT_PATH=${_}
-LOCAL_SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$SCRIPT_PATH")" && pwd)
+[ -z "$SCRIPT_DIR" ] && SCRIPT_DIR=$(cd "$(dirname "$0")" >/dev/null 2>&1 && pwd)
 
 . "${LOCAL_SCRIPT_DIR}/log"
 
