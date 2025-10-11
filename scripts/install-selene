@@ -25,7 +25,12 @@ install_rust() {
 
 install_selene() {
     info "Installing selene ..."
-    install_rust
-    cargo install selene
+    if ! install_rust; then
+        warning "Could not install rust."
+        error "Cancel installation of selene."
+        return 1
+    fi
+    cargo install selene || return 1
     success "Installed selene."
+    return 0
 }
