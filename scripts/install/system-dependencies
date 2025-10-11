@@ -8,10 +8,8 @@ identify_system_pkg_mgr() {
     if [ -z "$SYSTEM_PKG_MGR" ]; then
         info "Identifing package manger."
         if command -v apt-get >/dev/null 2>&1; then
-            PKGS="neovim git curl gcc clang python3 python3-pip golang nodejs openjdk-21-jdk ninja-build libstdc++-14-dev luarocks maven g++ pkg-config libssl-dev pre-commit lua5.4"
             SYSTEM_PKG_MGR="apt-get"
         elif command -v dnf >/dev/null 2>&1; then
-            PKGS="neovim git curl gcc clang python python-pip golang nodejs java-latest-openjdk-devel ninja-build libstdc++-static luarocks maven gcc-c++ pkg-config openssl-devel pre-commit lua"
             SYSTEM_PKG_MGR="dnf"
         else
             warning "No valid package manager found."
@@ -45,6 +43,15 @@ install_system_dependencies() {
     info "Installing system dependencies for neovim configuration."
     if ! identify_system_pkg_mgr; then
         error "Can not install system dependencies. Aboart installation."
+        return 1
+    fi
+
+    if [ "${SYSTEM_PKG_MGR}" = "apt-get" ]; then
+        PKGS="neovim git curl gcc clang python3 python3-pip golang nodejs openjdk-21-jdk ninja-build libstdc++-14-dev luarocks maven g++ pkg-config libssl-dev pre-commit lua5.4"
+    elif [ "${SYSTEM_PKG_MGR}" = "dnf" ]; then
+        PKGS="neovim git curl gcc clang python python-pip golang nodejs java-latest-openjdk-devel ninja-build libstdc++-static luarocks maven gcc-c++ pkg-config openssl-devel pre-commit lua"
+    else
+        warning "No valid package manager found. Skipping installation"
         return 1
     fi
 
