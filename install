@@ -42,17 +42,14 @@ main() {
         warning "Can not install lpeglabel. Continue ..."
     fi
 
-    info "Installing lazy..."
-    nvim --headless +qa
-
     info "Installing plugins ... "
-    nvim --headless "+Lazy! sync" +qa
+    timeout 300 nvim --headless "+Lazy! sync" +qa
 
     info "Installing Treesitter languages."
-    nvim --headless +"TSUpdateSync" +qa
+    timeout 600 nvim --headless +"TSUpdateSync" +qa
 
     info "Installing mason packages"
-    nvim --headless +"MasonToolsUpdateSync" +qa
+    timeout 300 nvim --headless +"MasonToolsUpdateSync" +qa
 
     if [ "$1" = "--nerd-fonts" ]; then
         install_nerd_fonts
