@@ -5,16 +5,7 @@ set -e
 . ./scripts/log
 . ./scripts/install-system-dependencies
 . ./scripts/install-selene
-
-install_lpeglabel() {
-    if ! command -v lua >/dev/null 2>&1; then
-        error "Lua not installed"
-        return 1
-    fi
-    info "Installing 'lpeglabel"
-    luarocks install lpeglabel --local
-    success "Installed 'lpeglabel'"
-}
+. ./scripts/install-lpeglabel
 
 install_nerd_fonts() {
     if [ "$1" = "--nerd-fonts" ]; then
@@ -41,6 +32,10 @@ main() {
     fi
     if ! install_selene; then
         warning "Can not install selene. Continue ..."
+    fi
+
+    if ! install_lpeglabel; then
+        warning "Can not install lpeglabel. Continue ..."
     fi
 
     info "Installing lazy..."
