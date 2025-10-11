@@ -15,7 +15,7 @@ check_nvim_version() {
 $NVIM_VERSION_INFO
 EOF
 
-    debug "Install nvim version is ${NVIM_VERSION_INFO}"
+    debug "Installed nvim version is ${NVIM_VERSION_INFO}"
 
     if [ "$MAJOR" -lt 0 ] || [ "$MINOR" -lt 11 ] || [ "$PATCH" -lt 4 ]; then
         error "Neovim version is to low. Cancel installation"
@@ -38,6 +38,8 @@ main() {
         exit 1
     fi
     if ! check_nvim_version; then
+        error "Neovim version v0.11.4 or higher is required.\n
+        Please install it before you can continue with the installation."
         exit 1
     fi
 
