@@ -24,6 +24,14 @@ EOF
 }
 
 main() {
+    if [ "$1" = "--nerd-fonts" ]; then
+        init_clone_process
+        info "Cloning nerd-fonts in background."
+    else
+        info "Skipping nerd-fonts installation."
+        info "Please install nerd-fonts 'https://github.com/ryanoasis/nerd-fonts'."
+    fi
+
     if ! install_system_dependencies; then
         error "Stopping installation. Can't install system dependencies."
         exit 1
@@ -47,9 +55,9 @@ main() {
     nvim --headless "+Lazy! sync" +qa
 
     if [ "$1" = "--nerd-fonts" ]; then
-        info "Skipping nerd-fonts installation."
-        info "Please install nerd-fonts 'https://github.com/ryanoasis/nerd-fonts'."
+        install_nerd_fonts
     fi
+
     info "Setup nvim successfully. Enjoy it :)"
     return 0
 }

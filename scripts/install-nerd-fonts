@@ -17,7 +17,6 @@ init() {
 }
 
 init_clone_process() {
-
     init
 
     if ! clone_repo; then
@@ -27,6 +26,7 @@ init_clone_process() {
 }
 
 wait_for_clone() {
+    info "Waiting for clone process to finish"
     wait "${CLONE_PID}"
 
     echo
