@@ -4,7 +4,7 @@ set -e
 
 MAJOR_REQ=0
 MINOR_REQ=11
-PATH_REQ=4
+PATCH_REQ=4
 
 SCRIPT_DIR="$(pwd)/scripts"
 
@@ -13,22 +13,8 @@ SCRIPT_DIR="$(pwd)/scripts"
 . "${SCRIPT_DIR}/install/selene"
 . "${SCRIPT_DIR}/install/lpeglabel"
 . "${SCRIPT_DIR}/install/nerd-fonts"
+. "${SCRIPT_DIR}/install/nvim"
 
-check_nvim_version() {
-    NVIM_VERSION_INFO=$(nvim --version 2>/dev/null | head -n1 | sed -E 's/^NVIM v([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
-
-    IFS="." read -r MAJOR MINOR PATCH <<EOF
-$NVIM_VERSION_INFO
-EOF
-
-    debug "Installed nvim version is ${NVIM_VERSION_INFO}"
-
-    if [ "$MAJOR" -ge "$MAJOR_REQ" ] && [ "$MINOR" -ge "$MINOR_REQ" ] && [ "$PATCH" -ge "$PATH_REQ" ]; then
-        return 0
-    fi
-    error "Neovim version is to low. Cancel installation"
-    return 1
-}
 
 main() {
     if [ "$1" = "--nerd-fonts" ]; then

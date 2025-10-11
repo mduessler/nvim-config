@@ -1,0 +1,58 @@
+#!/bin/sh
+
+[ -z "$SCRIPT_DIR" ] && SCRIPT_DIR="$(pwd)/../scripts"
+
+. "${SCRIPT_DIR}/log"
+. "${SCRIPT_DIR}/install/system-dependencies"
+
+[ -z "$MAJOR_REQ" ] && MAJOR_REQ=0
+[ -z "$MINOR_REQ" ] && MINOR_REQ=0
+[ -z "$PATCH_REQ" ] && PATCH_REQ=0
+
+install_dependencies() {
+    identify_system_pkg_mgr
+    if [ "${SYSTEM_PKG_MGR}" = "apt-get" ]; then
+        install_pcks ninja-build gettext cmake curl build-essential git
+    elif [ "${SYSTEM_PKG_MGR}" = "dnf" ]; then
+        install_pcks ninja-build cmake gcc make gettext curl glibc-gconv-extra git
+    else
+        warning "No valid package manager found. Skipping installation"
+        return 1
+    fi
+    return 0
+}
+
+install_nvim() {
+    if ! install_dependencies; then
+        error "Could not install dependencies"
+        return 1
+    fi
+    GIT_DEST_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/src/"
+    [ -d "${GIT_DEST_DIR}" ] || mkdir -p "${GIT_DEST_DIR}"
+    git clone https://github.com/neovim/neovim -b "v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ}" "${GIT_DEST_DIR}/neovim" || return 1
+    debug "Cloned nvim repo"
+    cd "${GIT_DEST_DIR}/neovim" || return 1
+    make CMAKE_BUILD_TYPE=Release || return 1
+    sudo make install || return 1
+    success "Installed neovim version: $(nvim --version 2>/dev/null | head -n1)"
+}
+
+check_nvim_version() {
+    NVIM_VERSION_INFO=$(nvim --version 2>/dev/null | head -n1 | sed -E 's/^NVIM v([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
+
+    IFS="." read -r MAJOR MINOR PATCH <<EOF
+$NVIM_VERSION_INFO
+EOF
+
+    debug "Installed nvim version is ${NVIM_VERSION_INFO}"
+
+    if [ "$MAJOR" -ge "$MAJOR_REQ" ] && [ "$MINOR" -ge "$MINOR_REQ" ] && [ "$PATCH" -ge "$PATCH_REQ" ]; then
+        return 0
+    fi
+    warning "Neovim version is to low. Try to build from source."
+    if ! install_nvim; then
+        error "Can not build from source. Cancel installation"
+        return 1
+    fi
+    return 0
+}
