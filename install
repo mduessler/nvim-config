@@ -3,23 +3,7 @@
 set -e
 
 . ./scripts/log
-
-install_system_packages() {
-    info "Identifing package manger."
-    if command -v apt-get >/dev/null 2>&1; then
-        PKGS="neovim git gcc clang python3 python3-pip golang nodejs openjdk-21-jdk ninja-build libstdc++-dev luarocks maven g++ pkg-config libssl-dev pre-commit liblua5.4-dev"
-        sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get install -y ${PKGS}
-    elif command -v dnf >/dev/null 2>&1; then
-        PKGS="neovim git gcc clang python python-pip golang nodejs java-latest-openjdk-devel ninja-build libstdc++-static luarocks maven gcc-c++ pkg-config openssl-devel pre-commit lua-devel"
-        sudo dnf update -y && sudo dnf install -y ${PKGS}
-
-    else
-        warning "No valid package manager found."
-        return 1
-    fi
-    success "Using '${PKG_MANAGER}' as package manager."
-    return 0
-}
+. ./scripts/install-system-dependencies
 
 install_lpeglabel() {
     if ! command -v lua >/dev/null 2>&1; then
@@ -76,8 +60,8 @@ install_nerd_fonts() {
 
 main() {
 
-    if ! install_system_packages; then
-        error "Stopping installation. Can't install system packages."
+    if ! install_system_dependencies; then
+        error "Stopping installation. Can't install system dependencies."
         exit 1
     fi
 

@@ -30,7 +30,7 @@ install_pcks() {
     return 0
 }
 
-main() {
+install_system_dependencies() {
     info "Installing system dependencies for neovim configuration."
     if ! identify_system_pck_mgr; then
         error "Can not install system dependencies. Aboart installation."
