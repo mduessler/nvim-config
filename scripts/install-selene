@@ -1,6 +1,8 @@
 #!/bin/sh
 
-. ./scripts/log
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+
+. "${SCRIPT_DIR}/log"
 
 install_rust() {
     if command -v rustc >/dev/null 2>&1; then

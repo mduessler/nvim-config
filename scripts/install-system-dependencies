@@ -1,6 +1,8 @@
 #!/bin/sh
 
-. ./scripts/log
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+
+. "${SCRIPT_DIR}/log"
 
 identify_system_pck_mgr() {
     info "Identifing package manger."

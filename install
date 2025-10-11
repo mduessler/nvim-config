@@ -2,11 +2,13 @@
 
 set -e
 
-. ./scripts/log
-. ./scripts/install-system-dependencies
-. ./scripts/install-selene
-. ./scripts/install-lpeglabel
-. ./scripts/install-nerd-fonts
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+
+. "${SCRIPT_DIR}/scripts/log"
+. "${SCRIPT_DIR}/scripts/install-system-dependencies"
+. "${SCRIPT_DIR}/scripts/install-selene"
+. "${SCRIPT_DIR}/scripts/install-lpeglabel"
+. "${SCRIPT_DIR}/scripts/install-nerd-fonts"
 
 check_nvim_version() {
     NVIM_VERSION_INFO=$(nvim --version 2>/dev/null | head -n1 | sed -E 's/^NVIM v([0-9]+\.[0-9]+(\.[0-9]+)?).*/\1/')
