@@ -1,6 +1,7 @@
 #!/bin/sh
 
-SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+SCRIPT_PATH=${_}
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$SCRIPT_PATH")" && pwd)
 
 . "${SCRIPT_DIR}/log"
 . "${SCRIPT_DIR}/install-system-dependencies"
