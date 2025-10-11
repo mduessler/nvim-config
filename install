@@ -2,6 +2,10 @@
 
 set -e
 
+MAJOR_REQ=0
+MINOR_REQ=11
+PATH_REQ=4
+
 SCRIPT_DIR="$(pwd)/scripts"
 
 . "${SCRIPT_DIR}/log"
@@ -19,7 +23,7 @@ EOF
 
     debug "Installed nvim version is ${NVIM_VERSION_INFO}"
 
-    if [ "$MAJOR" -gt 0 ] && [ "$MINOR" -gt 11 ] && [ "$PATCH" -gt 4 ]; then
+    if [ "$MAJOR" -ge "$MAJOR_REQ" ] && [ "$MINOR" -ge "$MINOR_REQ" ] && [ "$PATCH" -ge "$PATH_REQ" ]; then
         return 0
     fi
     error "Neovim version is to low. Cancel installation"
