@@ -31,7 +31,7 @@ install_pcks() {
     sudo "${MGR}" update || return 1
 
     debug "Installing dependencies."
-    sudo "${MGR}" install -y "$1" || reteurn 1
+    sudo "${MGR}" install -y "$@" || reteurn 1
 
     success "Installed system packages."
     return 0
