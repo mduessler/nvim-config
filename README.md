@@ -1,13 +1,18 @@
 # My nvim config
 
-This is my nvim config which uses lazy as plugin manager.
+This is my nvim config which uses lazy as plugin manager. This config was
+developed with NVIM v0.11.4.
 
 ## Goals
 
 1. Development and implementation of a nvim configuration to provide an
    integrated development environment (IDE) for software projects.
-2. Developing my own UI for Neovim, implemented in Lua, to extend the
+1. Developing my own UI for Neovim, implemented in Lua, to extend the
    IDE functionality and improve the user experience.
+
+## Dependencies
+
+- Nvim v0.11.4 or higher
 
 ## Installation
 
