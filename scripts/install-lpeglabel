@@ -21,7 +21,7 @@ install_lua() {
 install_lpeglabel() {
     if ! command -v lua >/dev/null 2>&1; then
         warning "Lua not installed"
-        install_lua
+        install_lua || return 1
     fi
     info "Installing 'lpeglabel"
     luarocks install lpeglabel --local || return 1
