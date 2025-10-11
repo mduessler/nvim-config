@@ -37,6 +37,7 @@ get_pck_manager() {
     info "Identifing package manger."
     if command -v apt-get >/dev/null 2>&1; then
         PKG_MANAGER="apt-get"
+        PKGS="neovim git gcc clang python3 python3-pip golang nodejs openjdk-21-jdk ninja-build libstdc++-dev luarocks maven g++ pkg-config libssl-dev pre-commit liblua5.4-dev"
     elif command -v dnf >/dev/null 2>&1; then
         PKG_MANAGER="dnf"
         PKGS="neovim git gcc clang python python-pip golang nodejs java-latest-openjdk-devel ninja-build libstdc++-static luarocks maven gcc-c++ pkg-config openssl-devel pre-commit lua-devel"
@@ -93,7 +94,7 @@ install_nerd_fonts() {
         git clone https://github.com/ryanoasis/nerd-fonts "${NERDPATH}" || return 1
         cd "${NERDPATH}"
         chmod +x install.sh
-        ./install.sh
+        ./install.sh ||  exit 1
         success "Installed nerd-fonts."
         return 0
     fi
