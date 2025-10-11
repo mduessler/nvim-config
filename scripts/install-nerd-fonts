@@ -1,0 +1,17 @@
+#!/bin/sh
+
+install_nerd_fonts() {
+    NERDPATH="${HOME}/.local/src"
+    mkdir -p "${NERDPATH}"
+    info "Installing nerd-fonts to '${NERDPATH}'"
+
+    git clone https://github.com/ryanoasis/nerd-fonts "${NERDPATH}" || return 1
+    cd "${NERDPATH}" || return 1
+    chmod +x install.sh
+    ./install.sh || return 1
+    success "Installed nerd-fonts."
+    return 0
+    info "Skipping nerd-fonts installation."
+    info "Please install nerd-fonts 'https://github.com/ryanoasis/nerd-fonts'."
+    return 0
+}
