@@ -2,9 +2,12 @@
 
 . ./scripts/log
 
+TMPFILE=$(mktemp)
+
 clone_repo() {
     debug "Cloning repo to '${NERDPATH}'"
-    git clone https://github.com/ryanoasis/nerd-fonts "${NERDPATH}" || return 1
+    git clone https://github.com/ryanoasis/nerd-fonts "${NERDPATH}" >"$TMPFILE" 2>&1 &
+    CLONE_PID=$!
     info "Cloned repo"
 }
 
@@ -13,17 +16,28 @@ init() {
     [ -d "${NERDPATH}" ] || mkdir -p "${NERDPATH}"
 }
 
-install_nerd_fonts() {
+init_clone_process() {
+
     init
 
     if ! clone_repo; then
         warning "Can not clone 'https://github.com/ryanoasis/nerd-fonts'."
         error "Cancel nerd-fonts installation."
     fi
+}
 
-    info "Installing nerd-fonts to '${NERDPATH}'"
+wait_for_clone() {
+    wait "${CLONE_PID}"
 
-    git clone https://github.com/ryanoasis/nerd-fonts "${NERDPATH}" || return 1
+    echo
+    echo "========== FULL GIT CLONE OUTPUT =========="
+    cat "$TMPFILE"
+    rm -f "$TMPFILE"
+}
+
+install_nerd_fonts() {
+    wait_for_clone
+
     cd "${NERDPATH}" || return 1
     chmod +x install.sh
     ./install.sh || return 1
