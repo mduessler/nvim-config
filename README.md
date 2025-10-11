@@ -13,10 +13,14 @@ developed with NVIM v0.11.4.
 ## Dependencies
 
 - NVIM v0.11.4 or higher
+- [Nerd Fonts](https://github.com/ryanoasis/nerd-fonts) - Need for UI
 
 ## Installation
 
-To install, simply run the command `./install`.
+To install everything, except *Nerd Fonts*, simply run `./install`. You can
+also install it with Nerd Fonts, but this process takes a very long time
+because it clones the whole Nerd Fonts git repo. For this simply run
+`./install --nerd-fonts`.
 
 Currently, only an automatic installation for Fedora and Ubuntu is implemented.
 The installation script has been tested on Fedora 42 and Ubuntu 24.04. The
