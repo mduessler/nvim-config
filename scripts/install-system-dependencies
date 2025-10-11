@@ -5,10 +5,10 @@
 identify_system_pck_mgr() {
     info "Identifing package manger."
     if command -v apt-get >/dev/null 2>&1; then
-        PKGS=""
+        PKGS="neovim git curl gcc clang python3 python3-pip golang nodejs openjdk-21-jdk ninja-build libstdc++-dev luarocks maven g++ pkg-config libssl-dev pre-commit liblua5.4-dev"
         MGR="apt-get"
     elif command -v dnf >/dev/null 2>&1; then
-        PKGS="neovim git gcc clang python python-pip golang nodejs java-latest-openjdk-devel ninja-build libstdc++-static luarocks maven gcc-c++ pkg-config openssl-devel pre-commit lua-devel"
+        PKGS="neovim git curl gcc clang python python-pip golang nodejs java-latest-openjdk-devel ninja-build libstdc++-static luarocks maven gcc-c++ pkg-config openssl-devel pre-commit lua-devel"
         MGR="dnf"
     else
         warning "No valid package manager found."
