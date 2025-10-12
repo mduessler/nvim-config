@@ -10,7 +10,6 @@ vim.api.nvim_create_autocmd("User", {
 				return
 			end
 			for _, server in ipairs(servers) do
-				vim.cmd("LspInstall " .. server)
 				if not registry.has_package(server) then
 					print("Don't know package " .. server)
 				else
