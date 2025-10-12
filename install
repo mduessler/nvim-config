@@ -55,7 +55,7 @@ main() {
     timeout 600 nvim --headless +"TSUpdateSync" +qa
 
     info "Installing mason packages"
-    timeout 600 nvim --headless +"MasonToolsInstallSync" +qa
+    timeout 600 env PATH="${CARGO_HOME:-$HOME/.cargo}/bin:$PATH" nvim --headless +"MasonToolsInstallSync" +qa
 
     if [ "$1" = "--nerd-fonts" ]; then
         install_nerd_fonts
