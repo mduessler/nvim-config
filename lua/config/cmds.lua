@@ -8,6 +8,11 @@ vim.api.nvim_create_user_command("InitNVIM", function()
 		local servers = require_safe("lua.lsp.servers")
 
 		if not (formaters and linters and mti and registry and servers) then
+			print(formaters)
+			print(linters)
+			print(mti)
+			print(registry)
+			print(servers)
 			return
 		end
 
