@@ -17,6 +17,14 @@ developed with NVIM v0.11.4.
 
 ## Installation
 
+### Before Installation
+
+1. You can set `$RUSTUP_HOME` and `$CARGO_HOME` to specify the installation
+   directory of rust and its package manager cargo. But you need to set
+   `$CARGO_HOME/bin` in your Path.
+
+### Actual Installation
+
 To install everything, except *Nerd Fonts*, simply run `./install`. You can
 also install it with Nerd Fonts, but this process takes a very long time
 because it clones the whole Nerd Fonts git repo. For this simply run
