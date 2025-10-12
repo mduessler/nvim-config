@@ -7,7 +7,7 @@ vim.api.nvim_create_user_command("InitNVIM", function()
 			print("Lazy not loaded!")
 		end
 
-		lazy.sync({ wait = true }) -- waits until Lazy finishes installing/loading
+		lazy.sync({ wait = true })
 		vim.wait(60000, function()
 			local cfg = require("lazy.core.config")
 			return cfg and cfg.plugins and next(cfg.plugins) ~= nil
