@@ -3,11 +3,15 @@ vim.api.nvim_create_user_command("InitNVIM", function()
 		local require_safe = require("utils.require_safe")
 
 		local lazy = require_safe("lazy")
-		if lazy then
-			lazy.sync({ wait = true }) -- waits until Lazy finishes installing/loading
-		else
+		if not lazy then
 			print("Lazy not loaded!")
 		end
+
+		lazy.sync({ wait = true }) -- waits until Lazy finishes installing/loading
+		vim.wait(60000, function()
+			local cfg = require("lazy.core.config")
+			return cfg and cfg.plugins and next(cfg.plugins) ~= nil
+		end, 500)
 
 		local formaters = require_safe("lua.lsp.formater")
 		local linters = require_safe("lua.lsp.linter")
