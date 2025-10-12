@@ -15,14 +15,14 @@ vim.api.nvim_create_autocmd("User", {
 				else
 					local pkg = registry.get_package(package)
 					if not pkg:is_installed() then
-						print("[Headless] Installing " .. package .. " ...")
+						print("Installing " .. package .. " ...")
 						pkg:install()
 						vim.wait(120000, function()
 							return pkg:is_installed()
 						end, 500)
-						print("[Headless] Installed: " .. package)
+						print("Installed: " .. package)
 					else
-						print("[Headless] Already installed: " .. package)
+						print("Already installed: " .. package)
 					end
 				end
 				print("Installed Language server: " .. package)
