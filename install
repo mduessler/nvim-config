@@ -42,9 +42,10 @@ main() {
         warning "Can not install lpeglabel. Continue ..."
     fi
 
-    info "Installing plugins ... "
-    PATH="${CARGO_HOME:-$HOME/.cargo}/bin:$PATH" nvim --headless "+InitNVIM" +qa
+    nvim --headless "+Lazy! sync" +qa
 
+    info "Installing language-servers, formaters and linters ... "
+    PATH="${CARGO_HOME:-$HOME/.cargo}/bin:$PATH" nvim --headless "+InitNVIM" +qa
 
     if [ "$1" = "--nerd-fonts" ]; then
         install_nerd_fonts

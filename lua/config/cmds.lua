@@ -1,7 +1,5 @@
 vim.api.nvim_create_user_command("InitNVIM", function()
 	if #vim.api.nvim_list_uis() == 0 then -- headless
-		vim.cmd("Lazy! sync")
-
 		local require_safe = require("utils.require_safe")
 		local formaters = require_safe("lua.lsp.formater")
 		local linters = require_safe("lua.lsp.linter")
@@ -48,8 +46,7 @@ vim.api.nvim_create_user_command("InitNVIM", function()
 		end
 
 		print("Installing Treesitter languages.")
-		vim.cmd("TSUpdate")
-
-		vim.wait(5000)
+		vim.cmd("TSUpdateSync")
+		vim.cmd("qa!")
 	end
 end, { desc = "Initalize plugins, lsps and Treesitter" })
