@@ -41,6 +41,10 @@ installation should also work on distributions with the same package manager.
 1. To allow *mason-tools-installer* to update and install new tools, ensure that
    `$CARGO_HOME/bin` is in your `PATH`.
 
+## Development
+
+Information about the development process is stored under [docs/development.md](docs/development.md)
+
 ## Notes & Feedback 🎉
 
 Enjoy using the config and thank you for using it 😊
