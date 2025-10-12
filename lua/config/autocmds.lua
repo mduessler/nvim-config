@@ -4,7 +4,7 @@ vim.api.nvim_create_autocmd("User", {
 		if #vim.api.nvim_list_uis() == 0 then -- headless
 			print("Do nothing to install mason servers?")
 			local require_safe = require("utils.require_safe")
-			local servers = require_safe("lsp.servers")
+			local servers = require_safe("lua.lsp.servers")
 			local registry = require_safe("mason-registry")
 			if not (servers and registry) then
 				return
