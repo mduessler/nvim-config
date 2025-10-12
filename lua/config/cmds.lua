@@ -1,8 +1,14 @@
 vim.api.nvim_create_user_command("InitNVIM", function()
 	if #vim.api.nvim_list_uis() == 0 then -- headless
-		vim.cmd("Lazy! sync")
-
 		local require_safe = require("utils.require_safe")
+
+		local lazy = require_safe("lazy")
+		if lazy then
+			lazy.sync({ wait = true }) -- waits until Lazy finishes installing/loading
+		else
+			print("Lazy not loaded!")
+		end
+
 		local formaters = require_safe("lua.lsp.formater")
 		local linters = require_safe("lua.lsp.linter")
 		local mti = require_safe("mason-tool-installer")
