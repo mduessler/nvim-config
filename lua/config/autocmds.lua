@@ -9,7 +9,7 @@ vim.api.nvim_create_autocmd("User", {
 			if not (servers and registry) then
 				return
 			end
-			for package, _ in ipairs(servers) do
+			for package, _ in pairs(servers) do
 				if not registry.has_package(package) then
 					print("Don't know package " .. package)
 				else
