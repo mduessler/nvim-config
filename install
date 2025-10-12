@@ -50,7 +50,7 @@ main() {
         install_nerd_fonts
     fi
 
-    [ "${NO_CARGO_HOME}" = 1 ] && info "You need to set a '${CARGO_HOME}/bin' in your path permanently to enable mason future updates."
+    info "You need to set a '${CARGO_HOME}/bin' in your path permanently to enable mason future updates."
     success "Setup nvim successfully. Enjoy it :)"
     return 0
 }
