@@ -21,7 +21,7 @@ developed with NVIM v0.11.4.
 
 1. You can set `$RUSTUP_HOME` and `$CARGO_HOME` to specify the installation
    directory of rust and its package manager cargo. But you need to set
-   `$CARGO_HOME/bin` in your Path.
+   `$CARGO_HOME/bin` in your `PATH`.
 
 ### Actual Installation
 
@@ -33,6 +33,11 @@ because it clones the whole Nerd Fonts git repo. For this simply run
 Currently, only an automatic installation for Fedora and Ubuntu is implemented.
 The installation script has been tested on Fedora 42 and Ubuntu 24.04. The
 installation should also work on distributions with the same package manager.
+
+### After Installation
+
+1. To allow *mason-tools-installer* to update and install new tools, ensure that
+   `$CARGO_HOME/bin` is in your `PATH`.
 
 ## Notes & Feedback 🎉
 
