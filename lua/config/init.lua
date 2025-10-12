@@ -1,5 +1,5 @@
 require("config.options")
 require("config.lazy")
-require("config.autocmds")
+require("config.cmds")
 require("config.highlights")
 require("config.keymaps")
