@@ -10,9 +10,10 @@ vim.api.nvim_create_autocmd("User", {
 			end
 			for _, server in ipairs(servers) do
 				vim.cmd("LspInstall " .. server)
-				vim.cmd("MasonToolsInstallSync")
 				print("Installed Language server: " .. server)
 			end
+			vim.cmd("MasonToolsInstallSync")
+			vim.cmd("TSUpdateSync")
 		end
 	end,
 })
