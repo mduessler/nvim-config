@@ -43,8 +43,7 @@ main() {
     fi
 
     info "Installing plugins ... "
-    PATH="${CARGO_HOME:-$HOME/.cargo}/bin:$PATH" nvim --headless "+InitNVIM" +qa
-
+    PATH="${CARGO_HOME:-$HOME/.cargo}/bin:$PATH" nvim --headless "+Lazy! sync" +qa
 
     if [ "$1" = "--nerd-fonts" ]; then
         install_nerd_fonts
