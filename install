@@ -43,7 +43,7 @@ main() {
     fi
 
     info "Installing plugins ... "
-    timeout 300 env PATH="${CARGO_HOME:-$HOME/.cargo}/bin:$PATH" nvim --headless "+Lazy! sync" +qa
+    PATH="${CARGO_HOME:-$HOME/.cargo}/bin:$PATH" nvim --headless "+Lazy! sync" +qa
 
     info "Installing Treesitter languages."
     timeout 600 nvim --headless +"TSUpdateSync" +qa
