@@ -9,9 +9,19 @@ vim.api.nvim_create_user_command("InitNVIM", function()
 
 		lazy.sync({ wait = true })
 		vim.wait(60000, function()
-			local cfg = require("lazy.core.config")
-			return cfg and cfg.plugins and next(cfg.plugins) ~= nil
+			print("wating for load.")
+			return (
+				require_safe("lua.lsp.formater")
+				and require_safe("lua.lsp.linter")
+				and require_safe("mason-tool-installer")
+				and require_safe("mason-registry")
+				and require_safe("lua.lsp.servers")
+			)
+					and true
+				or false
 		end, 500)
+
+		print("Loaded plugins. Continue to install lsp, linter and formater ...")
 
 		local formaters = require_safe("lua.lsp.formater")
 		local linters = require_safe("lua.lsp.linter")
