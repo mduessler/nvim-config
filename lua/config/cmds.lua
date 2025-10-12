@@ -1,7 +1,6 @@
 vim.api.nvim_create_user_command("InitNVIM", function()
 	if #vim.api.nvim_list_uis() == 0 then -- headless
 		vim.cmd("Lazy! sync")
-		print("Installing Language Servers.")
 		local require_safe = require("utils.require_safe")
 		local formaters = require_safe("lsp.formater")
 		local linters = require_safe("lsp.linter")
@@ -32,19 +31,18 @@ vim.api.nvim_create_user_command("InitNVIM", function()
 			print("Installed Language server: " .. package)
 		end
 
+		print("Installing Language Servers.")
 		for package, _ in pairs(servers) do
 			install_packages(package)
 		end
 
 		print("Installing Formater")
-		for _, formater in pairs(formaters) do
-			local package = mti.map_name(formater)
+		for package, _ in pairs(formaters) do
 			install_packages(package)
 		end
 
 		print("Installing Linter")
-		for _, linter in pairs(linters) do
-			local package = mti.map_name(linter)
+		for package, _ in pairs(linters) do
 			install_packages(package)
 		end
 

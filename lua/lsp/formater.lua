@@ -1,15 +1,14 @@
 return {
-	"shfmt", -- Bash
-	"mdformat", -- Markdown ls
-	"stylua", -- Lua ls
-	"prettier", -- JavaScript, TypeScript, JSON, CSS
-	"black", -- Python
-	"isort", -- Python
-	"djlint", -- Djlint
-	"docformatter", -- Python
-	"clang-format", -- C, c++ ...,
-	"cmakelang", -- Cmake
-	"yamlfmt", -- Yaml
-	"beautysh", -- zsh
-	-- "eslint",
+	shfmt = "shfmt",
+	mdformat = "mdformat",
+	stylua = "stylua",
+	prettier = "prettier",
+	black = "black",
+	isort = "isort",
+	djlint = "djlint",
+	docformatter = "docformatter",
+	["clang-format"] = "clang-format",
+	cmakelang = "cmakelang",
+	yamlfmt = "yamlfmt",
+	beautysh = "beautysh",
 }
