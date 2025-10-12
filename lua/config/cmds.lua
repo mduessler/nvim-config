@@ -1,6 +1,8 @@
 vim.api.nvim_create_user_command("InitNVIM", function()
 	if #vim.api.nvim_list_uis() == 0 then -- headless
 		vim.cmd("Lazy! sync")
+		vim.cmd("source $MYVIMRC")
+
 		local require_safe = require("utils.require_safe")
 		local formaters = require_safe("lsp.formater")
 		local linters = require_safe("lsp.linter")
