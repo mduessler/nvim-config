@@ -42,20 +42,14 @@ main() {
         warning "Can not install lpeglabel. Continue ..."
     fi
 
-    if [ -z "${CARGO_HOME}" ]; then
-        NO_CARGO_HOME=1
-        CARGO_HOME="${HOME}/.cargo"
-    fi
-    echo ":$PATH:" | grep -q ":$CARGO_HOME/bin:" || export PATH="$CARGO_HOME/bin:${PATH}"
-
     info "Installing plugins ... "
-    timeout 300 nvim --headless "+Lazy! sync" +qa
+    timeout 300 env PATH="${CARGO_HOME:-$HOME/.cargo}/bin:$PATH" nvim --headless "+Lazy! sync" +qa
 
     info "Installing Treesitter languages."
     timeout 600 nvim --headless +"TSUpdateSync" +qa
 
-    info "Installing mason packages"
-    timeout 600 env PATH="${CARGO_HOME:-$HOME/.cargo}/bin:$PATH" nvim --headless -c "lua dofile('scripts/install/mason-tools.lua')" +qa
+    # info "Installing mason packages"
+    # timeout 600 env PATH="${CARGO_HOME:-$HOME/.cargo}/bin:$PATH" nvim --headless -c "lua dofile('scripts/install/mason-install.lua')" +qa
 
     if [ "$1" = "--nerd-fonts" ]; then
         install_nerd_fonts

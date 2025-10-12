@@ -49,6 +49,10 @@ return {
 			"beautysh", -- zsh
 			-- "eslint",
 		}
+		local lsp = {}
+		for _, value in ipairs(ls) do
+			lsp[#lsp + 1] = value
+		end
 
 		mason.setup({
 			ui = {
@@ -58,7 +62,7 @@ return {
 			log_level = vim.log.levels.info,
 			max_concurrent_installers = 4,
 		})
-		mason_lspconfig.setup({ ensure_installed = ls, automatic_installation = true, automatic_enable = false })
+		mason_lspconfig.setup({ ensure_installed = lsp, automatic_installation = true, automatic_enable = false })
 
 		mason_tool_installer.setup({
 			ensure_installed = tables.merge_array(linter, formater),
