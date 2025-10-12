@@ -43,13 +43,8 @@ main() {
     fi
 
     info "Installing plugins ... "
-    PATH="${CARGO_HOME:-$HOME/.cargo}/bin:$PATH" nvim --headless "+Lazy! sync" +qa
+    PATH="${CARGO_HOME:-$HOME/.cargo}/bin:$PATH" nvim --headless "+InitializeNeovim" +qa
 
-    # info "Installing Treesitter languages."
-    # timeout 600 nvim --headless +"TSUpdateSync" +qa
-    #
-    # info "Installing mason packages"
-    # timeout 600 env PATH="${CARGO_HOME:-$HOME/.cargo}/bin:$PATH" nvim --headless -c "lua dofile('scripts/install/mason-install.lua')" +qa
 
     if [ "$1" = "--nerd-fonts" ]; then
         install_nerd_fonts
