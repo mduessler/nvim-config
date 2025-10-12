@@ -1,11 +1,11 @@
 vim.api.nvim_create_user_command("InitNVIM", function()
 	if #vim.api.nvim_list_uis() == 0 then -- headless
 		local require_safe = require("utils.require_safe")
-		local formaters = require_safe("lua.lsp.formater")
-		local linters = require_safe("lua.lsp.linter")
+		local formaters = require_safe("lsp.formater")
+		local linters = require_safe("lsp.linter")
 		local mti = require_safe("mason-tool-installer")
 		local registry = require_safe("mason-registry")
-		local servers = require_safe("lua.lsp.servers")
+		local servers = require_safe("lsp.servers")
 
 		if not (formaters and linters and mti and registry and servers) then
 			print(formaters)
