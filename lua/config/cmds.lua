@@ -3,12 +3,17 @@ vim.api.nvim_create_user_command("InitNVIM", function()
 		vim.cmd("Lazy! sync")
 		print("Installing Language Servers.")
 		local require_safe = require("utils.require_safe")
-		local servers = require_safe("lua.lsp.servers")
+		local formaters = require_safe("lsp.formater")
+		local linters = require_safe("lsp.linter")
+		local mti = require_safe("mason-tool-installer")
 		local registry = require_safe("mason-registry")
-		if not (servers and registry) then
+		local servers = require_safe("lua.lsp.servers")
+
+		if not (formaters and linters and mti and registry and servers) then
 			return
 		end
-		for package, _ in pairs(servers) do
+
+		local function install_packages(package)
 			if not registry.has_package(package) then
 				print("Don't know package " .. package)
 			else
@@ -27,8 +32,21 @@ vim.api.nvim_create_user_command("InitNVIM", function()
 			print("Installed Language server: " .. package)
 		end
 
-		print("Installing Mason tools.")
-		vim.cmd("MasonToolsInstallSync")
+		for package, _ in pairs(servers) do
+			install_packages(package)
+		end
+
+		print("Installing Formater")
+		for _, formater in pairs(formaters) do
+			local package = mti.map_name(formater)
+			install_packages(package)
+		end
+
+		print("Installing Linter")
+		for _, linter in pairs(linters) do
+			local package = mti.map_name(linter)
+			install_packages(package)
+		end
 
 		print("Installing Treesitter languages.")
 		vim.cmd("TSUpdateSync")
