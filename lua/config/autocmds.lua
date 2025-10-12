@@ -27,7 +27,11 @@ vim.api.nvim_create_autocmd("User", {
 				end
 				print("Installed Language server: " .. package)
 			end
+
+			print("Installing Mason tools.")
 			vim.cmd("MasonToolsInstallSync")
+
+			print("Installing Treesitter languages.")
 			vim.cmd("TSUpdateSync")
 		end
 	end,
