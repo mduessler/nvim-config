@@ -7,9 +7,9 @@ developed with NVIM v0.11.4.
 
 1. Development and implementation of a NVIM configuration to provide an
    integrated development environment (IDE) for software projects.
-1. Developing my own UI for NVIM, implemented in Lua, to extend the
+2. Developing my own UI for NVIM, implemented in Lua, to extend the
    IDE functionality and improve the user experience.
-1. Keep a clean, structured and simple NVIM config, which can be easily
+3. Keep a clean, structured and simple NVIM config, which can be easily
    maintained.
 
 ## Dependencies
