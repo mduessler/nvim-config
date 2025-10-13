@@ -208,8 +208,8 @@ local function render_components(max_components)
 		return add_padding(1, remaining, right, visible)
 	end
 
-	local function add_close(buf, remaining, right, visible)
-		local new, free = LOKAL.components[buf.nr].close.shorten(buf, remaining, right, visible)
+	local function add_close(component, buf, remaining, right, visible)
+		local new, free = component.close.shorten(buf, remaining, right, visible)
 		if free == remaining and new == visible then
 			return add_padding(remaining, remaining, right, visible)
 		end
@@ -239,7 +239,7 @@ local function render_components(max_components)
 
 		visible, remaining = add_name(component, buf, remaining, true, visible)
 		visible, remaining = add_modified(component, buf, remaining, true, visible)
-		visible, remaining = add_close(buf, remaining, true, visible)
+		visible, remaining = add_close(component, buf, remaining, true, visible)
 
 		visible, remaining = add_padding(remaining, remaining, true, visible)
 		visible = visible .. LOKAL.inactive.seperator.right
@@ -268,7 +268,7 @@ local function render_components(max_components)
 
 		visible, remaining = add_padding(1, remaining, false, visible)
 
-		visible, remaining = add_close(buf, remaining, false, visible)
+		visible, remaining = add_close(component, buf, remaining, false, visible)
 		visible, remaining = add_modified(component, buf, remaining, false, visible)
 		visible, remaining = add_name(component, buf, remaining, false, visible)
 
