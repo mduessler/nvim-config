@@ -341,6 +341,9 @@ end
 M.render = function()
 	if vim.o.columns ~= LOKAL.length.cols then
 		define_sizes()
+		for _, buf in pairs(buffers.items) do
+			M.create_component(buf)
+		end
 	end
 	local active = get_active_buffer_index()
 	if buffers.items[active] == nil then
