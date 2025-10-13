@@ -1,23 +1,36 @@
 local require_safe = require("utils.require_safe")
 
+local battery = require_safe("core.ui.utils.battery.handler")
 local mode = require_safe("core.ui.utils.mode")
 local signs = require_safe("config.signs")
 local str = require_safe("utils.str")
 
-if not (mode and signs and str) then
+if not (battery and mode and signs and str) then
 	return
 end
 
 local LOCAL = {
 	hl = {
-		normal = "StatuslineModenormal",
-		insert = "StatuslineModeinsert",
-		visual = "StatuslineModevisual",
-		select = "StatuslineModeselect",
-		cmd = "StatuslineModecmd",
-		replace = "StatuslineModereplace",
-		terminal = "StatuslineModeterminal",
-		prompt = "StatuslineModeprompt",
+		battery = {
+			normal = "StatuslineModenormal",
+			insert = "StatuslineModeinsert",
+			visual = "StatuslineModevisual",
+			select = "StatuslineModeselect",
+			cmd = "StatuslineModecmd",
+			replace = "StatuslineModereplace",
+			terminal = "StatuslineModeterminal",
+			prompt = "StatuslineModeprompt",
+		},
+		datetime = {
+			normal = "StatuslineOsNoBatterynormal",
+			insert = "StatuslineOsNoBatteryinsert",
+			visual = "StatuslineOsNoBatteryvisual",
+			select = "StatuslineOsNoBatteryselect",
+			cmd = "StatuslineOsNoBatterycmd",
+			replace = "StatuslineOsNoBatteryreplace",
+			terminal = "StatuslineOsNoBatteryterminal",
+			prompt = "StatuslineOsNoBatteryprompt",
+		},
 	},
 	signs = {
 		seperator = signs.ui.seperator.right.upper,
@@ -68,9 +81,11 @@ end
 M.get = function()
 	local key = get_os()
 	local current_mode = mode.get()
+	local hl = battery.get_capacity_median() ~= nil and LOCAL.hl.battery[current_mode:lower() or "normal"]
+		or LOCAL.hl.datetime[current_mode:lower() or "normal"]
 	return {
 		length = LOCAL.length[key],
-		component = str.highlight(LOCAL.hl[current_mode:lower() or "normal"], LOCAL.content[key]),
+		component = str.highlight(hl, LOCAL.content[key]),
 	}
 end
 

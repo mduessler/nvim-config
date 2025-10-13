@@ -101,6 +101,16 @@ local function statuslineHL()
 		)
 	end
 
+	local function os_hl()
+		for key in pairs(colors.ui.statusline.mode.bg) do
+			set(
+				0,
+				"StatuslineOsNoBattery" .. key,
+				{ bg = colors.ui.statusline.mode.bg[key], fg = colors.ui.statusline.datetime.bg, bold = true }
+			)
+		end
+	end
+
 	local statusline_hl = vim.api.nvim_get_hl(0, { name = "StatusLine" })
 	set(0, "StatuslineInvisible", { bg = statusline_hl.bg, fg = statusline_hl.bg })
 
@@ -112,6 +122,7 @@ local function statuslineHL()
 	encoding_hl()
 	mode_hl()
 	position_hl()
+	os_hl()
 	root_hl()
 end
 
