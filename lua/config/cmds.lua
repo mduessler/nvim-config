@@ -1,6 +1,6 @@
 vim.api.nvim_create_user_command("InitNVIM", function()
 	if #vim.api.nvim_list_uis() == 0 then -- headless
-		vim.cmd("+Lazy! sync")
+		vim.cmd("Lazy! sync")
 		vim.wait(5000)
 
 		local require_safe = require("utils.require_safe")
