@@ -42,6 +42,12 @@ M.get = function()
 	end
 
 	local level = battery.get_capacity_median()
+	if level == nil then
+		return {
+			length = 0,
+			component = "",
+		}
+	end
 	local state = battery.get_state() or ""
 	state = state:lower()
 	local _battery = LOCAL[math.floor(level / 10) * 10]

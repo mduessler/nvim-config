@@ -1,0 +1,40 @@
+#!/bin/sh
+
+[ -z "$SCRIPT_DIR" ] && SCRIPT_DIR="$(pwd)/../scripts"
+
+. "${SCRIPT_DIR}/log"
+
+TMPFILE=$(mktemp)
+CLONE_PID=""
+
+clone_repo() {
+    debug "Cloning repo to '${NERDPATH}'"
+    git clone --progress https://github.com/ryanoasis/nerd-fonts "${NERDPATH}" > "$TMPFILE" 2>&1 & CLONE_PID=$!
+    info "Cloned repo"
+}
+
+init() {
+    NERDPATH="${XDG_DATA_HOME:-$HOME/.local/share}/src/nerd-fonts"
+    [ -d "${NERDPATH}" ] || mkdir -p "${NERDPATH}"
+}
+
+init_clone_process() {
+    init
+    clone_repo
+}
+
+wait_for_clone() {
+    info "Waiting for clone process to finish"
+    tail -f "${TMPFILE}"
+    wait "${CLONE_PID}"
+}
+
+install_nerd_fonts() {
+    wait_for_clone
+
+    cd "${NERDPATH}" || return 1
+    chmod +x install.sh
+    ./install.sh || return 1
+    success "Installed nerd-fonts."
+    return 0
+}

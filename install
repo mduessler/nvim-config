@@ -2,126 +2,57 @@
 
 set -e
 
-log() {
-    LEVEL="$1"
-    shift
-    MSG="$*"
-    TIME=$(date +"%H:%M:%S")
-    case "$LEVEL" in
-        DEBUG) COLOR="\033[37m" ;;
-        INFO) COLOR="\033[34m" ;;
-        SUCCESS) COLOR="\033[32m" ;;
-        WARNING) COLOR="\033[33m" ;;
-        ERROR) COLOR="\033[31m" ;;
-        *) COLOR="\033[0m" ;;
-    esac
-    printf "%b[%s]%b %-7s| %b%s%b\n" "\033[36m" "${TIME}" "${COLOR}" "${LEVEL}" "\033[37m" "${MSG}" "\033[0m"
-}
-debug() {
-    log "DEBUG" "$*"
-}
-info() {
-    log "INFO" "$*"
-}
-success() {
-    log "SUCCESS" "$*"
-}
-warning() {
-    log "WARNING" "$*"
-}
-error() {
-    log "ERROR" "$*"
-}
+MAJOR_REQ=0
+MINOR_REQ=11
+PATCH_REQ=4
 
-install_system_packages() {
-    info "Identifing package manger."
-    if command -v apt-get >/dev/null 2>&1; then
-        PKGS="neovim git gcc clang python3 python3-pip golang nodejs openjdk-21-jdk ninja-build libstdc++-dev luarocks maven g++ pkg-config libssl-dev pre-commit liblua5.4-dev"
-        sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get install -y ${PKGS}
-    elif command -v dnf >/dev/null 2>&1; then
-        PKGS="neovim git gcc clang python python-pip golang nodejs java-latest-openjdk-devel ninja-build libstdc++-static luarocks maven gcc-c++ pkg-config openssl-devel pre-commit lua-devel"
-        sudo dnf update -y && sudo dnf install -y ${PKGS}
+SCRIPT_DIR="$(pwd)/scripts"
 
-    else
-        warning "No valid package manager found."
-        return 1
-    fi
-    success "Using '${PKG_MANAGER}' as package manager."
-    return 0
-}
-
-install_lpeglabel() {
-    if ! command -v lua >/dev/null 2>&1; then
-        error "Lua not installed"
-        return 1
-    fi
-    info "Installing 'lpeglabel"
-    luarocks install lpeglabel --local
-    success "Installed 'lpeglabel'"
-}
-
-install_selene() {
-    info "Installing selene ..."
-    if ! command -v rustc >/dev/null 2>&1; then
-        warning "RUST not installed"
-        debug "Installing RUST."
-        if [ -z "$CARGO_HOME" ]; then
-            export CARGO_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/cargo"
-        fi
-        if [ -z "$RUSTUP_HOME" ]; then
-            export RUSTUP_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/rustup"
-        fi
-
-        debug "CARGO will be installed in ${CARGO_HOME}"
-        debug "Rust will be installed in ${RUSTUP_HOME}"
-
-        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-        info "Installed rust"
-
-        if ! echo ":$PATH:" | grep -q ":$CARGO_HOME/bin:"; then
-            export PATH="$CARGO_HOME/bin:$PATH"
-        fi
-    fi
-    cargo install selene
-    success "Installed selene"
-}
-
-install_nerd_fonts() {
-    if [ "$1" = "--nerd-fonts" ]; then
-        NERDPATH="${HOME}/.local/src"
-        info "Installing nerd-fonts to '${NERDPATH}'"
-
-        git clone https://github.com/ryanoasis/nerd-fonts "${NERDPATH}" || return 1
-        cd "${NERDPATH}"
-        chmod +x install.sh
-        ./install.sh || exit 1
-        success "Installed nerd-fonts."
-        return 0
-    fi
-    info "Skipping nerd-fonts installation."
-    info "Please install nerd-fonts (https://github.com/ryanoasis/nerd-fonts)."
-    return 0
-}
+. "${SCRIPT_DIR}/log"
+. "${SCRIPT_DIR}/install/system-dependencies"
+. "${SCRIPT_DIR}/install/selene"
+. "${SCRIPT_DIR}/install/lpeglabel"
+. "${SCRIPT_DIR}/install/nerd-fonts"
+. "${SCRIPT_DIR}/install/nvim"
 
 main() {
+    if [ "$1" = "--nerd-fonts" ]; then
+        init_clone_process
+        info "Cloning nerd-fonts in background."
+    else
+        info "Skipping nerd-fonts installation."
+        info "Please install nerd-fonts 'https://github.com/ryanoasis/nerd-fonts'."
+    fi
 
-    if ! install_system_packages; then
-        error "Stopping installation. Can't install system packages."
+    if ! install_system_dependencies; then
+        error "Stopping installation. Can't install system dependencies."
+        exit 1
+    fi
+    if ! check_nvim_version; then
+        error "Neovim version v0.11.4 or higher is required.\n
+        Please install it before you can continue with the installation."
         exit 1
     fi
 
-    info "Installing neovim dependencies."
-    install_selene
-
-    info "Installing lazy..."
-    nvim --headless +qa
-
-    info "Installing plugins ... "
-    nvim --headless "+Lazy! sync" +qa
-
-    if ! install_nerd_fonts "$1"; then
-        warning "Could not install nerd-fonts. Continue..."
+    if ! install_selene; then
+        warning "Can not install selene. Continue ..."
     fi
+
+    if ! install_lpeglabel; then
+        warning "Can not install lpeglabel. Continue ..."
+    fi
+
+    info "Installing language-servers, formaters and linters ... "
+    PATH="${CARGO_HOME:-$HOME/.cargo}/bin:$PATH" nvim --headless "+InitNVIM"
+    echo "\n"
+
+    if [ "$1" = "--nerd-fonts" ]; then
+        install_nerd_fonts
+    fi
+
+    info "You need to set a '${CARGO_HOME}/bin' in your path permanently to enable mason future updates."
+    success "Setup nvim successfully. Enjoy it :)"
+    return 0
 }
 
 main "$@"

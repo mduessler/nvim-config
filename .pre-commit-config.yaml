@@ -33,3 +33,4 @@ repos:
     rev: 0.7.17
     hooks:
       - id: mdformat
+        args: [ "--number" ]

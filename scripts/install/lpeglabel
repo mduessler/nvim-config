@@ -1,0 +1,30 @@
+#!/bin/sh
+
+[ -z "$SCRIPT_DIR" ] && SCRIPT_DIR="$(pwd)/../scripts"
+
+. "${SCRIPT_DIR}/log"
+. "${SCRIPT_DIR}/install/system-dependencies"
+
+install_lua() {
+    info "Trying to install lua."
+    identify_system_pkg_mgr
+    if [ "$MGR" = "apt-get" ]; then
+        install_pck "lua5.4" || return 1
+    elif [ "$MGR" = "dnf" ]; then
+        install_pck "lua" || return 1
+    fi
+    info "Installed lua."
+    return 0
+
+}
+
+install_lpeglabel() {
+    if ! command -v lua >/dev/null 2>&1; then
+        warning "Lua not installed"
+        install_lua || return 1
+    fi
+    info "Installing 'lpeglabel"
+    luarocks install lpeglabel --local || return 1
+    success "Installed 'lpeglabel'"
+    return 0
+}

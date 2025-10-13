@@ -6,6 +6,8 @@ return {
 	},
 	config = function()
 		local require_safe = require("utils.require_safe")
+		local formater = require_safe("lsp.formater")
+		local linter = require_safe("lsp.linter")
 		local ls = require_safe("lsp.servers")
 		local mason = require_safe("mason")
 		local mason_lspconfig = require_safe("mason-lspconfig")
@@ -13,42 +15,24 @@ return {
 		local signs = require_safe("config.signs")
 		local tables = require_safe("utils.tables")
 
-		if not (ls and mason and mason_lspconfig and mason_tool_installer and signs and tables) then
+		if
+			not (formater and linter and ls and mason and mason_lspconfig and mason_tool_installer and signs and tables)
+		then
 			return
 		end
 
-		local linter = {
-			"shellcheck", -- Bash
-			"markdownlint-cli2", -- Markdown ls
-			"selene", -- Lua ls
-			"eslint_d", -- JS, TS
-			"jsonlint", -- JSON
-			"stylelint", -- CSS, HTML
-			"hadolint", -- Docker
-			"djlint", -- Djlint
-			"flake8", -- Python
-			"mypy", -- Python
-			"htmlhint", --Html
-			"cpplint", -- C, c++ ...,
-			-- "cmakelang", -- Cmake
-			"cmakelint",
-			"yamllint", -- Yaml
-		}
-		local formater = {
-			"shfmt", -- Bash
-			"mdformat", -- Markdown ls
-			"stylua", -- Lua ls
-			"prettier", -- JavaScript, TypeScript, JSON, CSS
-			"black", -- Python
-			"isort", -- Python
-			"djlint", -- Djlint
-			"docformatter", -- Python
-			"clang-format", -- C, c++ ...,
-			"cmakelang", -- Cmake
-			"yamlfmt", -- Yaml
-			"beautysh", -- zsh
-			-- "eslint",
-		}
+		local linter_formater = {}
+		for _, value in pairs(formater) do
+			linter_formater[#linter_formater + 1] = value
+		end
+		for _, value in pairs(linter) do
+			linter_formater[#linter_formater + 1] = value
+		end
+
+		local lsp = {}
+		for _, value in pairs(ls) do
+			lsp[#lsp + 1] = value
+		end
 
 		mason.setup({
 			ui = {
@@ -58,10 +42,10 @@ return {
 			log_level = vim.log.levels.info,
 			max_concurrent_installers = 4,
 		})
-		mason_lspconfig.setup({ ensure_installed = ls, automatic_installation = true, automatic_enable = false })
+		mason_lspconfig.setup({ ensure_installed = lsp, automatic_installation = true, automatic_enable = false })
 
 		mason_tool_installer.setup({
-			ensure_installed = tables.merge_array(linter, formater),
+			ensure_installed = linter_formater,
 			automatic_installation = true,
 		})
 	end,
