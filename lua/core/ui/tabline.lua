@@ -197,11 +197,11 @@ local function render_components(max_components)
 		return add_padding(1, remaining, right, visible)
 	end
 
-	local function add_modified(buf, remaining, right, visible)
-		if remaining >= LOKAL.components[buf.nr].modified.length then
-			local mod = LOKAL.components[buf.nr].modified.representation(buf, false)
+	local function add_modified(component, buf, remaining, right, visible)
+		if remaining >= component.modified.length then
+			local mod = component.modified.representation(buf, false)
 			visible = right and visible .. mod or mod .. visible
-			remaining = remaining - LOKAL.components[buf.nr].modified.length
+			remaining = remaining - component.modified.length
 		else
 			visible, remaining = add_padding(remaining, remaining, right, visible)
 		end
@@ -238,7 +238,7 @@ local function render_components(max_components)
 		visible, remaining = add_padding(1, remaining, true, visible)
 
 		visible, remaining = add_name(component, buf, remaining, true, visible)
-		visible, remaining = add_modified(buf, remaining, true, visible)
+		visible, remaining = add_modified(component, buf, remaining, true, visible)
 		visible, remaining = add_close(buf, remaining, true, visible)
 
 		visible, remaining = add_padding(remaining, remaining, true, visible)
@@ -269,7 +269,7 @@ local function render_components(max_components)
 		visible, remaining = add_padding(1, remaining, false, visible)
 
 		visible, remaining = add_close(buf, remaining, false, visible)
-		visible, remaining = add_modified(buf, remaining, false, visible)
+		visible, remaining = add_modified(component, buf, remaining, false, visible)
 		visible, remaining = add_name(component, buf, remaining, false, visible)
 
 		visible, remaining = add_padding(remaining, remaining, false, visible)
