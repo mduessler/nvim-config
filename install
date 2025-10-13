@@ -42,8 +42,6 @@ main() {
         warning "Can not install lpeglabel. Continue ..."
     fi
 
-    nvim --headless "+Lazy! sync" +qa
-
     info "Installing language-servers, formaters and linters ... "
     PATH="${CARGO_HOME:-$HOME/.cargo}/bin:$PATH" nvim --headless "+InitNVIM"
     print "\n"
