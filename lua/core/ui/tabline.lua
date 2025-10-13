@@ -222,6 +222,7 @@ local function render_components(max_components)
 		local offset = LOKAL.components.offset
 		local left_sep_len = LOKAL.length.seperator.left
 		local right_sep_len = LOKAL.length.seperator.right
+		local component = LOKAL.components[buf.nr]
 
 		if right_sep_len >= offset == right_sep_len + LOKAL.length.seperator.right then
 			table.insert(components, str.highlight("TabLinePadding", string.rep(padding, LOKAL.components.offset)))
@@ -230,6 +231,11 @@ local function render_components(max_components)
 
 		local remaining = offset - left_sep_len - right_sep_len
 		local visible = LOKAL.inactive.seperator.left
+		if component == nil then
+			visible, _ = add_padding(remaining, remaining, true, visible)
+			table.insert(components, visible .. visible .. LOKAL.inactive.seperator.right)
+			return
+		end
 
 		visible, remaining = add_padding(1, remaining, true, visible)
 
