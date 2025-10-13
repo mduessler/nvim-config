@@ -81,7 +81,7 @@ end
 M.get = function()
 	local key = get_os()
 	local current_mode = mode.get()
-	local hl = battery.get_capacity_median() and LOCAL.hl.battery[current_mode:lower() or "normal"]
+	local hl = battery.get_capacity_median() ~= nil and LOCAL.hl.battery[current_mode:lower() or "normal"]
 		or LOCAL.hl.datetime[current_mode:lower() or "normal"]
 	return {
 		length = LOCAL.length[key],
