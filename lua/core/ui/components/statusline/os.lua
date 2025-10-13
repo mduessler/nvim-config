@@ -10,14 +10,26 @@ end
 
 local LOCAL = {
 	hl = {
-		normal = "StatuslineModenormal",
-		insert = "StatuslineModeinsert",
-		visual = "StatuslineModevisual",
-		select = "StatuslineModeselect",
-		cmd = "StatuslineModecmd",
-		replace = "StatuslineModereplace",
-		terminal = "StatuslineModeterminal",
-		prompt = "StatuslineModeprompt",
+		battery = {
+			normal = "StatuslineModenormal",
+			insert = "StatuslineModeinsert",
+			visual = "StatuslineModevisual",
+			select = "StatuslineModeselect",
+			cmd = "StatuslineModecmd",
+			replace = "StatuslineModereplace",
+			terminal = "StatuslineModeterminal",
+			prompt = "StatuslineModeprompt",
+		},
+		datetime = {
+			normal = "StatuslineOsNoBatterynormal",
+			insert = "StatuslineOsNoBatteryinsert",
+			visual = "StatuslineOsNoBatteryvisual",
+			select = "StatuslineOsNoBatteryselect",
+			cmd = "StatuslineOsNoBatterycmd",
+			replace = "StatuslineOsNoBatteryreplace",
+			terminal = "StatuslineOsNoBatteryterminal",
+			prompt = "StatuslineOsNoBatteryprompt",
+		},
 	},
 	signs = {
 		seperator = signs.ui.seperator.right.upper,
@@ -70,7 +82,7 @@ M.get = function()
 	local current_mode = mode.get()
 	return {
 		length = LOCAL.length[key],
-		component = str.highlight(LOCAL.hl[current_mode:lower() or "normal"], LOCAL.content[key]),
+		component = str.highlight(LOCAL.hl.battery[current_mode:lower() or "normal"], LOCAL.content[key]),
 	}
 end
 
