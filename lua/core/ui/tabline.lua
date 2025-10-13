@@ -152,9 +152,7 @@ local function render_components(max_components)
 		return component, remaining
 	end
 
-	local function add_name(buf, remaining, right, visible)
-		local component = LOKAL.components[buf.nr]
-
+	local function add_name(component, buf, remaining, right, visible)
 		local function add_icon()
 			if remaining < buf.file.length.icon then
 				return add_padding(remaining, remaining, right, visible)
@@ -239,7 +237,7 @@ local function render_components(max_components)
 
 		visible, remaining = add_padding(1, remaining, true, visible)
 
-		visible, remaining = add_name(buf, remaining, true, visible)
+		visible, remaining = add_name(component, buf, remaining, true, visible)
 		visible, remaining = add_modified(buf, remaining, true, visible)
 		visible, remaining = add_close(buf, remaining, true, visible)
 
@@ -272,7 +270,7 @@ local function render_components(max_components)
 
 		visible, remaining = add_close(buf, remaining, false, visible)
 		visible, remaining = add_modified(buf, remaining, false, visible)
-		visible, remaining = add_name(buf, remaining, false, visible)
+		visible, remaining = add_name(component, buf, remaining, false, visible)
 
 		visible, remaining = add_padding(remaining, remaining, false, visible)
 
