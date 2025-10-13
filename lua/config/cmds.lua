@@ -3,16 +3,10 @@ vim.api.nvim_create_user_command("InitNVIM", function()
 		local require_safe = require("utils.require_safe")
 		local formaters = require_safe("lsp.formater")
 		local linters = require_safe("lsp.linter")
-		local mti = require_safe("mason-tool-installer")
 		local registry = require_safe("mason-registry")
 		local servers = require_safe("lsp.servers")
 
-		if not (formaters and linters and mti and registry and servers) then
-			print(formaters)
-			print(linters)
-			print(mti)
-			print(registry)
-			print(servers)
+		if not (formaters and linters and registry and servers) then
 			return
 		end
 
@@ -49,6 +43,8 @@ vim.api.nvim_create_user_command("InitNVIM", function()
 		for package, _ in pairs(linters) do
 			install_packages(package)
 		end
+
+		vim.wait(5000)
 
 		print("Installing Treesitter languages.")
 		vim.cmd("TSUpdateSync")
