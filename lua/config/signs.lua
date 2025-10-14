@@ -231,6 +231,13 @@ return {
 		open = "",
 		previous = "󰁍",
 		refresh = "",
+		ssh = {
+			icon = "󰣀",
+			info = "",
+			clean = "󰉥",
+			clean_up = "",
+			logs = "",
+		},
 		status = "",
 		toggle = "󰨚",
 		tree = "󰔱",
