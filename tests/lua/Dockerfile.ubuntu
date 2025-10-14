@@ -14,4 +14,4 @@ WORKDIR $NVIM_HOME
 
 COPY ./ .
 
-ENTRYPOINT ["/home/tester/.config/nvim/entrypoint"]
+ENTRYPOINT ["/home/tester/.config/nvim/tests/entrypoint"]
