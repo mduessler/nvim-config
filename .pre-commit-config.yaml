@@ -33,4 +33,16 @@ repos:
     rev: 0.7.17
     hooks:
       - id: mdformat
-        args: [ "--number" ]
+        args: ["--number"]
+  - repo: https://github.com/hadolint/hadolint
+    rev: v2.14.0
+    hooks:
+      - id: hadolint
+        args: ["Dockerfile.dev", "Dockerfile", "--ignore", "DL3059", "--ignore", "SC2034", "--ignore", "DL3008", "--ignore", "SC2094", "--ignore", "SC1091"]
+        files: |
+          (?x)^(
+            tests/lua/Dockerfile.fedora |
+            tests/lua/Dockerfile.ubuntu |
+            tests/install/Dockerfile.fedora |
+            tests/install/Dockerfile.ubuntu |
+          )
