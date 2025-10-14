@@ -4,14 +4,64 @@ ENV DISPLAY=:99
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # Create TestUser
-RUN mkdir -p /home/tester && groupadd tester
+RUN groupadd tester && useradd -m -g tester tester
 ENV HOME=/home/tester
+ENV NVIM_HOME="${HOME}/.config/nvim"
 
-RUN useradd -m -g tester tester
-ENV NVIM_HOME=$HOME/.config/nvim
+# clone and install nvim from github.
+RUN apt-get update && apt-get install --no-install-recommends -y ninja-build gettext cmake curl build-essential git && rm -rf /var/lib/apt/lists/*
+ENV MAJOR_REQ=0
+ENV MINOR_REQ=11
+ENV PATCH_REQ=4
 
-WORKDIR $NVIM_HOME
+RUN mkdir -p "${HOME}/.local/share/src"
+ENV NVIM_GIT_DIR="${HOME}/.local/share/src/neovim"
 
-COPY ./ .
+RUN git clone https://github.com/neovim/neovim -b "v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ}" "${NVIM_GIT_DIR}" || exit 1
+WORKDIR "${NVIM_GIT_DIR}"
+RUN make CMAKE_BUILD_TYPE=Release && make install
+
+WORKDIR "${HOME}"
+# Installing dependencies for nvim plugins.
+# Install dependencies via packet manager
+RUN apt-get update && apt-get install --no-install-recommends -y \
+    clang \
+    golang \
+    libssl-dev \
+    libstdc++-14-dev \
+    lua5.4 \
+    luarocks \
+    maven \
+    neovim \
+    ninja-build \
+    nodejs \
+    npm \
+    openjdk-21-jdk \
+    pkg-config \
+    pre-commit \
+    python3 \
+    python3-pip \
+    python3-venv \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install rust.
+ENV CARGO_HOME="${HOME}/.cargo"
+ENV RUSTUP="${HOME}/.rustup"
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y || exit 1
+ENV PATH="${CARGO_HOME}/bin:${PATH}"
+
+# Install selene & lpeglabel
+RUN cargo install selene && luarocks install lpeglabel || exit 1
+
+WORKDIR "${NVIM_HOME}"
+
+COPY . ./
+
+RUN chown -R tester:tester "${HOME}"
+USER tester
+
+RUN nvim --headless "+InitNVIM"
+
+RUN cargo --version
 
 ENTRYPOINT ["/home/tester/.config/nvim/tests/entrypoint"]
