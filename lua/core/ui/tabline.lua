@@ -152,9 +152,7 @@ local function render_components(max_components)
 		return component, remaining
 	end
 
-	local function add_name(buf, remaining, right, visible)
-		local component = LOKAL.components[buf.nr]
-
+	local function add_name(component, buf, remaining, right, visible)
 		local function add_icon()
 			if remaining < buf.file.length.icon then
 				return add_padding(remaining, remaining, right, visible)
@@ -199,19 +197,19 @@ local function render_components(max_components)
 		return add_padding(1, remaining, right, visible)
 	end
 
-	local function add_modified(buf, remaining, right, visible)
-		if remaining >= LOKAL.components[buf.nr].modified.length then
-			local mod = LOKAL.components[buf.nr].modified.representation(buf, false)
+	local function add_modified(component, buf, remaining, right, visible)
+		if remaining >= component.modified.length then
+			local mod = component.modified.representation(buf, false)
 			visible = right and visible .. mod or mod .. visible
-			remaining = remaining - LOKAL.components[buf.nr].modified.length
+			remaining = remaining - component.modified.length
 		else
 			visible, remaining = add_padding(remaining, remaining, right, visible)
 		end
 		return add_padding(1, remaining, right, visible)
 	end
 
-	local function add_close(buf, remaining, right, visible)
-		local new, free = LOKAL.components[buf.nr].close.shorten(buf, remaining, right, visible)
+	local function add_close(component, buf, remaining, right, visible)
+		local new, free = component.close.shorten(buf, remaining, right, visible)
 		if free == remaining and new == visible then
 			return add_padding(remaining, remaining, right, visible)
 		end
@@ -222,6 +220,7 @@ local function render_components(max_components)
 		local offset = LOKAL.components.offset
 		local left_sep_len = LOKAL.length.seperator.left
 		local right_sep_len = LOKAL.length.seperator.right
+		local component = LOKAL.components[buf.nr]
 
 		if right_sep_len >= offset == right_sep_len + LOKAL.length.seperator.right then
 			table.insert(components, str.highlight("TabLinePadding", string.rep(padding, LOKAL.components.offset)))
@@ -230,12 +229,17 @@ local function render_components(max_components)
 
 		local remaining = offset - left_sep_len - right_sep_len
 		local visible = LOKAL.inactive.seperator.left
+		if component == nil then
+			visible, _ = add_padding(remaining, remaining, true, visible)
+			table.insert(components, visible .. visible .. LOKAL.inactive.seperator.right)
+			return
+		end
 
 		visible, remaining = add_padding(1, remaining, true, visible)
 
-		visible, remaining = add_name(buf, remaining, true, visible)
-		visible, remaining = add_modified(buf, remaining, true, visible)
-		visible, remaining = add_close(buf, remaining, true, visible)
+		visible, remaining = add_name(component, buf, remaining, true, visible)
+		visible, remaining = add_modified(component, buf, remaining, true, visible)
+		visible, remaining = add_close(component, buf, remaining, true, visible)
 
 		visible, remaining = add_padding(remaining, remaining, true, visible)
 		visible = visible .. LOKAL.inactive.seperator.right
@@ -247,6 +251,7 @@ local function render_components(max_components)
 		local offset = LOKAL.components.offset
 		local left_sep_len = LOKAL.length.seperator.left
 		local right_sep_len = LOKAL.length.seperator.right
+		local component = LOKAL.components[buf.nr]
 
 		if offset <= left_sep_len or offset == left_sep_len + right_sep_len then
 			table.insert(components, str.highlight("TabLinePadding", string.rep(padding, offset)))
@@ -255,12 +260,17 @@ local function render_components(max_components)
 
 		local remaining = offset - left_sep_len - right_sep_len
 		local visible = LOKAL.inactive.seperator.right
+		if component == nil then
+			visible, _ = add_padding(remaining, remaining, false, visible)
+			table.insert(components, visible .. visible .. LOKAL.inactive.seperator.right)
+			return
+		end
 
 		visible, remaining = add_padding(1, remaining, false, visible)
 
-		visible, remaining = add_close(buf, remaining, false, visible)
-		visible, remaining = add_modified(buf, remaining, false, visible)
-		visible, remaining = add_name(buf, remaining, false, visible)
+		visible, remaining = add_close(component, buf, remaining, false, visible)
+		visible, remaining = add_modified(component, buf, remaining, false, visible)
+		visible, remaining = add_name(component, buf, remaining, false, visible)
 
 		visible, remaining = add_padding(remaining, remaining, false, visible)
 
@@ -331,6 +341,9 @@ end
 M.render = function()
 	if vim.o.columns ~= LOKAL.length.cols then
 		define_sizes()
+		for _, buf in pairs(buffers.items) do
+			M.create_component(buf)
+		end
 	end
 	local active = get_active_buffer_index()
 	if buffers.items[active] == nil then
@@ -346,8 +359,6 @@ end
 
 M.setup = function(size)
 	LOKAL.size = size or LOKAL.size
-	-- Default should be 25.
-	-- Test close left: 23, right: 71
 	define_sizes()
 
 	vim.o.showtabline = 2
