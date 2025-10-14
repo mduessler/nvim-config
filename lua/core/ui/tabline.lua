@@ -359,8 +359,6 @@ end
 
 M.setup = function(size)
 	LOKAL.size = size or LOKAL.size
-	-- Default should be 25.
-	-- Test close left: 23, right: 71
 	define_sizes()
 
 	vim.o.showtabline = 2
