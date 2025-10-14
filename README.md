@@ -41,6 +41,11 @@ installation should also work on distributions with the same package manager.
 1. To allow *mason-tools-installer* to update and install new tools, ensure that
    `$CARGO_HOME/bin` is in your `PATH`.
 
+## Configuration
+
+1. **Remote-Nvim** -- The path can be set using the variable `$SSH_CONFIG`.
+   Otherwise, `$HOME/.ssh/config` is used.
+
 ## Development
 
 Information about the development process is stored under [docs/development.md](docs/development.md)
