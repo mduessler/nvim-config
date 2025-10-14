@@ -51,7 +51,7 @@ M.get = function()
 	for _, key in ipairs(keys) do
 		local dia = table.concat({ LOCAL.signs[key], diagnostics[key] }, LOCAL.signs.padding)
 		components[#components + 1] = str.highlight(LOCAL.hl[key], dia)
-		length = vim.fn.strdisplaywidth(dia)
+		length = length + vim.fn.strdisplaywidth(dia)
 	end
 	components[#components + 1] = LOCAL.signs.padding
 	length = length + LOCAL.length.padding
