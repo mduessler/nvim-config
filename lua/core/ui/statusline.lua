@@ -91,7 +91,9 @@ M.render = function()
 
 		return table.concat(components)
 	end
-	return render_left_components() .. "%=" .. render_right_components()
+	local left = render_left_components()
+	local right = render_right_components()
+	return left .. "%=" .. right
 end
 
 M.setup = function()

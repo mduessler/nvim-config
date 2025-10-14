@@ -30,7 +30,10 @@ M.get = function(buf)
 	end
 	local content = table.concat({ "", buf.encoding.representation, "" }, LOCAL.signs.padding)
 	local length = vim.fn.strdisplaywidth(content)
-	return { length = length, component = LOCAL.hl.separator .. str.highlight("StatuslineEncoding", content) }
+	return {
+		length = length + LOCAL.length.separator,
+		component = LOCAL.hl.separator .. str.highlight("StatuslineEncoding", content),
+	}
 end
 
 return M
