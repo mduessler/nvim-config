@@ -293,6 +293,33 @@ local function ai_keys()
 	}
 end
 
+local function ssh_keys()
+	return {
+		{ "<leader>s", mode = "n", desc = "SSH", icon = { icon = signs.whichkey.ssh.icon, hl = "MyPurple" } },
+		{ "<leader>sg", mode = "n", desc = "Start ssh", icon = LOCAL.open },
+		{ "<leader>sq", mode = "n", desc = "Quit ssh", icon = LOCAL.quit },
+		{ "<leader>si", mode = "n", desc = "Ssh info", icon = { icon = signs.whichkey.ssh.info, hl = "MyCyan" } },
+		{
+			"<leader>sc",
+			mode = "n",
+			desc = "Cleanup workspace and config of remote nvim",
+			icon = { icon = signs.whichkey.ssh.clean_up, hl = "MyPink" },
+		},
+		{
+			"<leader>sd",
+			mode = "n",
+			desc = "Delete record or remote instance",
+			icon = { icon = signs.whichkey.ssh.clean, hl = "MyOrange" },
+		},
+		{
+			"<leader>sl",
+			mode = "n",
+			desc = "Open ssh logs.",
+			icon = { icon = signs.whichkey.ssh.log, hl = "MyYellow" },
+		},
+	}
+end
+
 return {
 	"folke/which-key.nvim",
 	dependencies = {
@@ -330,6 +357,7 @@ return {
 		config = merge(config, lsp_keys())
 		config = merge(config, generel_devel())
 		config = merge(config, ai_keys())
+		config = merge(config, ssh_keys())
 		wk.add(config)
 	end,
 }
