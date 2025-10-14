@@ -50,6 +50,9 @@ ENV RUSTUP="${HOME}/.rustup"
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y || exit 1
 ENV PATH="${CARGO_HOME}/bin:${PATH}"
 
+# Install selene & lpeglabel
+RUN cargo install selene && luarocks install lpeglabel || exit 1
+
 COPY ./ .
 
 ENTRYPOINT ["/home/tester/.config/nvim/tests/entrypoint"]
