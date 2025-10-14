@@ -17,13 +17,13 @@ local LOCAL = {
 	},
 	signs = {
 		icon = signs.system.directory.default,
-		seperator = signs.ui.seperator.right.triangle,
+		separator = signs.ui.separator.right.triangle,
 		padding = signs.ui.padding,
 	},
 }
 
 LOCAL.length = {
-	seperator = vim.fn.strdisplaywidth(LOCAL.signs.seperator),
+	separator = vim.fn.strdisplaywidth(LOCAL.signs.separator),
 }
 
 local M = {}
@@ -54,8 +54,8 @@ M.get = function(buf)
 	local length = vim.fn.strdisplaywidth(content)
 
 	return {
-		length = length + LOCAL.length.seperator,
-		component = str.highlight("StatuslineDirname", content .. str.highlight(get_hl_group(), LOCAL.signs.seperator)),
+		length = length + LOCAL.length.separator,
+		component = str.highlight("StatuslineDirname", content .. str.highlight(get_hl_group(), LOCAL.signs.separator)),
 	}
 end
 

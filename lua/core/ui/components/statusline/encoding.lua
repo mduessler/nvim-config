@@ -9,17 +9,17 @@ end
 
 local LOCAL = {
 	signs = {
-		seperator = signs.ui.seperator.right.soft_divider,
+		separator = signs.ui.separator.right.soft_divider,
 		padding = signs.ui.padding,
 	},
 }
 
 LOCAL.length = {
-	seperator = vim.fn.strdisplaywidth(LOCAL.seperator),
+	separator = vim.fn.strdisplaywidth(LOCAL.separator),
 }
 
 LOCAL.hl = {
-	seperator = str.highlight("StatuslineEncodingSeperator", LOCAL.signs.seperator),
+	separator = str.highlight("StatuslineEncodingSeperator", LOCAL.signs.separator),
 }
 
 local M = {}
@@ -30,7 +30,7 @@ M.get = function(buf)
 	end
 	local content = table.concat({ "", buf.encoding.representation, "" }, LOCAL.signs.padding)
 	local length = vim.fn.strdisplaywidth(content)
-	return { length = length, component = LOCAL.hl.seperator .. str.highlight("StatuslineEncoding", content) }
+	return { length = length, component = LOCAL.hl.separator .. str.highlight("StatuslineEncoding", content) }
 end
 
 return M

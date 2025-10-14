@@ -13,9 +13,9 @@ local more_left = signs.ui.tabline.boundaries.more.left
 local more_right = signs.ui.tabline.boundaries.more.right
 local modified = signs.ui.modified.isModified
 local padding = signs.ui.padding
-local seperator_close = signs.ui.tabline.close.seperator
-local seperator_left = signs.ui.seperator.left.line
-local seperator_right = signs.ui.seperator.right.line
+local separator_close = signs.ui.tabline.close.separator
+local separator_left = signs.ui.separator.left.line
+local separator_right = signs.ui.separator.right.line
 
 local parts = {
 	close = str.highlight("TabLineCloseInactive", close),
@@ -27,10 +27,10 @@ local parts = {
 			right = vim.fn.strdisplaywidth(more_right),
 		},
 		padding = vim.fn.strdisplaywidth(padding),
-		seperator = {
-			left = vim.fn.strdisplaywidth(seperator_left),
-			right = vim.fn.strdisplaywidth(seperator_right),
-			close = vim.fn.strdisplaywidth(seperator_close),
+		separator = {
+			left = vim.fn.strdisplaywidth(separator_left),
+			right = vim.fn.strdisplaywidth(separator_right),
+			close = vim.fn.strdisplaywidth(separator_close),
 		},
 	},
 	modified = { sign = str.highlight("TabLineModifiedInActiveIsModified", modified) },
@@ -39,25 +39,25 @@ local parts = {
 		right = { sign = str.highlight("TabLineBoundaryMore", more_right) },
 	},
 	padding = str.highlight("TabLinePaddingInactive", padding),
-	seperator = {
-		close = str.highlight("TabLineCloseSepInactive", seperator_close),
-		left = str.highlight("TabLineBoundarySeparator", seperator_left),
-		right = str.highlight("TabLineBoundarySeparator", seperator_right),
+	separator = {
+		close = str.highlight("TabLineCloseSepInactive", separator_close),
+		left = str.highlight("TabLineBoundarySeparator", separator_left),
+		right = str.highlight("TabLineBoundarySeparator", separator_right),
 	},
 }
 
 parts.length.full = {
 	left = 5 * parts.length.padding
 		+ parts.length.close
-		+ parts.length.seperator.close
+		+ parts.length.separator.close
 		+ parts.length.more.left
 		+ parts.length.modified
-		+ parts.length.seperator.left,
+		+ parts.length.separator.left,
 	right = 5 * parts.length.padding
-		+ parts.length.seperator.right
+		+ parts.length.separator.right
 		+ parts.length.modified
 		+ parts.length.more.right
-		+ parts.length.seperator.close
+		+ parts.length.separator.close
 		+ parts.length.close,
 }
 
@@ -91,19 +91,19 @@ M.get = function()
 		return table.concat({
 			"",
 			parts.close,
-			parts.seperator.close,
+			parts.separator.close,
 			padding_or_more(true, boundary),
 			"",
 			get_modified(1, boundary - 1),
-		}, parts.padding) .. parts.seperator.right
+		}, parts.padding) .. parts.separator.right
 	end
 	local function right(boundary)
-		return parts.seperator.left
+		return parts.separator.left
 			.. table.concat({
 				get_modified(boundary + 1, #buffers.items),
 				"",
 				padding_or_more(false, boundary),
-				parts.seperator.close,
+				parts.separator.close,
 				parts.close,
 				"",
 			}, parts.padding)

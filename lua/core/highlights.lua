@@ -165,13 +165,13 @@ local function tablineHL()
 		set(0, "TabLineNameActive", { bg = colors.tabline.bg.active, fg = colors.tabline.fg.active })
 	end
 
-	local function seperator_hl()
+	local function separator_hl()
 		set(0, "TabLineSepActive", { fg = colors.tabline.bg.default, bg = colors.tabline.bg.active, bold = true })
 		set(0, "TabLineSepInactive", { fg = colors.tabline.bg.default, bg = colors.tabline.bg.inactive, bold = true })
 	end
 
 	padding_hl()
-	seperator_hl()
+	separator_hl()
 	name_hl()
 	boundary_hl()
 	modifed_hl()

@@ -10,29 +10,29 @@ end
 local M = {}
 
 local padding = signs.ui.padding
-local seperator = signs.ui.seperator.default
+local separator = signs.ui.separator.default
 local sign = signs.quit.icon
 
 local LOCAL = {
 	active = {
 		padding = str.highlight("TabLinePaddingActive", padding),
-		seperator = str.highlight("TabLineCloseSepActive", seperator),
+		separator = str.highlight("TabLineCloseSepActive", separator),
 		sign = str.highlight("TabLineCloseActive", sign),
 	},
 	inactive = {
 		padding = str.highlight("TabLinePaddingInactive", padding),
-		seperator = str.highlight("TabLineCloseSepInactive", seperator),
+		separator = str.highlight("TabLineCloseSepInactive", separator),
 		sign = str.highlight("TabLineCloseInactive", sign),
 	},
 	length = {
 		padding = vim.fn.strdisplaywidth(padding),
-		seperator = vim.fn.strdisplaywidth(seperator),
+		separator = vim.fn.strdisplaywidth(separator),
 		sign = vim.fn.strdisplaywidth(sign),
 	},
 }
 
-LOCAL.length.full = LOCAL.length.seperator + LOCAL.length.padding + LOCAL.length.sign
-M.length = LOCAL.length.seperator + LOCAL.length.padding + LOCAL.length.sign
+LOCAL.length.full = LOCAL.length.separator + LOCAL.length.padding + LOCAL.length.sign
+M.length = LOCAL.length.separator + LOCAL.length.padding + LOCAL.length.sign
 
 local close_fn_cache = {}
 
@@ -63,16 +63,16 @@ M.get = function()
 	local function representation(buf, active)
 		local p = active and LOCAL.active or LOCAL.inactive
 		local button = close_button(buf, p.sign)
-		return p.seperator .. p.padding .. button
+		return p.separator .. p.padding .. button
 	end
 
 	local function shorten(buf, remaining, right, visible)
 		if remaining >= LOCAL.length.full then
 			remaining = remaining - LOCAL.length.full
 			visible = right and visible .. representation(buf, false) or representation(buf, false) .. visible
-		elseif right and remaining >= LOCAL.length.seperator then
-			remaining = remaining - LOCAL.length.seperator
-			visible = visible .. LOCAL.inactive.seperator
+		elseif right and remaining >= LOCAL.length.separator then
+			remaining = remaining - LOCAL.length.separator
+			visible = visible .. LOCAL.inactive.separator
 		elseif not right and remaining >= LOCAL.length.sign then
 			remaining = remaining - LOCAL.length.sign
 			visible = LOCAL.inactive.sign .. visible

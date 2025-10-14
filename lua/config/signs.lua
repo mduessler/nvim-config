@@ -131,16 +131,16 @@ return {
 		selection = "",
 	},
 	ui = {
-        input= {
-            title=""
-        },
+		input = {
+			title = "",
+		},
 		modified = {
 			isModified = "",
 			isNotModified = "",
 			isReadonly = "󱙃",
 		},
 		padding = " ",
-		seperator = {
+		separator = {
 			default = "|",
 			left = {
 				line = "▎",
@@ -206,8 +206,8 @@ return {
 					right = "",
 				},
 			},
-			close = { sign = "󰖭", seperator = "|" },
-			seperator = {
+			close = { sign = "󰖭", separator = "|" },
+			separator = {
 				close = "|",
 				left = "▕",
 				right = "▎",

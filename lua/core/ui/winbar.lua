@@ -33,9 +33,9 @@ end
 
 local LOKAL = {
 	padding = str.highlight("WinbarPadding", signs.ui.padding),
-	seperator = {
-		default = str.highlight("WinbarSeperator", signs.ui.seperator.default),
-		soft = str.highlight("WinbarSeperator", signs.ui.seperator.left.soft_divider),
+	separator = {
+		default = str.highlight("WinbarSeperator", signs.ui.separator.default),
+		soft = str.highlight("WinbarSeperator", signs.ui.separator.left.soft_divider),
 	},
 }
 
@@ -50,20 +50,20 @@ local function render_winbar(win, is_active)
 	if mod ~= "" then
 		components = table.concat({ components, mod }, LOKAL.padding)
 	end
-	components = table.concat({ components, LOKAL.seperator.default, position.component(win) }, LOKAL.padding)
+	components = table.concat({ components, LOKAL.separator.default, position.component(win) }, LOKAL.padding)
 	local dia = diagnostic.component(win)
 	local _changes = changes.component(win)
 	if dia ~= "" or _changes ~= "" then
-		components = table.concat({ components, LOKAL.seperator.soft }, LOKAL.padding)
+		components = table.concat({ components, LOKAL.separator.soft }, LOKAL.padding)
 		if dia ~= "" and _changes ~= "" then
-			components = table.concat({ components, dia, LOKAL.seperator.default, _changes }, LOKAL.padding)
+			components = table.concat({ components, dia, LOKAL.separator.default, _changes }, LOKAL.padding)
 		elseif dia ~= "" then
 			components = table.concat({ components, dia }, LOKAL.padding)
 		else
 			components = table.concat({ components, _changes }, LOKAL.padding)
 		end
 	end
-	components = table.concat({ components, LOKAL.seperator.default, close_btn.component(win), "" }, LOKAL.padding)
+	components = table.concat({ components, LOKAL.separator.default, close_btn.component(win), "" }, LOKAL.padding)
 
 	return components
 end

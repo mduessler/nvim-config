@@ -33,26 +33,26 @@ local LOCAL = {
 		},
 	},
 	signs = {
-		seperator = signs.ui.seperator.right.upper,
+		separator = signs.ui.separator.right.upper,
 		padding = signs.ui.padding,
 	},
 }
 
 LOCAL.content = {
 	linux = table.concat(
-		{ LOCAL.signs.seperator, signs.ui.statusline.os.linux, "Linux", LOCAL.signs.padding },
+		{ LOCAL.signs.separator, signs.ui.statusline.os.linux, "Linux", LOCAL.signs.padding },
 		LOCAL.signs.padding
 	),
 	mac = table.concat(
-		{ LOCAL.signs.seperator, signs.ui.statusline.os.mac, "Mac", LOCAL.signs.padding },
+		{ LOCAL.signs.separator, signs.ui.statusline.os.mac, "Mac", LOCAL.signs.padding },
 		LOCAL.signs.padding
 	),
 	windows = table.concat(
-		{ LOCAL.signs.seperator, signs.ui.statusline.os.windows, "Windows", LOCAL.signs.padding },
+		{ LOCAL.signs.separator, signs.ui.statusline.os.windows, "Windows", LOCAL.signs.padding },
 		LOCAL.signs.padding
 	),
 	unkown = table.concat(
-		{ LOCAL.signs.seperator, signs.ui.statusline.os.unkown, "Unkown OS", LOCAL.signs.padding },
+		{ LOCAL.signs.separator, signs.ui.statusline.os.unkown, "Unkown OS", LOCAL.signs.padding },
 		LOCAL.signs.padding
 	),
 }
