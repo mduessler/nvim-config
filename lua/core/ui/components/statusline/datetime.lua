@@ -12,29 +12,29 @@ local LOCAL = {
 		date = signs.ui.statusline.datetime.date,
 		padding = signs.ui.padding,
 		time = signs.ui.statusline.datetime.time,
-		seperator = {
-			datetime = signs.ui.seperator.default,
-			_end = signs.ui.seperator.left.triangle,
+		separator = {
+			datetime = signs.ui.separator.default,
+			_end = signs.ui.separator.left.triangle,
 		},
 	},
 }
 
-LOCAL.length = { seperator = { _end = vim.fn.strdisplaywidth(LOCAL.signs.seperator._end) } }
+LOCAL.length = { separator = { _end = vim.fn.strdisplaywidth(LOCAL.signs.separator._end) } }
 
 local M = {}
 
 M.get = function()
 	local date = table.concat({ "", LOCAL.signs.date, tostring(os.date("%d.%m.%Y")) }, LOCAL.signs.padding)
-	local seperator = table.concat({ "", LOCAL.signs.seperator.datetime, "" }, LOCAL.signs.padding)
+	local separator = table.concat({ "", LOCAL.signs.separator.datetime, "" }, LOCAL.signs.padding)
 	local time = table.concat({ LOCAL.signs.time, tostring(os.date("%H:%M")), "" }, LOCAL.signs.padding)
-	local length = vim.fn.strdisplaywidth(date) + vim.fn.strdisplaywidth(seperator) + vim.fn.strdisplaywidth(time)
+	local length = vim.fn.strdisplaywidth(date) + vim.fn.strdisplaywidth(separator) + vim.fn.strdisplaywidth(time)
 
 	return {
-		length = length + LOCAL.length.seperator._end,
+		length = length + LOCAL.length.separator._end,
 		component = table.concat({
-			str.highlight("StatuslineDateTimeSepEnd", LOCAL.signs.seperator._end),
+			str.highlight("StatuslineDateTimeSepEnd", LOCAL.signs.separator._end),
 			str.highlight("StatuslineDate", date),
-			str.highlight("StatuslineDateTimeSep", seperator),
+			str.highlight("StatuslineDateTimeSep", separator),
 			str.highlight("StatuslineTime", time),
 		}),
 	}

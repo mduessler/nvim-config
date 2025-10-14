@@ -21,7 +21,7 @@ local LOCAL = {
 	},
 	signs = {
 		icon = signs.system.directory.nvim,
-		seperator = signs.ui.seperator.left.upper,
+		separator = signs.ui.separator.left.upper,
 		padding = signs.ui.padding,
 	},
 }
@@ -34,7 +34,7 @@ M.get = function()
 		return { length = 0, component = "" }
 	end
 
-	local content = table.concat({ "", LOCAL.signs.icon, current_mode, LOCAL.signs.seperator }, LOCAL.signs.padding)
+	local content = table.concat({ "", LOCAL.signs.icon, current_mode, LOCAL.signs.separator }, LOCAL.signs.padding)
 	local length = vim.fn.strdisplaywidth(content)
 
 	return { length = length, component = str.highlight(LOCAL.hl[current_mode:lower()], content) }

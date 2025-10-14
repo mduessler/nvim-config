@@ -10,7 +10,7 @@ end
 
 local LOCAL = {
 	hl = {
-		seperator = str.highlight("StatuslineBatterySeperator", signs.ui.seperator.left.triangle),
+		separator = str.highlight("StatuslineBatterySeperator", signs.ui.separator.left.triangle),
 	},
 	signs = {
 		padding = signs.ui.padding,
@@ -18,7 +18,7 @@ local LOCAL = {
 }
 
 LOCAL.length = {
-	seperator = vim.fn.strdisplaywidth(LOCAL.signs.seperator),
+	separator = vim.fn.strdisplaywidth(LOCAL.signs.separator),
 }
 
 for _, level in ipairs({ 100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 0 }) do
@@ -63,8 +63,8 @@ M.get = function()
 	local length = vim.fn.strdisplaywidth(content)
 
 	return {
-		length = length + LOCAL.length.seperator,
-		component = LOCAL.hl.seperator .. str.highlight(_battery.hl, content),
+		length = length + LOCAL.length.separator,
+		component = LOCAL.hl.separator .. str.highlight(_battery.hl, content),
 	}
 end
 

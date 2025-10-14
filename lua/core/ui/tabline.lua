@@ -14,28 +14,28 @@ if not (str and buffers and boundaries and name and modified and close and signs
 end
 
 local M = {}
-local sep_left = signs.ui.seperator.left.line
-local sep_right = signs.ui.seperator.right.line
+local sep_left = signs.ui.separator.left.line
+local sep_right = signs.ui.separator.right.line
 local padding = signs.ui.padding
 
 local LOKAL = {
 	active = {
-		seperator = {
-			left = str.highlight("TabLineSepActive", signs.ui.seperator.left.line),
-			right = str.highlight("TabLineSepActive", signs.ui.seperator.right.line),
+		separator = {
+			left = str.highlight("TabLineSepActive", signs.ui.separator.left.line),
+			right = str.highlight("TabLineSepActive", signs.ui.separator.right.line),
 		},
 		padding = str.highlight("TabLinePaddingActive", padding),
 	},
 	inactive = {
-		seperator = {
-			left = str.highlight("TabLineSepInactive", signs.ui.seperator.left.line),
-			right = str.highlight("TabLineSepInactive", signs.ui.seperator.right.line),
+		separator = {
+			left = str.highlight("TabLineSepInactive", signs.ui.separator.left.line),
+			right = str.highlight("TabLineSepInactive", signs.ui.separator.right.line),
 		},
 		padding = str.highlight("TabLinePaddingInactive", padding),
 	},
 	components = {},
 	length = {
-		seperator = {
+		separator = {
 			left = vim.fn.strdisplaywidth(sep_left),
 			right = vim.fn.strdisplaywidth(sep_right),
 		},
@@ -54,7 +54,7 @@ local LOKAL = {
 local function define_sizes()
 	LOKAL.length.cols = vim.o.columns
 	LOKAL.length.full = LOKAL.size
-	LOKAL.length.content = LOKAL.length.full - LOKAL.length.seperator.left - LOKAL.length.seperator.right
+	LOKAL.length.content = LOKAL.length.full - LOKAL.length.separator.left - LOKAL.length.separator.right
 	LOKAL.length.max_length = LOKAL.length.cols - boundaries.length.full.left - boundaries.length.full.right
 	LOKAL.components = LOKAL.components or {}
 	LOKAL.components = {
@@ -122,8 +122,8 @@ local function render_components(max_components)
 	local components = {}
 
 	local function render_component(buf, active)
-		local seperator_left = active and LOKAL.active.seperator.left or LOKAL.inactive.seperator.left
-		local seperator_right = active and LOKAL.active.seperator.right or LOKAL.inactive.seperator.right
+		local separator_left = active and LOKAL.active.separator.left or LOKAL.inactive.separator.left
+		local separator_right = active and LOKAL.active.separator.right or LOKAL.inactive.separator.right
 		local pad = active and LOKAL.active.padding or LOKAL.inactive.padding
 		local component = LOKAL.components[buf.nr]
 		if component == nil then
@@ -131,11 +131,11 @@ local function render_components(max_components)
 			component = LOKAL.components[buf.nr]
 		end
 		return table.concat({
-			seperator_left,
+			separator_left,
 			component.name.representation(active),
 			component.modified.representation(buf, active),
 			component.close.representation(buf, active),
-			seperator_right,
+			separator_right,
 		}, pad)
 	end
 
@@ -218,20 +218,20 @@ local function render_components(max_components)
 
 	local function shorten_right_component(buf)
 		local offset = LOKAL.components.offset
-		local left_sep_len = LOKAL.length.seperator.left
-		local right_sep_len = LOKAL.length.seperator.right
+		local left_sep_len = LOKAL.length.separator.left
+		local right_sep_len = LOKAL.length.separator.right
 		local component = LOKAL.components[buf.nr]
 
-		if right_sep_len >= offset == right_sep_len + LOKAL.length.seperator.right then
+		if right_sep_len >= offset == right_sep_len + LOKAL.length.separator.right then
 			table.insert(components, str.highlight("TabLinePadding", string.rep(padding, LOKAL.components.offset)))
 			return
 		end
 
 		local remaining = offset - left_sep_len - right_sep_len
-		local visible = LOKAL.inactive.seperator.left
+		local visible = LOKAL.inactive.separator.left
 		if component == nil then
 			visible, _ = add_padding(remaining, remaining, true, visible)
-			table.insert(components, visible .. visible .. LOKAL.inactive.seperator.right)
+			table.insert(components, visible .. visible .. LOKAL.inactive.separator.right)
 			return
 		end
 
@@ -242,15 +242,15 @@ local function render_components(max_components)
 		visible, remaining = add_close(component, buf, remaining, true, visible)
 
 		visible, remaining = add_padding(remaining, remaining, true, visible)
-		visible = visible .. LOKAL.inactive.seperator.right
+		visible = visible .. LOKAL.inactive.separator.right
 
 		table.insert(components, visible)
 	end
 
 	local function shorten_left_component(buf)
 		local offset = LOKAL.components.offset
-		local left_sep_len = LOKAL.length.seperator.left
-		local right_sep_len = LOKAL.length.seperator.right
+		local left_sep_len = LOKAL.length.separator.left
+		local right_sep_len = LOKAL.length.separator.right
 		local component = LOKAL.components[buf.nr]
 
 		if offset <= left_sep_len or offset == left_sep_len + right_sep_len then
@@ -259,10 +259,10 @@ local function render_components(max_components)
 		end
 
 		local remaining = offset - left_sep_len - right_sep_len
-		local visible = LOKAL.inactive.seperator.right
+		local visible = LOKAL.inactive.separator.right
 		if component == nil then
 			visible, _ = add_padding(remaining, remaining, false, visible)
-			table.insert(components, visible .. visible .. LOKAL.inactive.seperator.right)
+			table.insert(components, visible .. visible .. LOKAL.inactive.separator.right)
 			return
 		end
 
@@ -274,7 +274,7 @@ local function render_components(max_components)
 
 		visible, remaining = add_padding(remaining, remaining, false, visible)
 
-		visible = LOKAL.inactive.seperator.left .. visible
+		visible = LOKAL.inactive.separator.left .. visible
 		table.insert(components, 1, visible)
 	end
 

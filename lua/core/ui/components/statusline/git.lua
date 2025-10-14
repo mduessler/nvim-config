@@ -30,12 +30,12 @@ local LOCAL = {
 		pull = signs.git.pull,
 		push = signs.git.push,
 		pushpull = signs.git.pushpull,
-		seperator = signs.ui.seperator.right.triangle,
+		separator = signs.ui.separator.right.triangle,
 	},
 }
 
 LOCAL.length = {
-	separator = vim.fn.strdisplaywidth(LOCAL.signs.seperator),
+	separator = vim.fn.strdisplaywidth(LOCAL.signs.separator),
 }
 
 local M = {}
@@ -91,7 +91,7 @@ M.get = function()
 	return {
 		length = vim.fn.strdisplaywidth(content) + LOCAL.length.separator,
 		component = str.highlight(hl_group.content, content .. LOCAL.signs.padding)
-			.. str.highlight(hl_group.separator, LOCAL.signs.seperator),
+			.. str.highlight(hl_group.separator, LOCAL.signs.separator),
 	}
 end
 

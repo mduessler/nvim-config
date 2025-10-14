@@ -22,12 +22,12 @@ local LOCAL = {
 		git = signs.git.icon,
 		padding = signs.ui.padding,
 		project = signs.system.directory.project,
-		seperator = signs.ui.seperator.right.triangle,
+		separator = signs.ui.separator.right.triangle,
 	},
 }
 
 LOCAL.length = {
-	seperator = vim.fn.strdisplaywidth(LOCAL.signs.seperator),
+	separator = vim.fn.strdisplaywidth(LOCAL.signs.separator),
 }
 
 local M = {}
@@ -42,7 +42,7 @@ M.get = function(buf)
 		path = directory.get_subdir(path, project.root):gsub("/$", "")
 	end
 
-	local function get_seperator_hl_group()
+	local function get_separator_hl_group()
 		if path == "" then
 			if project.is_git_repo and project.git.branch then
 				return project.git.modified and LOCAL.hl.modified.is or LOCAL.hl.modified._not
@@ -68,9 +68,9 @@ M.get = function(buf)
 	end
 
 	return {
-		length = length + LOCAL.length.seperator,
+		length = length + LOCAL.length.separator,
 		component = str.highlight("StatuslineRoot", content)
-			.. str.highlight(get_seperator_hl_group(), LOCAL.signs.seperator),
+			.. str.highlight(get_separator_hl_group(), LOCAL.signs.separator),
 	}
 end
 
