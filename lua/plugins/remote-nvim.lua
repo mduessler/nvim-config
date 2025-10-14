@@ -23,8 +23,11 @@ return {
 		if not remote_nvim then
 			return
 		end
+
 		remote_nvim.setup({
-			ssh_config_file_paths = { "${SSH_CONFIG:-$HOME/.ssh/config}" },
+			ssh_config = {
+				ssh_config_file_paths = { "${SSH_CONFIG:-$HOME/.ssh/config}" },
+			},
 		})
 	end,
 }
