@@ -4,10 +4,8 @@ ENV DISPLAY=:99
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # Create TestUser
-RUN mkdir -p /home/tester && groupadd tester
+RUN groupadd tester && useradd -m -g tester tester
 ENV HOME=/home/tester
-
-RUN useradd -m -g tester tester
 ENV NVIM_HOME="${HOME}/.config/nvim"
 
 # clone and install nvim from github.
@@ -44,20 +42,23 @@ RUN dnf update && dnf install -y \
     && dnf clean all
 
 # Install rust.
-USER tester
-
 ENV CARGO_HOME="${HOME}/.cargo"
 ENV RUSTUP="${HOME}/.rustup"
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y || exit 1
 ENV PATH="${CARGO_HOME}/bin:${PATH}"
 
 # Install selene & lpeglabel
-RUN cargo install selene && luarocks install lpeglabel --local || exit 1
+RUN cargo install selene && luarocks install lpeglabel || exit 1
 
 WORKDIR "${NVIM_HOME}"
 
 COPY . ./
 
+RUN chown -R tester:tester "${HOME}"
+USER tester
+
 RUN nvim --headless "+InitNVIM"
+
+RUN cargo --version
 
 ENTRYPOINT ["/home/tester/.config/nvim/tests/entrypoint"]
