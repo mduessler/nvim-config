@@ -107,7 +107,7 @@ M.setup = function()
 		100,
 		vim.schedule_wrap(function()
 			buffers.update()
-			vim.cmd("redrawstatus")
+			M.render()
 		end)
 	)
 end
