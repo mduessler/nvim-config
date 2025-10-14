@@ -1,0 +1,17 @@
+FROM ubuntu:24.04
+
+ENV DISPLAY=:99
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+# Create TestUser
+RUN mkdir -p /home/tester && groupadd tester
+ENV HOME=/home/tester
+
+RUN useradd -m -g tester tester
+ENV NVIM_HOME=$HOME/.config/nvim
+
+WORKDIR $NVIM_HOME
+
+COPY ./ .
+
+ENTRYPOINT ["/home/tester/.config/nvim/entrypoint"]
