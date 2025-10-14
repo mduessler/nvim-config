@@ -23,8 +23,7 @@ RUN git clone https://github.com/neovim/neovim -b "v${MAJOR_REQ}.${MINOR_REQ}.${
 WORKDIR "${NVIM_GIT_DIR}"
 RUN make CMAKE_BUILD_TYPE=Release && make install
 
-WORKDIR "${NVIM_HOME}"
-
+WORKDIR "${HOME}"
 # Installing dependencies for nvim plugins.
 # Install dependencies via packet manager
 RUN dnf update && dnf install -y \
@@ -45,14 +44,20 @@ RUN dnf update && dnf install -y \
     && dnf clean all
 
 # Install rust.
+USER tester
+
 ENV CARGO_HOME="${HOME}/.cargo"
 ENV RUSTUP="${HOME}/.rustup"
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y || exit 1
 ENV PATH="${CARGO_HOME}/bin:${PATH}"
 
 # Install selene & lpeglabel
-RUN cargo install selene && luarocks install lpeglabel || exit 1
+RUN cargo install selene && luarocks install lpeglabel --local || exit 1
 
-COPY ./ .
+WORKDIR "${NVIM_HOME}"
+
+COPY . ./
+
+RUN nvim --headless "+InitNVIM"
 
 ENTRYPOINT ["/home/tester/.config/nvim/tests/entrypoint"]
