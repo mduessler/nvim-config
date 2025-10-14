@@ -236,7 +236,7 @@ return {
 			info = "",
 			clean = "󰉥",
 			clean_up = "",
-			logs = "",
+			log = "",
 		},
 		status = "",
 		toggle = "󰨚",
