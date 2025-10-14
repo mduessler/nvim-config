@@ -58,7 +58,7 @@ M.render = function()
 	local current_encoding = encoding.get(buf)
 	local current_diagnostic = diagnostic.get()
 
-	local remaining = vim.o.columns
+	local remaining = vim.api.nvim_win_get_width(0)
 
 	local function insert_component(components, current)
 		if remaining > current.length then
@@ -107,7 +107,7 @@ M.setup = function()
 		100,
 		vim.schedule_wrap(function()
 			buffers.update()
-			M.render()
+			vim.cmd("redrawstatus")
 		end)
 	)
 end
