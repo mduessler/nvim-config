@@ -58,7 +58,7 @@ M.render = function()
 	local current_encoding = encoding.get(buf)
 	local current_diagnostic = diagnostic.get()
 
-	local remaining = vim.api.nvim_win_get_width(0)
+	local remaining = vim.o.columns
 
 	local function insert_component(components, current)
 		if remaining > current.length then
@@ -91,7 +91,9 @@ M.render = function()
 
 		return table.concat(components)
 	end
-	return render_left_components() .. "%=" .. render_right_components()
+	local left = render_left_components()
+	local right = render_right_components()
+	return left .. "%=" .. right
 end
 
 M.setup = function()

@@ -44,7 +44,7 @@ M.get = function(buf)
 
 	local function get_separator_hl_group()
 		if path == "" then
-			if project.is_git_repo and project.git.branch and buf ~= nil then
+			if project.is_git_repo and project.git.branch then
 				return project.git.modified and LOCAL.hl.modified.is or LOCAL.hl.modified._not
 			else
 				return LOCAL.hl.file
