@@ -26,6 +26,7 @@ RUN make CMAKE_BUILD_TYPE=Release && make install
 WORKDIR "${NVIM_HOME}"
 
 # Installing dependencies for nvim plugins.
+# Install dependencies via packet manager
 RUN dnf update && dnf install -y \
     clang \
     gcc-c++ \
