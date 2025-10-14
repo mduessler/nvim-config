@@ -25,6 +25,24 @@ RUN make CMAKE_BUILD_TYPE=Release && make install
 
 WORKDIR "${NVIM_HOME}"
 
+# Installing dependencies for nvim plugins.
+RUN dnf update && dnf install -y \
+    clang \
+    gcc-c++ \
+    golang \
+    java-latest-openjdk-devel \
+    libstdc++-static \
+    lua \
+    luarocks \
+    maven \
+    nodejs \
+    openssl-devel \
+    pkg-config \
+    pre-commit \
+    python \
+    python-pip \
+    && dnf clean all
+
 COPY ./ .
 
 ENTRYPOINT ["/home/tester/.config/nvim/tests/entrypoint"]
