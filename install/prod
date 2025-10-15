@@ -46,35 +46,31 @@ install_dependencies() {
             ;;
     esac
 
-    if [ $? -ne 0 ]; then
-        error "Dependency installation failed."
-        return 1
-    fi
-
     if ! install_dependencies_independent_of_pkg_mgr; then
         return 1
     fi
 
     if ! check_nvim_version; then
-        install_nvim
-        if [ $? -ne 0 ]; then
+        if ! install_nvim; then
             error "Neovim installation failed."
             return 1
         fi
     fi
 
     success "Installed dependencies successfully."
+    return 0
 }
 
 install_dependencies_independent_of_pkg_mgr() {
     for dep in "${DEPS[@]}"; do
         func="${dep}_installer"
         if declare -f "$func" >/dev/null; then
-            "$func"
-        fi
-        if [ $? -ne 0 ]; then
-            error "Can not install dependency ${dep}."
-            return 1
+            if ! "$func"; then
+                error "Failed to install dependency: ${dep}"
+                return 1
+            fi
+        else
+            warn "No installer function defined for ${dep}, skipping."
         fi
     done
 }
@@ -95,3 +91,10 @@ install_requirements() {
     success "Installed dependencies successfully."
 
 }
+
+main() {
+    install_dependencies
+    install_requirements
+}
+
+main "$@"
