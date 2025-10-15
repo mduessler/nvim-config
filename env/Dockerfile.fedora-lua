@@ -59,6 +59,4 @@ USER tester
 
 RUN nvim --headless "+InitNVIM"
 
-RUN cargo --version
-
 ENTRYPOINT ["make", "test-lua"]
