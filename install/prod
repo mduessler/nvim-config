@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+
+set -e
+
+[ -z "$SCRIPT_DIR" ] && SCRIPT_DIR="$(pwd)/"
+
+source "${SCRIPT_DIR}/../dependencies"
+source "${SCRIPT_DIR}/utils"
+
+install_rust() {
+    if command -v rustc >/dev/null 2>&1; then
+        info "Rust is already installed."
+        return 0
+    fi
+
+    CARGO_HOME="${CARGO_HOME:-$HOME/.cargo}"
+    debug "CARGO_HOME is set to '${CARGO_HOME}'."
+
+    info "Downloading and install rust..."
+    if ! curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y; then
+        error "Installation of rust failed."
+        return 1
+    fi
+    echo ":$PATH:" | grep -q ":${CARGO_HOME}/bin:" || export PATH="${CARGO_HOME}/bin:${PATH}"
+
+    success "Installed rust."
+    return 0
+}
+
+install_dependencies() {
+    . "${SCRIPT_DIR}/install/shared/install_dependencies"
+
+    info "Installing production dependencies ..."
+
+    if [ -z "${PKG_MGR}" ]; then
+        if ! identify_system_pkg_mgr; then
+            return 1
+        fi
+    fi
+
+    if [ "${PKG_MGR}" = "apt-get" ]; then
+        install_packages_with_pkg_mgr "${APT_DEPS[@]}"
+    elif [ "${PKG_MGR}" = "dnf" ]; then
+        install_packages_with_pkg_mgr "${DNF_DEPS[@]}"
+    else
+        error "Can not install dependencies with package manager."
+        return 1
+    fi
+
+    if [ $? -ne 0 ]; then
+        error "Dependency installation failed."
+        return 1
+    fi
+
+    install_rust
+    if [ $? -ne 0 ]; then
+        error "Dependency installation failed."
+        return 1
+    fi
+    success "Installed dependencies successfully."
+}
