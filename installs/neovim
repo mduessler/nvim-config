@@ -9,10 +9,6 @@ source "${SCRIPT_DIR}/utils" || exit 1
 source "${DEPENDENCIES}" || exit 1
 
 install_nvim() {
-    if ! install_dependencies; then
-        error "Could not install dependencies"
-        return 1
-    fi
     GIT_DEST_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/src"
     [ -d "${GIT_DEST_DIR}" ] || mkdir -p "${GIT_DEST_DIR}"
     git clone https://github.com/neovim/neovim -b "v${NVIM_MAJOR_REQ}.${NVIM_MINOR_REQ}.${NVIM_PATCH_REQ}" "${GIT_DEST_DIR}/neovim" || return 1
@@ -29,12 +25,16 @@ check_nvim_version() {
     IFS="." read -r MAJOR MINOR PATCH <<EOF
 $NVIM_VERSION_INFO
 EOF
+    if [[ "$MAJOR" =~ ^[0-9]+$ && "$MINOR" =~ ^[0-9]+$ && "$PATCH" =~ ^[0-9]+$ ]]; then
+        debug "Installed nvim version is ${NVIM_VERSION_INFO}"
 
-    debug "Installed nvim version is ${NVIM_VERSION_INFO}"
-
-    if [ "$MAJOR" -ge "$NVIM_MAJOR_REQ" ] && [ "$MINOR" -ge "$NVIM_MINOR_REQ" ] && [ "$PATCH" -ge "$NVIM_PATCH_REQ" ]; then
-        return 0
+        if [ "$MAJOR" -ge "$NVIM_MAJOR_REQ" ] && [ "$MINOR" -ge "$NVIM_MINOR_REQ" ] && [ "$PATCH" -ge "$NVIM_PATCH_REQ" ]; then
+            return 0
+        fi
+        warning "Neovim version is to low."
+        return 1
+    else
+        error "Invalid version format: ${MAJOR}.${MINOR}.${PATCH}"
     fi
-    warning "Neovim version is to low."
     return 1
 }
