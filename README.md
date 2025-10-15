@@ -15,7 +15,8 @@ developed with NVIM v0.11.4.
 ## Dependencies
 
 - NVIM v0.11.4 or higher
-- [Nerd Fonts](https://github.com/ryanoasis/nerd-fonts) - Need for UI
+- [Make](https://www.gnu.org/software/make/) -- Need for installation
+- [Nerd Fonts](https://github.com/ryanoasis/nerd-fonts) -- Need for UI
 
 ## Installation
 
