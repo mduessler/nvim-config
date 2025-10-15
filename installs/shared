@@ -15,8 +15,8 @@ install_packages_with_pkg_mgr() {
         return 2
     fi
 
-    PACKAGES="$*"
-    info "Installing: ${PACKAGES} ..."
+    local packages="$*"
+    info "Installing: ${packages} ..."
     debug "Updating repositories."
     if ! sudo "${PKG_MGR}" update -y; then
         warning "Can not update the package repositories."
@@ -28,7 +28,7 @@ install_packages_with_pkg_mgr() {
         return 1
     fi
 
-    success "Installed packages: ${PACKAGES}"
+    success "Installed packages: ${packages}"
     return 0
 }
 
