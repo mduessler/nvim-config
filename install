@@ -5,8 +5,8 @@ set -e
 NVIM_DEV=false
 INSTALL_NERD_FONTS=false
 
-DEPENDENCIES=$(pwd)/dependencies
 SCRIPT_DIR="$(pwd)/installs"
+DEPENDENCIES=$(pwd)/dependencies
 
 source "${SCRIPT_DIR}/utils" || {
     info "No production install found."

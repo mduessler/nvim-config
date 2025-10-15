@@ -2,7 +2,7 @@
 
 SCRIPT_DIR="${SCRIPT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
 
-. "${SCRIPT_DIR}/log"
+source "${SCRIPT_DIR}/utils" || exit 1
 
 TMPFILE=$(mktemp)
 NERD_FONTS_PROCESS=""

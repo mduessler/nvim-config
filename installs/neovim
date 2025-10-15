@@ -2,11 +2,11 @@
 
 set -e
 
-DEPENDENCIES="${DEPENDENCIES:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/..}"
 SCRIPT_DIR="${SCRIPT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
+DEPENDENCIES="${DEPENDENCIES:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../dependencies}"
 
-DEPENDENCIES="${DEPENDENCIES:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/..}"
-source "${SCRIPT_DIR}/utils"
+source "${SCRIPT_DIR}/utils" || exit 1
+source "${DEPENDENCIES}" || exit 1
 
 install_nvim() {
     if ! install_dependencies; then

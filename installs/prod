@@ -2,10 +2,10 @@
 
 set -e
 
-DEPENDENCIES="${DEPENDENCIES:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/..}"
 SCRIPT_DIR="${SCRIPT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
+DEPENDENCIES="${DEPENDENCIES:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../dependencies}"
 
-source "${DEPENDENCIES}/dependencies" || exit 1
+source "${DEPENDENCIES}" || exit 1
 source "${SCRIPT_DIR}/neovim" || exit 1
 source "${SCRIPT_DIR}/utils" || exit 1
 
