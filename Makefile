@@ -36,4 +36,6 @@ test-lua-ubuntu: build-lua-ubuntu
 
 test-fedora: test-lua-fedora
 
-test-ubuntu: test-lua-fedora
+clean:
+	docker image rm nvim-fedora-lua
+	docker image rm nvim-ubuntu-lua
