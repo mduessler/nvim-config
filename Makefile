@@ -8,6 +8,10 @@ env-lua="DockerfileLua"
 install:
 	$(MAKE) ./install
 
+.ONEHSELL:
+install-dev:
+	$(MAKE) ./install dev
+
 .SILENT:
 .ONEHSELL:
 build-install:
