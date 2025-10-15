@@ -77,13 +77,19 @@ install_cargo_pkg() {
         warning "No package given. Please provide at least one packge."
         return 2
     fi
-    PACKAGES="$*"
-    info "Installing rust package(s): ${PACKAGES} ..."
-    if ! cargo install "${PACKAGES}"; then
-        error "Can not install rust package(s)"
-        return 1
-    fi
 
-    success "Installed rust package(s): ${PACKAGES}"
-    return 0
+    local packages=("$@")
+
+    for pkg in "${packages[@]}"; do
+        if cargo install --list | grep -q "^${pkg} "; then
+            info "${pkg} is already installed, skipping..."
+            continue
+        fi
+
+        info "Installing ${pkg}..."
+        if ! cargo install "${pkg}"; then
+            error "Failed to install ${pkg}"
+            return 1
+        fi
+    done
 }
