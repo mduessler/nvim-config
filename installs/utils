@@ -17,7 +17,9 @@ log() {
 }
 
 debug() {
-    log "DEBUG" "$*"
+    if ${NVIM_DEV}; then
+        log "DEBUG" "$*"
+    fi
 }
 info() {
     log "INFO" "$*"
