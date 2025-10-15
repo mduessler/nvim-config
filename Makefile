@@ -19,4 +19,4 @@ build-lua:
 
 .ONEHSELL:
 install:
-	$(MAKE) ./installer
+	$(MAKE) ./install
