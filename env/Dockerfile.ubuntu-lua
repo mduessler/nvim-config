@@ -71,4 +71,4 @@ USER tester
 
 RUN nvim --headless "+InitNVIM"
 
-ENTRYPOINT ["make", "test-lua"]
+ENTRYPOINT ["lua", "tests/lua/tests.lua"]
