@@ -79,7 +79,7 @@ install_rust_pkg() {
     fi
     PACKAGES="$*"
     info "Installing rust package(s): ${PACKAGES} ..."
-    if ! cargo ${PACKAGES}; then
+    if ! cargo install "${PACKAGES}"; then
         error "Can not install rust package(s)"
         return 1
     fi
