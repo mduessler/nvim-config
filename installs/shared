@@ -99,5 +99,7 @@ install_cargo_pkg() {
             error "Failed to install ${pkg}"
             return 1
         fi
+        success "Installed ${pkg}"
     done
+    return 0
 }
