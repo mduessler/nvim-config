@@ -9,10 +9,15 @@ install_pck() {
     PACKAGES="$*"
     info "Installing: ${PACKAGES} ..."
     debug "Updating repositories."
-    sudo "${SYSTEM_PKG_MGR}" update -y || return 1
+    if ! sudo "${SYSTEM_PKG_MGR}" update -y; then
+        warning "Can not update the package repositories."
+    fi
 
-    debug "Installing dependencies."
-    sudo "${SYSTEM_PKG_MGR}" install -y "$@" || return 1
+    debug "Installing package(s)."
+    if ! sudo "${SYSTEM_PKG_MGR}" install -y "$@"; then
+        error "Can not install package(s)."
+        return 1
+    fi
 
     success "Installed packages: ${PACKAGES}"
     return 0
