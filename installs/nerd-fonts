@@ -9,7 +9,7 @@ NERD_FONTS_PROCESS=""
 
 clone_repo() {
     debug "Cloning repo to '${NERDPATH}'"
-    git clone --progress https://github.com/ryanoasis/nerd-fonts "${NERDPATH}" >"$TMPFILE" 2>&1 &
+    git clone --progress https://github.com/ryanoasis/nerd-fonts "${NERDPATH}" >"$TMPFILE" 2>&1 & NERD_FONTS_PROCESS=$!
     info "Cloned repo"
 }
 
@@ -17,8 +17,7 @@ pull_repo() {
     if git -C "${NERDPATH}" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
         debug "${NERDPATH} is a git repo."
         cd "${NERDPATH}" || return 1
-        git pull >"$TMPFILE" 2>&1 &
-        NERD_FONTS_PROCESS=$!
+        git pull >"$TMPFILE" 2>&1 & NERD_FONTS_PROCESS=$!
         info "Pulling repo."
     else
         warning "${NERDPATH} is not a git repo. Can not pull ..."
@@ -33,6 +32,7 @@ init_nerd_process() {
         mkdir -p "${NERDPATH}"
         clone_repo
     fi
+    info "Started nerd-fonts process ${NERD_FONTS_PROCESS}"
 }
 
 wait_for_nerd_fonts_process() {
