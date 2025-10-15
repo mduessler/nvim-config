@@ -6,11 +6,11 @@ env-lua="DockerfileLua"
 
 .ONEHSELL:
 install:
-	$(MAKE) ./install
+	./install
 
 .ONEHSELL:
 install-dev:
-	$(MAKE) ./install dev
+	./install dev
 
 .SILENT:
 .ONEHSELL:
