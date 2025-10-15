@@ -1,0 +1,21 @@
+#!/bin/sh
+
+install_rust() {
+    if command -v rustc >/dev/null 2>&1; then
+        info "Rust is already installed."
+        return 0
+    fi
+
+    CARGO_HOME="${CARGO_HOME:-$HOME/.cargo}"
+    debug "CARGO_HOME is set to '${CARGO_HOME}'."
+
+    info "Downloading and install rust..."
+    if ! curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y; then
+        error "Installation of rust failed."
+        return 1
+    fi
+    echo ":$PATH:" | grep -q ":${CARGO_HOME}/bin:" || export PATH="${CARGO_HOME}/bin:${PATH}"
+
+    success "Installed rust."
+    return 0
+}
