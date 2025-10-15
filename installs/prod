@@ -59,6 +59,10 @@ install_prod_dependencies() {
         fi
     fi
 
+    if ! install_requirements; then
+        return 1
+    fi
+
     success "Installed dependencies successfully."
     return 0
 }
