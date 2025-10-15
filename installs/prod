@@ -88,7 +88,7 @@ install_requirements() {
         return 1
     fi
 
-    if ! install_rust_pkg "${RUST_REQ[@]}"; then
+    if ! install_cargo_pkg "${RUST_REQ[@]}"; then
         error "Can not install rust requirements."
         return 1
     fi
