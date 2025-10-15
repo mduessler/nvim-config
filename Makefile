@@ -12,11 +12,13 @@ install:
 install-dev:
 	./install dev
 
-build-lua:
-	docker build -f $(env-path)/$(env-lua).fedora -t nvim-fedora-lua:test .
-	docker build -f $(env-path)/$(env-lua).ubuntu -t nvim-ubuntu-lua:test .
+build-lua-fedora:
+	docker build -f $(env-path)/Dockerfile.fedora-lua -t nvim-fedora-lua:test .
 
-test-lua-fedora:
+build-lua-ubuntu:
+	docker build -f $(env-path)/Dockerfile.ubuntu-lua -t nvim-ubuntu-lua:test .
+
+test-lua-fedora: build-lua-fedora
 	docker run --rm \
 	  -v "$$HOME/.config/nvim:/home/tester/.config/nvim:ro" \
 	  --tmpfs /home/tester/.local/share/nvim \
@@ -24,7 +26,7 @@ test-lua-fedora:
 	  --tmpfs /home/tester/.cache/nvim \
 	  nvim-fedora-lua:test
 
-test-lua-ubuntu:
+test-lua-ubuntu: build-lua-ubuntu
 	docker run --rm \
 	  -v "$$HOME/.config/nvim:/home/tester/.config/nvim:ro" \
 	  --tmpfs /home/tester/.local/share/nvim \
