@@ -49,3 +49,41 @@ identify_system_pkg_mgr() {
     success "Identified '${PKG_MGR}' as package manager."
     return 0
 }
+
+install_lua_pkg() {
+    if ! command -v lua >/dev/null 2>&1; then
+        warning "Rust is not installed or rust and cargo not in '\$PATH'."
+        return 3
+    elif [ $# -eq 0 ]; then
+        warning "No package given. Please provide at least one packge."
+        return 2
+    fi
+    PACKAGES="$*"
+    info "Installing rust package(s): ${PACKAGES} ..."
+    if ! luarocks install --local ${PACKAGES}; then
+        error "Can not install lua package(s)"
+        return 1
+    fi
+
+    success "Installed lua package(s): ${PACKAGES}"
+    return 0
+}
+
+install_rust_pkg() {
+    if ! command -v rustc >/dev/null 2>&1 || ! command -v cargo >/dev/null 2>&1; then
+        warning "Rust is not installed or rust and cargo not in '\$PATH'."
+        return 3
+    elif [ $# -eq 0 ]; then
+        warning "No package given. Please provide at least one packge."
+        return 2
+    fi
+    PACKAGES="$*"
+    info "Installing rust package(s): ${PACKAGES} ..."
+    if ! cargo ${PACKAGES}; then
+        error "Can not install rust package(s)"
+        return 1
+    fi
+
+    success "Installed rust package(s): ${PACKAGES}"
+    return 0
+}
