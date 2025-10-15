@@ -7,19 +7,19 @@
 install_pck() {
     [ ! -z "$PKG_MGR" ] && warning "Need to set 'PKG_MGR', or call 'identify_system_pkg_mgr'." && exit 1
     PACKAGES="$*"
-    info "Installing: {$PACKAGES} ..."
+    info "Installing: ${PACKAGES} ..."
     debug "Updating repositories."
     sudo "${SYSTEM_PKG_MGR}" update -y || return 1
 
     debug "Installing dependencies."
     sudo "${SYSTEM_PKG_MGR}" install -y "$@" || return 1
 
-    success "Installed packages: {$PACKAGES}"
+    success "Installed packages: ${PACKAGES}"
     return 0
 }
 
 identify_system_pkg_mgr() {
-    if [ -z "$PKG_MGR" ]; then
+    if [ -z "${PKG_MGR}" ]; then
         info "Identifing package manger."
         if command -v apt-get >/dev/null 2>&1; then
             PKG_MGR="apt-get"
