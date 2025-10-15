@@ -61,4 +61,4 @@ RUN nvim --headless "+InitNVIM"
 
 RUN cargo --version
 
-ENTRYPOINT ["/home/tester/.config/nvim/tests/entrypoint"]
+ENTRYPOINT ["make", "test-lua"]
