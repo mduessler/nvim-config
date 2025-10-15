@@ -87,6 +87,14 @@ RUST_REQ=(
 # Development dependencies
 #
 
+APT_DEV_DEPS=(
+    ca-certificates
+    docker-ce
+    docker-ce-cli
+    containerd.io
+    docker-buildx-plugin
+)
+
 DNF_DEV_DEPS=(
     docker-ce
     docker-ce-cli
