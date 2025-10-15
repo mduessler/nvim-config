@@ -58,14 +58,22 @@ install_lua_pkg() {
         warning "No package given. Please provide at least one packge."
         return 2
     fi
-    PACKAGES="$*"
-    info "Installing rust package(s): ${PACKAGES} ..."
-    if ! luarocks install --local ${PACKAGES}; then
-        error "Can not install lua package(s)"
-        return 1
-    fi
 
-    success "Installed lua package(s): ${PACKAGES}"
+    local packages=("$@")
+
+    for pkg in "${packages[@]}"; do
+        if luarocks show "${pkg}" >/dev/null 2>&1; then
+            info "${pkg} is already installed, skipping..."
+            continue
+        fi
+
+        info "Installing ${pkg}..."
+        if ! luarocks install "${pkg}"; then
+            error "Failed to install ${pkg}"
+            return 1
+        fi
+        success "Installed ${pkg}"
+    done
     return 0
 }
 
