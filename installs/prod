@@ -72,7 +72,7 @@ install_dependencies_independent_of_pkg_mgr() {
                 return 1
             fi
         else
-            warn "No installer function defined for ${dep}, skipping."
+            warning "No installer function defined for ${dep}, skipping."
         fi
     done
     return 0
