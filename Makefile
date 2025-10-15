@@ -3,7 +3,7 @@ tests-lua-dir="tests/lua"
 env-fedora="Dockerfile.fedora"
 env-ubuntu="Dockerfile.ubuntu"
 
-.PHONY: install
+.PHONY: install build-install build-lua
 
 .SILENT:
 .ONEHSELL:
