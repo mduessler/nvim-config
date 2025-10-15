@@ -2,7 +2,7 @@ env-path="./env"
 env-install="DockerfileInstall"
 env-lua="DockerfileLua"
 
-.PHONY: install build-install build-lua
+.PHONY: install install-dev build-install build-lua
 
 .ONEHSELL:
 install:
