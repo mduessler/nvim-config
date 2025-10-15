@@ -87,6 +87,13 @@ RUST_REQ=(
 # Development dependencies
 #
 
+DNF_DEV_DEPS=(
+    docker-ce
+    docker-ce-cli
+    containerd.io
+    docker-buildx-plugin
+)
+
 #
 # Development requirements
 #
