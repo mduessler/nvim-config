@@ -5,17 +5,6 @@ set -e
 NVIM_DEV=false
 INSTALL_NERD_FONTS=false
 
-for arg in "$@"; do
-    case "$arg" in
-        dev)
-            NVIM_DEV=true
-            ;;
-        --nerd-fonts)
-            INSTALL_NERD_FONTS=true
-            ;;
-    esac
-done
-
 DEPENDENCIES=$(pwd)/dependencies
 SCRIPT_DIR="$(pwd)/installs"
 
@@ -35,6 +24,21 @@ source "${SCRIPT_DIR}/prod" || {
     exit 1
 }
 
+for arg in "$@"; do
+    case "$arg" in
+        dev)
+            NVIM_DEV=true
+            ;;
+        --nerd-fonts)
+            INSTALL_NERD_FONTS=true
+            source "${SCRIPT_DIR}/nerd-fonts" || {
+                info "Nerd-fonts install not found."
+                exit 1
+            }
+            ;;
+    esac
+done
+
 main() {
     if $INSTALL_NERD_FONTS; then
         init_clone_process
@@ -44,29 +48,16 @@ main() {
         info "Please install nerd-fonts 'https://github.com/ryanoasis/nerd-fonts'."
     fi
 
-    if ! install_system_dependencies; then
-        error "Stopping installation. Can't install system dependencies."
-        exit 1
-    fi
-    if ! check_nvim_version; then
-        error "Neovim version v0.11.4 or higher is required.\n
-        Please install it before you can continue with the installation."
-        exit 1
-    fi
-
-    if ! install_selene; then
-        warning "Can not install selene. Continue ..."
-    fi
-
-    if ! install_lpeglabel; then
-        warning "Can not install lpeglabel. Continue ..."
+    if ! install_prod_dependencies; then
+        error "Can not install production dependencies."
+        return 1
     fi
 
     info "Installing language-servers, formaters and linters ... "
     PATH="${CARGO_HOME:-$HOME/.cargo}/bin:$PATH" nvim --headless "+InitNVIM"
     echo "\n"
 
-    if [ "$1" = "--nerd-fonts" ]; then
+    if $INSTALL_NERD_FONTS; then
         install_nerd_fonts
     fi
 
