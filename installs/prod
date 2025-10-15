@@ -90,10 +90,3 @@ install_requirements() {
     success "Installed requirements successfully."
     return 0
 }
-
-main() {
-    install_dependencies
-    install_requirements
-}
-
-main "$@"
