@@ -56,6 +56,15 @@ main() {
         return 1
     fi
 
+    if ${NVIM_DEV}; then
+        if ! install_dev_dependencies; then
+            error "Can not install development dependencies."
+            if ${INSTALL_NERD_FONTS}; then
+                kill_nerd_fonts_process
+            fi
+            return 1
+        fi
+    fi
 
     info "Installing language-servers, formaters and linters ... "
     PATH="${CARGO_HOME:-$HOME/.cargo}/bin:$PATH" nvim --headless "+InitNVIM"
