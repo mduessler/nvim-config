@@ -4,7 +4,7 @@
 
 . "${SCRIPT_DIR}/log"
 
-install_pck() {
+install_system_pck() {
     if [ ! -z "${PKG_MGR}" ]; then
         warning "Need to set 'PKG_MGR', or call 'identify_system_pkg_mgr'."
         return 3
