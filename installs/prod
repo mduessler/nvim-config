@@ -5,9 +5,10 @@ set -e
 SCRIPT_DIR="${SCRIPT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
 DEPENDENCIES="${DEPENDENCIES:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../dependencies}"
 
+source "${SCRIPT_DIR}/utils" || exit 1
 source "${DEPENDENCIES}" || exit 1
 source "${SCRIPT_DIR}/neovim" || exit 1
-source "${SCRIPT_DIR}/utils" || exit 1
+source "${SCRIPT_DIR}/shared" || exit 1
 
 install_rust() {
     if command -v rustc >/dev/null 2>&1; then
