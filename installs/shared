@@ -18,12 +18,12 @@ install_packages_with_pkg_mgr() {
     PACKAGES="$*"
     info "Installing: ${PACKAGES} ..."
     debug "Updating repositories."
-    if ! sudo "${SYSTEM_PKG_MGR}" update -y; then
+    if ! sudo "${PKG_MGR}" update -y; then
         warning "Can not update the package repositories."
     fi
 
     debug "Installing package(s)."
-    if ! sudo "${SYSTEM_PKG_MGR}" install -y "$@"; then
+    if ! sudo "${PKG_MGR}" install -y "$@"; then
         error "Can not install package(s)."
         return 1
     fi
