@@ -7,10 +7,10 @@
 install_pck() {
     if [ ! -z "${PKG_MGR}" ]; then
         warning "Need to set 'PKG_MGR', or call 'identify_system_pkg_mgr'."
-        return 1
+        return 3
     elif [ ! -n "$1" ]; then
         warning "No package given. Please provide at least one packge."
-        return 1
+        return 2
     fi
 
     PACKAGES="$*"
