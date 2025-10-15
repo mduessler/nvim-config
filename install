@@ -48,8 +48,8 @@ main() {
         info "Please install nerd-fonts 'https://github.com/ryanoasis/nerd-fonts'."
     fi
 
-    if ! install_prod_dependencies; then
-        error "Can not install production dependencies."
+    if ! install_prod; then
+        error "Can not install production."
         if ${INSTALL_NERD_FONTS}; then
             kill_nerd_fonts_process
         fi

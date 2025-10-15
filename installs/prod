@@ -10,6 +10,16 @@ source "${DEPENDENCIES}" || exit 1
 source "${SCRIPT_DIR}/neovim" || exit 1
 source "${SCRIPT_DIR}/shared" || exit 1
 
+install_prod() {
+    if ! install_prod_dependencies; then
+        return 1
+    fi
+
+    if ! install_prod_requirements; then
+        return 1
+    fi
+}
+
 rust_installer() {
     if command -v rustc >/dev/null 2>&1; then
         info "Rust is already installed."
@@ -59,10 +69,6 @@ install_prod_dependencies() {
         fi
     fi
 
-    if ! install_requirements; then
-        return 1
-    fi
-
     success "Installed dependencies successfully."
     return 0
 }
@@ -82,7 +88,7 @@ install_dependencies_independent_of_pkg_mgr() {
     return 0
 }
 
-install_requirements() {
+install_prod_requirements() {
     if ! install_lua_pkg "${LUA_REQ[@]}"; then
         error "Can not install lua requirements."
         return 1
