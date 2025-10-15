@@ -40,7 +40,7 @@ for arg in "$@"; do
 done
 
 main() {
-    if $INSTALL_NERD_FONTS; then
+    if ${INSTALL_NERD_FONTS}; then
         init_nerd_process
         info "Cloning nerd-fonts in background."
     else
@@ -50,17 +50,18 @@ main() {
 
     if ! install_prod_dependencies; then
         error "Can not install production dependencies."
-        if $INSTALL_NERD_FONTS; then
+        if ${INSTALL_NERD_FONTS}; then
             kill_nerd_fonts_process
         fi
         return 1
     fi
 
+
     info "Installing language-servers, formaters and linters ... "
     PATH="${CARGO_HOME:-$HOME/.cargo}/bin:$PATH" nvim --headless "+InitNVIM"
     echo "\n"
 
-    if $INSTALL_NERD_FONTS; then
+    if ${INSTALL_NERD_FONTS}; then
         install_nerd_fonts
     fi
 
