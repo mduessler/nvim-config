@@ -13,7 +13,7 @@ SCRIPT_DIR="$(pwd)/scripts"
 . "${SCRIPT_DIR}/install/selene"
 . "${SCRIPT_DIR}/install/lpeglabel"
 . "${SCRIPT_DIR}/install/nerd-fonts"
-. "${SCRIPT_DIR}/install/nvim"
+. "${SCRIPT_DIR}/install/prod/nvim"
 
 main() {
     if [ "$1" = "--nerd-fonts" ]; then
