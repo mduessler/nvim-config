@@ -61,7 +61,7 @@ main() {
             info "No dev install found."
             exit 1
         }
-        if ! install_dev_dependencies; then
+        if ! install_dev; then
             error "Can not install development dependencies."
             if ${INSTALL_NERD_FONTS}; then
                 kill_nerd_fonts_process
