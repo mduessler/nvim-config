@@ -16,7 +16,6 @@ NVIM_PATCH_REQ=4
 
 DEPS=(
     rust
-    go
 )
 
 APT_DEPS=(
