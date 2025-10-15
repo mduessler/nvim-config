@@ -29,7 +29,7 @@ install_rust() {
     return 0
 }
 
-install_dependencies() {
+install_prod_dependencies() {
     info "Installing production dependencies ..."
 
     if [ -z "${PKG_MGR}" ]; then
