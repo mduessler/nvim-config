@@ -1,0 +1,23 @@
+#!/bin/sh
+
+[ -z "$SCRIPT_DIR" ] && SCRIPT_DIR="$(pwd)/../../scripts"
+
+. "${SCRIPT_DIR}/log"
+
+idenfify_pkg_mgr() {
+    if [ -z "$PKG_MGR" ]; then
+        info "Identifing package manger."
+        if command -v apt-get >/dev/null 2>&1; then
+            PKG_MGR="apt-get"
+        elif command -v dnf >/dev/null 2>&1; then
+            PKG_MGR="dnf"
+        else
+            warning "No valid package manager found."
+            return 1
+        fi
+    else
+        debug "Package manager was already defined as '${PKG_MGR}'"
+    fi
+    success "Identified '${PKG_MGR}' as package manager."
+    return 0
+}

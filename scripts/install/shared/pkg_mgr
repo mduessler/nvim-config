@@ -1,3 +1,0 @@
-#!/bin/sh
-
-[ -z "$SCRIPT_DIR" ] && SCRIPT_DIR="$(pwd)/../../scripts"
