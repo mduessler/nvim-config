@@ -27,10 +27,10 @@ developed with NVIM v0.11.4.
 
 ### Actual Installation
 
-To install everything, except *Nerd Fonts*, simply run `./install`. You can
-also install it with Nerd Fonts, but this process takes a very long time
-because it clones the whole Nerd Fonts git repo. For this simply run
-`./install --nerd-fonts`.
+Make is required for installation. To install everything, except *Nerd Fonts*,
+simply run `make install`. You can also install it with Nerd Fonts, but this
+process takes a very long time because it clones the whole Nerd Fonts git repo.
+For this simply run `make install --nerd-fonts`.
 
 Currently, only an automatic installation for Fedora and Ubuntu is implemented.
 The installation script has been tested on Fedora 42 and Ubuntu 24.04. The
