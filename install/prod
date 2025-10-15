@@ -5,6 +5,7 @@ set -e
 [ -z "$SCRIPT_DIR" ] && SCRIPT_DIR="$(pwd)/"
 
 source "${SCRIPT_DIR}/../dependencies"
+source "${SCRIPT_DIR}/neovim"
 source "${SCRIPT_DIR}/utils"
 
 install_rust() {
@@ -57,6 +58,11 @@ install_dependencies() {
         error "Dependency installation failed."
         return 1
     fi
+
+    if ! check_nvim_version; then
+        install_nvim
+    fi
+
     success "Installed dependencies successfully."
 }
 

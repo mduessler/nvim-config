@@ -1,26 +1,11 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
-[ -z "$SCRIPT_DIR" ] && SCRIPT_DIR="$(pwd)/../../scripts"
+set -e
 
-. "${SCRIPT_DIR}/log"
-. "${SCRIPT_DIR}/install/system-dependencies"
+[ -z "$SCRIPT_DIR" ] && SCRIPT_DIR="$(pwd)/"
 
-[ -z "$MAJOR_REQ" ] && MAJOR_REQ=0
-[ -z "$MINOR_REQ" ] && MINOR_REQ=0
-[ -z "$PATCH_REQ" ] && PATCH_REQ=0
-
-install_dependencies() {
-    identify_system_pkg_mgr
-    if [ "${SYSTEM_PKG_MGR}" = "apt-get" ]; then
-        install_pcks ninja-build gettext cmake curl build-essential git
-    elif [ "${SYSTEM_PKG_MGR}" = "dnf" ]; then
-        install_pcks ninja-build cmake gcc make gettext curl glibc-gconv-extra git
-    else
-        warning "No valid package manager found. Skipping installation"
-        return 1
-    fi
-    return 0
-}
+source "${SCRIPT_DIR}/../dependencies"
+source "${SCRIPT_DIR}/utils"
 
 install_nvim() {
     if ! install_dependencies; then
@@ -49,10 +34,6 @@ EOF
     if [ "$MAJOR" -ge "$MAJOR_REQ" ] && [ "$MINOR" -ge "$MINOR_REQ" ] && [ "$PATCH" -ge "$PATCH_REQ" ]; then
         return 0
     fi
-    warning "Neovim version is to low. Try to build from source."
-    if ! install_nvim; then
-        error "Can not build from source. Cancel installation"
-        return 1
-    fi
-    return 0
+    warning "Neovim version is to low."
+    return 1
 }
