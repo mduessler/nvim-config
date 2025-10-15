@@ -90,3 +90,6 @@ RUST_REQ=(
 #
 # Development requirements
 #
+LUA_DEV_REQ=(
+    luaunit
+)
