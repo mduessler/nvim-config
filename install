@@ -50,6 +50,9 @@ main() {
 
     if ! install_prod_dependencies; then
         error "Can not install production dependencies."
+        if $INSTALL_NERD_FONTS; then
+            kill_nerd_fonts_process
+        fi
         return 1
     fi
 
