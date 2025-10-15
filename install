@@ -1,22 +1,42 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 set -e
 
-MAJOR_REQ=0
-MINOR_REQ=11
-PATCH_REQ=4
+NVIM_DEV=false
+INSTALL_NERD_FONTS=false
 
-SCRIPT_DIR="$(pwd)/scripts"
+for arg in "$@"; do
+    case "$arg" in
+        dev)
+            NVIM_DEV=true
+            ;;
+        --nerd-fonts)
+            INSTALL_NERD_FONTS=true
+            ;;
+    esac
+done
 
-. "${SCRIPT_DIR}/log"
-. "${SCRIPT_DIR}/install/system-dependencies"
-. "${SCRIPT_DIR}/install/selene"
-. "${SCRIPT_DIR}/install/lpeglabel"
-. "${SCRIPT_DIR}/install/nerd-fonts"
-. "${SCRIPT_DIR}/install/prod/nvim"
+DEPENDENCIES=$(pwd)/dependencies
+SCRIPT_DIR="$(pwd)/installs"
+
+source "${SCRIPT_DIR}/utils" || {
+    info "No production install found."
+    exit 1
+}
+
+if ! source "${DEPENDENCIES}"; then
+    error "No dependencies found."
+    debug "Expect dependency file at ${DEPENDENCIES}"
+    exit 1
+fi
+
+source "${SCRIPT_DIR}/prod" || {
+    info "No production install found."
+    exit 1
+}
 
 main() {
-    if [ "$1" = "--nerd-fonts" ]; then
+    if $INSTALL_NERD_FONTS; then
         init_clone_process
         info "Cloning nerd-fonts in background."
     else
