@@ -12,11 +12,14 @@ developed with NVIM v0.11.4.
 3. Keep a clean, structured and simple NVIM config, which can be easily
    maintained.
 
-## Dependencies
+## Requirement
 
 - NVIM v0.11.4 or higher
-- [Make](https://www.gnu.org/software/make/) -- Need for installation
 - [Nerd Fonts](https://github.com/ryanoasis/nerd-fonts) -- Need for UI
+
+## Build Dependency
+
+- [Make](https://www.gnu.org/software/make/) -- Need for installation
 
 ## Installation
 
