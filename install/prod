@@ -2,11 +2,11 @@
 
 set -e
 
-[ -z "$SCRIPT_DIR" ] && SCRIPT_DIR="$(pwd)/"
+SCRIPT_DIR="${SCRIPT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
 
-source "${SCRIPT_DIR}/../dependencies"
-source "${SCRIPT_DIR}/neovim"
-source "${SCRIPT_DIR}/utils"
+source "${SCRIPT_DIR}/../dependencies" || exit 1
+source "${SCRIPT_DIR}/neovim" || exit 1
+source "${SCRIPT_DIR}/utils" || exit 1
 
 install_rust() {
     if command -v rustc >/dev/null 2>&1; then
