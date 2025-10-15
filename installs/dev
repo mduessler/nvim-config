@@ -26,6 +26,30 @@ install_dev_dependencies() {
         fi
     fi
 
+    case "${PKG_MGR}" in
+        apt-get) install_docker_ubuntu ;;
+        dnf) install_docker_fedora ;;
+        *)
+            error "Unsupported package manager: ${PKG_MGR}"
+            return 1
+            ;;
+    esac
+}
+
+install_docker_ubuntu() {
+    sudo apt-get remove -y docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc
+    install_packages_with_pkg_mgr ca-certificates
+    sudo install -m 0755 -d /etc/apt/keyrings
+    sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+    sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+    # Add the repository to Apt sources:
+    echo \
+        "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" \
+        | sudo tee /etc/apt/sources.list.d/docker.list >/dev/null
+    sudo apt-get update
+    install_packages_with_pkg_mgr "${APT_DEV_DEPS[@]}"
 }
 
 install_docker_fedora() {
@@ -40,8 +64,10 @@ install_docker_fedora() {
         docker-engine-selinux \
         docker-engine || return 1
     sudo dnf -y install dnf-plugins-core || return 1
-    sudo dnf-3 config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo || return 1
-    install_packages_with_pkg_mgr "${DNF_DEV_DEPS[@]}"
+    sudo dnf-3 config-manager -y --add-repo https://download.docker.com/linux/fedora/docker-ce.repo || return 1
+    install_packages_with_pkg_mgr "${DNF_DEV_DEPS[@]}" || return 1
+
+    success "Installed docker for development environments."
 
 }
 
