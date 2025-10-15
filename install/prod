@@ -59,3 +59,20 @@ install_dependencies() {
     fi
     success "Installed dependencies successfully."
 }
+
+install_requirements() {
+    install_lua_pkg "${LUA_REQ[@]}"
+    if [ $? -ne 0 ]; then
+        error "Can not install lua requirements."
+        return 1
+    fi
+
+    install_rust_pkg "${RUST_REQ[@]}"
+    if [ $? -ne 0 ]; then
+        error "Can not install rust requirements."
+        return 1
+    fi
+
+    success "Installed dependencies successfully."
+
+}
