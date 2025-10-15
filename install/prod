@@ -29,8 +29,6 @@ install_rust() {
 }
 
 install_dependencies() {
-    . "${SCRIPT_DIR}/install/shared/install_dependencies"
-
     info "Installing production dependencies ..."
 
     if [ -z "${PKG_MGR}" ]; then
@@ -39,14 +37,14 @@ install_dependencies() {
         fi
     fi
 
-    if [ "${PKG_MGR}" = "apt-get" ]; then
-        install_packages_with_pkg_mgr "${APT_DEPS[@]}"
-    elif [ "${PKG_MGR}" = "dnf" ]; then
-        install_packages_with_pkg_mgr "${DNF_DEPS[@]}"
-    else
-        error "Can not install dependencies with package manager."
-        return 1
-    fi
+    case "${PKG_MGR}" in
+        apt-get) install_packages_with_pkg_mgr "${APT_DEPS[@]}" ;;
+        dnf) install_packages_with_pkg_mgr "${DNF_DEPS[@]}" ;;
+        *)
+            error "Unsupported package manager: ${PKG_MGR}"
+            return 1
+            ;;
+    esac
 
     if [ $? -ne 0 ]; then
         error "Dependency installation failed."
