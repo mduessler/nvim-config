@@ -1,0 +1,22 @@
+#!/bin/sh
+
+[ -z "$SCRIPT_DIR" ] && SCRIPT_DIR="$(pwd)/../../scripts"
+
+install_lua_pkg() {
+    if ! command -v lua >/dev/null 2>&1; then
+        warning "Rust is not installed or rust and cargo not in '\$PATH'."
+        return 3
+    elif [ ! -n "$1" ]; then
+        warning "No package given. Please provide at least one packge."
+        return 2
+    fi
+    PACKAGES="$*"
+    info "Installing rust package(s): ${PACKAGES} ..."
+    if ! luarocks install --local ${PACKAGES}; then
+        error "Can not install lua package(s)"
+        return 1
+    fi
+
+    success "Installed lua package(s): ${PACKAGES}"
+    return 0
+}
