@@ -18,7 +18,31 @@ install_dev() {
 }
 
 install_dev_dependencies() {
-    info "No deps to install. Continue ..."
+    info "Installing development dependencies ..."
+
+    if [ -z "${PKG_MGR}" ]; then
+        if ! identify_system_pkg_mgr; then
+            return 1
+        fi
+    fi
+
+}
+
+install_docker_fedora() {
+    sudo dnf remove -y docker \
+        docker-client \
+        docker-client-latest \
+        docker-common \
+        docker-latest \
+        docker-latest-logrotate \
+        docker-logrotate \
+        docker-selinux \
+        docker-engine-selinux \
+        docker-engine || return 1
+    sudo dnf -y install dnf-plugins-core || return 1
+    sudo dnf-3 config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo || return 1
+    install_packages_with_pkg_mgr "${DNF_DEV_DEPS[@]}"
+
 }
 
 install_prod_requirements() {
