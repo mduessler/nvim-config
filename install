@@ -41,7 +41,7 @@ done
 
 main() {
     if $INSTALL_NERD_FONTS; then
-        init_clone_process
+        init_nerd_process
         info "Cloning nerd-fonts in background."
     else
         info "Skipping nerd-fonts installation."

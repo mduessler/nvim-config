@@ -35,11 +35,7 @@ init_nerd_process() {
     fi
 }
 
-init_clone_process() {
-    init
-}
-
-wait_for_clone() {
+wait_for_nerd_fonts_process() {
     info "Waiting for clone process to finish"
     tail -f "${TMPFILE}"
     wait "${NERD_FONTS_PROCESS}"
@@ -52,7 +48,7 @@ kill_nerd_fonts_process() {
 }
 
 install_nerd_fonts() {
-    wait_for_clone
+    wait_for_nerd_fonts_process
 
     cd "${NERDPATH}" || return 1
     chmod +x install.sh
