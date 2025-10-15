@@ -4,6 +4,10 @@ env-lua="DockerfileLua"
 
 .PHONY: install build-install build-lua
 
+.ONEHSELL:
+install:
+	$(MAKE) ./install
+
 .SILENT:
 .ONEHSELL:
 build-install:
@@ -15,7 +19,3 @@ build-install:
 build-lua:
 	docker build -f $(env-path)/$(env-lua).ubuntu -t nvim-fedora-lua:test .
 	docker build -f $(env-path)/$(env-lua).ubuntu -t nvim-ubuntu-lua:test .
-
-.ONEHSELL:
-install:
-	$(MAKE) ./install
