@@ -1,12 +1,14 @@
 #!/bin/sh
 
+set -e
+
 [ -z "$SCRIPT_DIR" ] && SCRIPT_DIR="$(pwd)/../../scripts"
 
 install_lua_pkg() {
     if ! command -v lua >/dev/null 2>&1; then
         warning "Rust is not installed or rust and cargo not in '\$PATH'."
         return 3
-    elif [ ! -n "$1" ]; then
+    elif [ $# -eq 0 ]; then
         warning "No package given. Please provide at least one packge."
         return 2
     fi
@@ -25,7 +27,7 @@ install_rust_pkg() {
     if ! command -v rustc >/dev/null 2>&1 || ! command -v cargo >/dev/null 2>&1; then
         warning "Rust is not installed or rust and cargo not in '\$PATH'."
         return 3
-    elif [ ! -n "$1" ]; then
+    elif [ $# -eq 0 ]; then
         warning "No package given. Please provide at least one packge."
         return 2
     fi
