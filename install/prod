@@ -53,17 +53,32 @@ install_dependencies() {
         return 1
     fi
 
-    install_rust
-    if [ $? -ne 0 ]; then
-        error "Dependency installation failed."
+    if ! install_dependencies_independent_of_pkg_mgr; then
         return 1
     fi
 
     if ! check_nvim_version; then
         install_nvim
+        if [ $? -ne 0 ]; then
+            error "Neovim installation failed."
+            return 1
+        fi
     fi
 
     success "Installed dependencies successfully."
+}
+
+install_dependencies_independent_of_pkg_mgr() {
+    for dep in "${DEPS[@]}"; do
+        func="${dep}_installer"
+        if declare -f "$func" >/dev/null; then
+            "$func"
+        fi
+        if [ $? -ne 0 ]; then
+            error "Can not install dependency ${dep}."
+            return 1
+        fi
+    done
 }
 
 install_requirements() {
