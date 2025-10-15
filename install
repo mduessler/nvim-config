@@ -57,6 +57,10 @@ main() {
     fi
 
     if ${NVIM_DEV}; then
+        source "${SCRIPT_DIR}/dev" || {
+            info "No dev install found."
+            exit 1
+        }
         if ! install_dev_dependencies; then
             error "Can not install development dependencies."
             if ${INSTALL_NERD_FONTS}; then
