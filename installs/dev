@@ -73,7 +73,7 @@ install_docker_fedora() {
 
 }
 
-install_prod_requirements() {
+install_dev_requirements() {
     if ! install_lua_pkg "${LUA_DEV_REQ[@]}"; then
         error "Can not install lua requirements."
         return 1
