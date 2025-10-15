@@ -10,6 +10,10 @@
 # Production dependencies
 #
 
+NVIM_MAJOR_REQ=0
+NVIM_MINOR_REQ=11
+NVIM_PATCH_REQ=4
+
 APT_DEPS=(
     build-essential
     clang
