@@ -14,7 +14,7 @@ install_nvim() {
     fi
     GIT_DEST_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/src"
     [ -d "${GIT_DEST_DIR}" ] || mkdir -p "${GIT_DEST_DIR}"
-    git clone https://github.com/neovim/neovim -b "v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ}" "${GIT_DEST_DIR}/neovim" || return 1
+    git clone https://github.com/neovim/neovim -b "v${NVIM_MAJOR_REQ}.${NVIM_MINOR_REQ}.${NVIM_PATCH_REQ}" "${GIT_DEST_DIR}/neovim" || return 1
     debug "Cloned nvim repo"
     cd "${GIT_DEST_DIR}/neovim" || return 1
     make CMAKE_BUILD_TYPE=Release || return 1
@@ -31,7 +31,7 @@ EOF
 
     debug "Installed nvim version is ${NVIM_VERSION_INFO}"
 
-    if [ "$MAJOR" -ge "$MAJOR_REQ" ] && [ "$MINOR" -ge "$MINOR_REQ" ] && [ "$PATCH" -ge "$PATCH_REQ" ]; then
+    if [ "$MAJOR" -ge "$NVIM_MAJOR_REQ" ] && [ "$MINOR" -ge "$NVIM_MINOR_REQ" ] && [ "$PATCH" -ge "$NVIM_PATCH_REQ" ]; then
         return 0
     fi
     warning "Neovim version is to low."
