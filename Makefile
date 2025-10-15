@@ -3,6 +3,8 @@ tests-lua-dir="tests/lua"
 env-fedora="Dockerfile.fedora"
 env-ubuntu="Dockerfile.ubuntu"
 
+.PHONY: install
+
 .SILENT:
 .ONEHSELL:
 build-install:
@@ -14,3 +16,7 @@ build-install:
 build-lua:
 	docker build -f $(tests-lua-dir)/$(env-fedora) -t nvim-fedora-lua:test .
 	docker build -f $(tests-lua-dir)/$(env-ubuntu) -t nvim-ubuntu-lua:test .
+
+.ONEHSELL:
+install:
+	$(MAKE) ./install
