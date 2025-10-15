@@ -68,7 +68,7 @@ install_lua_pkg() {
         fi
 
         info "Installing ${pkg}..."
-        if ! luarocks install "${pkg}"; then
+        if ! luarocks install --local "${pkg}"; then
             error "Failed to install ${pkg}"
             return 1
         fi
