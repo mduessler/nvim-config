@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+SCRIPT_DIR="${SCRIPT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
+DEPENDENCIES="${DEPENDENCIES:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../dependencies}"
+
+source "${SCRIPT_DIR}/utils" || exit 1
+source "${DEPENDENCIES}" || exit 1
+source "${SCRIPT_DIR}/shared" || exit 1
+
+install_dev() {
+    if ! install_dev_dependencies; then
+        return 1
+    fi
+
+    if ! install_dev_requirements; then
+        return 1
+    fi
+}
+
+install_dev_dependencies() {
+    info "No deps to install. Continue ..."
+}
+
+install_prod_requirements() {
+    if ! install_lua_pkg "${LUA_DEV_REQ[@]}"; then
+        error "Can not install lua requirements."
+        return 1
+    fi
+    success "Installed requirements successfully."
+    return 0
+}
