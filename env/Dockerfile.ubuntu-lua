@@ -60,7 +60,8 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y || e
 ENV PATH="${CARGO_HOME}/bin:${PATH}"
 
 # Install selene & lpeglabel
-RUN cargo install selene && luarocks install lpeglabel luaunit || exit 1
+# 2 luarocks installs, since otherwise it chrashed because of incompatible versions.
+RUN cargo install selene && luarocks install lpeglabel && luarocks install luaunit || exit 1
 
 WORKDIR "${NVIM_HOME}"
 
