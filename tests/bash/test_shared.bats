@@ -76,7 +76,6 @@ teardown() {
     }
     run install_lua_pkg "${pkg}"
 
-    echo $output
     [ "$status" -eq 0 ]
     [[ "$output" =~ "${pkg} is already installed, skipping..." ]]
 }
@@ -92,7 +91,6 @@ teardown() {
     }
     run install_lua_pkg "${pkg}"
 
-    echo $output
     [ "$status" -eq 0 ]
     [[ "$output" =~ "Installed ${pkg}." ]]
 }
@@ -108,7 +106,6 @@ teardown() {
     }
     run install_lua_pkg "${pkg}"
 
-    echo $output
     [ "$status" -eq 1 ]
     [[ "$output" =~ "Failed to install ${pkg}." ]]
 }
