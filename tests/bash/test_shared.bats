@@ -38,3 +38,13 @@ teardown() {
     [ "$status" -eq 1 ]
     [[ "$output" =~ "No valid package manager found." ]]
 }
+
+@test "Test pkg manager is set" {
+    check_command() { [ "$1" = "dnf" ] && return 0 || return 1; }
+    PKG_MGR="pacman"
+    identify_system_pkg_mgr
+    status=$?
+
+    [ "$status" -eq 0 ]
+    [ "${PKG_MGR}" = "pacman" ]
+}
