@@ -41,3 +41,20 @@ source "${NVIM_HOME}/installs/utils"
     [ "$status" -eq 0 ]
     [ "$output" = $'' ]
 }
+
+@test "Test debug log NVIM_DEV=false" {
+    local msg="This is a test message"
+    NVIM_DEV=false
+    run debug "${msg}"
+    [ "$status" -eq 0 ]
+    [ "$output" == $'' ]
+}
+
+@test "Test debug log NVIM_DEV=true" {
+    local msg="This is a test message"
+    NVIM_DEV=true
+    run debug "${msg}"
+    [ "$status" -eq 0 ]
+    [[ "$output" =~ "${msg}" ]]
+    [[ "$output" =~ "DEBUG" ]]
+}
