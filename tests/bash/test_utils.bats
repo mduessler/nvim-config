@@ -92,3 +92,15 @@ setup() {
     [[ "$output" =~ "${msg}" ]]
     [[ "$output" =~ "ERROR" ]]
 }
+
+@test "check_command returns 0 for existing command" {
+    check_command ls
+    status=$?
+    [ "$status" -eq 0 ]
+}
+
+@test "check_command returns 1 for non-existing command" {
+    check_command fakecmd123
+    status=$?
+    [ "$status" -eq 1 ]
+}
