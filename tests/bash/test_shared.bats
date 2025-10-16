@@ -5,6 +5,7 @@
 }
 
 setup() {
+    unset PKG_MGR
     source "${NVIM_HOME}/installs/shared"
 }
 
@@ -18,7 +19,7 @@ teardown() {
     status=$?
 
     [ "$status" -eq 0 ]
-    [  "${PKG_MGR}" = "apt-get" ]
+    [ "${PKG_MGR}" = "apt-get" ]
 }
 
 @test "Test 'dnf' pkg manager is identified" {
@@ -27,5 +28,13 @@ teardown() {
     status=$?
 
     [ "$status" -eq 0 ]
-    [  "${PKG_MGR}" = "dnf" ]
+    [ "${PKG_MGR}" = "dnf" ]
+}
+
+@test "Test 'no' pkg manager is identified" {
+    check_command() { [ "$1" = "apk" ] && return 0 || return 1; }
+    run identify_system_pkg_mgr
+
+    [ "$status" -eq 1 ]
+    [[ "$output" =~ "No valid package manager found." ]]
 }
