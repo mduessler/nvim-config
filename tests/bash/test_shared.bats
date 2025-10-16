@@ -8,9 +8,15 @@ setup() {
     source "${NVIM_HOME}/installs/shared"
 }
 
+teardown() {
+    unset PKG_MGR
+}
+
 @test "Test 'apt-get' pkg manager is identified" {
     check_command() { [ "$1" = "apt-get" ] && return 0 || return 1; }
-    run identify_system_pkg_mgr
+    identify_system_pkg_mgr
+    status=$?
+
     [ "$status" -eq 0 ]
-    [[ "${output}" =~ "Identified 'apt-get' as package manager." ]]
+    [  "${PKG_MGR}" = "apt-get" ]
 }
