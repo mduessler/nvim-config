@@ -69,10 +69,10 @@ install_lua_pkg() {
 
         info "Installing ${pkg}..."
         if ! luarocks install --local "${pkg}"; then
-            error "Failed to install ${pkg}"
+            error "Failed to install ${pkg}."
             return 1
         fi
-        success "Installed ${pkg}"
+        success "Installed ${pkg}."
     done
     return 0
 }
