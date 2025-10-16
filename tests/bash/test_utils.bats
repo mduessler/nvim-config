@@ -25,3 +25,9 @@ setup() {
     [ "$status" -eq 0 ]
     [ "$output" = $'\033[32m' ]
 }
+
+@test "color_warning" {
+    run get_log_color "WARNING"
+    [ "$status" -eq 0 ]
+    [ "$output" = $'\033[33m' ]
+}
