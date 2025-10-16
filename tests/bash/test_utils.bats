@@ -1,6 +1,6 @@
 #!/usr/bin/env bats
 
-@test "can run script 'utils'" {
+@test "Test '${NVIM_HOME}/installs/utils' is executeable" {
     "${NVIM_HOME}"/installs/utils
 }
 
