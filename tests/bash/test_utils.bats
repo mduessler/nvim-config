@@ -1,6 +1,6 @@
 #!/usr/bin/env bats
 
-@test "Test '${NVIM_HOME}/installs/utils' exists " {
+@test "[TEST]: '${NVIM_HOME}/installs/utils' exists " {
     [ -f "${NVIM_HOME}"/installs/utils ]
 }
 
@@ -8,43 +8,43 @@ setup() {
     source "${NVIM_HOME}/installs/utils"
 }
 
-@test "Test debug color" {
+@test "[TEST]: debug color" {
     run get_log_color "DEBUG"
     [ "$status" -eq 0 ]
     [ "$output" = $'\033[37m' ]
 }
 
-@test "Test info color" {
+@test "[TEST]: info color" {
     run get_log_color "INFO"
     [ "$status" -eq 0 ]
     [ "$output" = $'\033[34m' ]
 }
 
-@test "Test success color" {
+@test "[TEST]: success color" {
     run get_log_color "SUCCESS"
     [ "$status" -eq 0 ]
     [ "$output" = $'\033[32m' ]
 }
 
-@test "Test warning color" {
+@test "[TEST]: warning color" {
     run get_log_color "WARNING"
     [ "$status" -eq 0 ]
     [ "$output" = $'\033[33m' ]
 }
 
-@test "Test error color" {
+@test "[TEST]: error color" {
     run get_log_color "ERROR"
     [ "$status" -eq 0 ]
     [ "$output" = $'\033[31m' ]
 }
 
-@test "Test wrong color" {
+@test "[TEST]: wrong color" {
     run get_log_color "WRONG"
     [ "$status" -eq 0 ]
     [ "$output" = $'' ]
 }
 
-@test "Test debug log NVIM_DEV=false" {
+@test "[TEST]: debug log NVIM_DEV=false" {
     local msg="This is a test message"
     NVIM_DEV=false
     run debug "${msg}"
@@ -52,7 +52,7 @@ setup() {
     [ -z "$output" ]
 }
 
-@test "Test debug log NVIM_DEV=true" {
+@test "[TEST]: debug log NVIM_DEV=true" {
     local msg="This is a test message"
     NVIM_DEV=true
     run debug "${msg}"
@@ -61,7 +61,7 @@ setup() {
     [[ "$output" =~ "DEBUG" ]]
 }
 
-@test "Test info log" {
+@test "[TEST]: info log" {
     local msg="This is a test message"
     run info "${msg}"
     [ "$status" -eq 0 ]
@@ -69,7 +69,7 @@ setup() {
     [[ "$output" =~ "INFO" ]]
 }
 
-@test "Test success log" {
+@test "[TEST]: success log" {
     local msg="This is a test message"
     run success "${msg}"
     [ "$status" -eq 0 ]
@@ -77,7 +77,7 @@ setup() {
     [[ "$output" =~ "SUCCESS" ]]
 }
 
-@test "Test warning log" {
+@test "[TEST]: warning log" {
     local msg="This is a test message"
     run warning "${msg}"
     [ "$status" -eq 0 ]
@@ -85,7 +85,7 @@ setup() {
     [[ "$output" =~ "WARNING" ]]
 }
 
-@test "Test error log" {
+@test "[TEST]: error log" {
     local msg="This is a test message"
     run error "${msg}"
     [ "$status" -eq 0 ]
@@ -93,13 +93,13 @@ setup() {
     [[ "$output" =~ "ERROR" ]]
 }
 
-@test "check_command returns 0 for existing command" {
+@test "[TEST]: check_command returns 0 for existing command" {
     check_command ls
     status=$?
     [ "$status" -eq 0 ]
 }
 
-@test "check_command returns 1 for non-existing command" {
+@test "[TEST]: check_command returns 1 for non-existing command" {
     check_command fakecmd123
     status=$?
     [ "$status" -eq 1 ]
