@@ -20,3 +20,12 @@ teardown() {
     [ "$status" -eq 0 ]
     [  "${PKG_MGR}" = "apt-get" ]
 }
+
+@test "Test 'dnf' pkg manager is identified" {
+    check_command() { [ "$1" = "dnf" ] && return 0 || return 1; }
+    identify_system_pkg_mgr
+    status=$?
+
+    [ "$status" -eq 0 ]
+    [  "${PKG_MGR}" = "dnf" ]
+}
