@@ -173,3 +173,11 @@ teardown() {
     [ "$status" -eq 1 ]
     [[ "$output" =~ "Failed to install ${pkg}." ]]
 }
+
+@test "[TEST]: install_packages_with_pkg_mgr - PKG_MGR is not set" {
+    unset PKG_MGR
+    run install_packages_with_pkg_mgr
+
+    [ "$status" -eq 3 ]
+    [[ "$output" =~ "Need to set 'PKG_MGR', or call 'identify_system_pkg_mgr'." ]]
+}
