@@ -61,7 +61,7 @@ source "${NVIM_HOME}/installs/utils"
 
 @test "Test info log" {
     local msg="This is a test message"
-    run debug "${msg}"
+    run info "${msg}"
     [ "$status" -eq 0 ]
     [[ "$output" =~ "${msg}" ]]
     [[ "$output" =~ "INFO" ]]
@@ -69,7 +69,7 @@ source "${NVIM_HOME}/installs/utils"
 
 @test "Test success log" {
     local msg="This is a test message"
-    run debug "${msg}"
+    run success "${msg}"
     [ "$status" -eq 0 ]
     [[ "$output" =~ "${msg}" ]]
     [[ "$output" =~ "SUCCESS" ]]
@@ -77,7 +77,7 @@ source "${NVIM_HOME}/installs/utils"
 
 @test "Test warning log" {
     local msg="This is a test message"
-    run debug "${msg}"
+    run warning "${msg}"
     [ "$status" -eq 0 ]
     [[ "$output" =~ "${msg}" ]]
     [[ "$output" =~ "WARNING" ]]
@@ -85,7 +85,7 @@ source "${NVIM_HOME}/installs/utils"
 
 @test "Test error log" {
     local msg="This is a test message"
-    run debug "${msg}"
+    run error "${msg}"
     [ "$status" -eq 0 ]
     [[ "$output" =~ "${msg}" ]]
     [[ "$output" =~ "ERROR" ]]
