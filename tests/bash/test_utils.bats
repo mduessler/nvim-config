@@ -6,37 +6,37 @@
 
 source "${NVIM_HOME}/installs/utils"
 
-@test "color_debug" {
+@test "Test debug color" {
     run get_log_color "DEBUG"
     [ "$status" -eq 0 ]
     [ "$output" = $'\033[37m' ]
 }
 
-@test "color_info" {
+@test "Test info color" {
     run get_log_color "INFO"
     [ "$status" -eq 0 ]
     [ "$output" = $'\033[34m' ]
 }
 
-@test "color_success" {
+@test "Test success color" {
     run get_log_color "SUCCESS"
     [ "$status" -eq 0 ]
     [ "$output" = $'\033[32m' ]
 }
 
-@test "color_warning" {
+@test "Test warning color" {
     run get_log_color "WARNING"
     [ "$status" -eq 0 ]
     [ "$output" = $'\033[33m' ]
 }
 
-@test "color_error" {
+@test "Test error color" {
     run get_log_color "ERROR"
     [ "$status" -eq 0 ]
     [ "$output" = $'\033[31m' ]
 }
 
-@test "color_not_defined" {
+@test "Test wrong color" {
     run get_log_color "WRONG"
     [ "$status" -eq 0 ]
     [ "$output" = $'' ]
