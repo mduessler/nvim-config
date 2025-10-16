@@ -2,9 +2,7 @@
 
 set -e
 
-log() {
-    LEVEL="$1"
-    shift
+get_log_color() {
     case "$LEVEL" in
         DEBUG) COLOR="\033[37m" ;;
         INFO) COLOR="\033[34m" ;;
@@ -13,6 +11,12 @@ log() {
         ERROR) COLOR="\033[31m" ;;
         *) COLOR="" ;;
     esac
+}
+
+log() {
+    LEVEL="$1"
+    shift
+    get_log_color
     printf "%b[%s]%b %-7s| %b%s%b\n" "\033[36m" "$(date +'%H:%M:%S')" "${COLOR}" "${LEVEL}" "\033[37m" "$*" "\033[0m"
 }
 
