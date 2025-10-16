@@ -35,9 +35,9 @@ install_packages_with_pkg_mgr() {
 identify_system_pkg_mgr() {
     if [ -z "${PKG_MGR}" ]; then
         info "Identifing package manger."
-        if command -v apt-get >/dev/null 2>&1; then
+        if check_command apt-get; then
             PKG_MGR="apt-get"
-        elif command -v dnf >/dev/null 2>&1; then
+        elif check_command dnf; then
             PKG_MGR="dnf"
         else
             warning "No valid package manager found."
