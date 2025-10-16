@@ -45,7 +45,7 @@ test-lua-ubuntu: build-lua-ubuntu
 	  --tmpfs /home/tester/.cache/nvim \
 	  nvim-ubuntu:lua-test
 
-test-fedora: test-lua-fedora
+test-fedora: test-install-fedora test-lua-fedora
 
 clean:
 	docker image rm nvim-fedora:lua-test
