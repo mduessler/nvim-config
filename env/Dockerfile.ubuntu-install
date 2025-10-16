@@ -21,4 +21,7 @@ WORKDIR $NVIM_HOME
 
 COPY ./ .
 
+RUN chown -R tester:tester "${HOME}"
+USER tester
+
 ENTRYPOINT ["bats", "tests/bash/tests.bats"]
