@@ -56,3 +56,11 @@ teardown() {
     [ "$status" -eq 3 ]
     [[ "$output" =~ "Lua is not installed or rust and cargo not in '\$PATH'." ]]
 }
+
+@test "[TEST]: install_lua_pkg - lua no package is given" {
+    check_command() { return 0; }
+    run install_lua_pkg
+
+    [ "$status" -eq 2 ]
+    [[ "$output" =~ "No package given. Please provide at least one packge." ]]
+}
