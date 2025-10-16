@@ -52,7 +52,7 @@ identify_system_pkg_mgr() {
 
 install_lua_pkg() {
     if ! check_command lua; then
-        warning "Rust is not installed or rust and cargo not in '\$PATH'."
+        warning "Lua is not installed or rust and cargo not in '\$PATH'."
         return 3
     elif [ $# -eq 0 ]; then
         warning "No package given. Please provide at least one packge."
