@@ -47,7 +47,7 @@ source "${NVIM_HOME}/installs/utils"
     NVIM_DEV=false
     run debug "${msg}"
     [ "$status" -eq 0 ]
-    [ "$output" == $'' ]
+    [ -z "$output" ]
 }
 
 @test "Test debug log NVIM_DEV=true" {
