@@ -176,8 +176,34 @@ teardown() {
 
 @test "[TEST]: install_packages_with_pkg_mgr - PKG_MGR is not set" {
     unset PKG_MGR
-    run install_packages_with_pkg_mgr
+    run install_packages_with_pkg_mgr neovim
 
     [ "$status" -eq 3 ]
     [[ "$output" =~ "Need to set 'PKG_MGR', or call 'identify_system_pkg_mgr'." ]]
+}
+
+@test "[TEST]: install_packages_with_pkg_mgr - No package is given." {
+    identify_system_pkg_mgr
+    run install_packages_with_pkg_mgr
+
+    [ "$status" -eq 2 ]
+    [[ "$output" =~ "No package given. Please provide at least one packge." ]]
+}
+
+@test "[TEST]: install_packages_with_pkg_mgr - package installation is successful." {
+    sudo() { return 0; }
+    identify_system_pkg_mgr
+    run install_packages_with_pkg_mgr neovim
+
+    [ "$status" -eq 0 ]
+    [[ "$output" =~ "Installed packages: neovim" ]]
+}
+
+@test "[TEST]: install_packages_with_pkg_mgr - package installation fails." {
+    sudo() { return 1; }
+    identify_system_pkg_mgr
+    run install_packages_with_pkg_mgr neovim
+
+    [ "$status" -eq 1 ]
+    [[ "$output" =~ "Can not install package(s)." ]]
 }
