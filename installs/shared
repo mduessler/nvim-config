@@ -51,7 +51,7 @@ identify_system_pkg_mgr() {
 }
 
 install_lua_pkg() {
-    if ! command -v lua >/dev/null 2>&1; then
+    if ! check_command lua; then
         warning "Rust is not installed or rust and cargo not in '\$PATH'."
         return 3
     elif [ $# -eq 0 ]; then
@@ -78,7 +78,7 @@ install_lua_pkg() {
 }
 
 install_cargo_pkg() {
-    if ! command -v rustc >/dev/null 2>&1 || ! command -v cargo >/dev/null 2>&1; then
+    if ! check_command rustc || ! check_command cargo; then
         warning "Rust is not installed or rust and cargo not in '\$PATH'."
         return 3
     elif [ $# -eq 0 ]; then
