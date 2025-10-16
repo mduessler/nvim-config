@@ -3,21 +3,23 @@
 set -e
 
 get_log_color() {
-    case "$LEVEL" in
-        DEBUG) COLOR="\033[37m" ;;
-        INFO) COLOR="\033[34m" ;;
-        SUCCESS) COLOR="\033[32m" ;;
-        WARNING) COLOR="\033[33m" ;;
-        ERROR) COLOR="\033[31m" ;;
-        *) COLOR="" ;;
+    local level="$1"
+    case "$level" in
+        DEBUG) printf '\033[37m' ;;
+        INFO) printf '\033[34m' ;;
+        SUCCESS) printf '\033[32m' ;;
+        WARNING) printf '\033[33m' ;;
+        ERROR) printf '\033[31m' ;;
+        *) printf '' ;;
     esac
 }
 
 log() {
-    LEVEL="$1"
+    local level="$1"
     shift
-    get_log_color
-    printf "%b[%s]%b %-7s| %b%s%b\n" "\033[36m" "$(date +'%H:%M:%S')" "${COLOR}" "${LEVEL}" "\033[37m" "$*" "\033[0m"
+    local color
+    color="$(get_log_color "$level")"
+    printf "%b[%s]%b %-7s| %b%s%b\n" "\033[36m" "$(date +'%H:%M:%S')" "${color}" "${level}" "\033[37m" "$*" "\033[0m"
 }
 
 debug() {
