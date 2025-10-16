@@ -96,3 +96,19 @@ teardown() {
     [ "$status" -eq 0 ]
     [[ "$output" =~ "Installed ${pkg}." ]]
 }
+
+@test "[TEST]: install_lua_pkg - lua package installation fails." {
+    local pkg="lpeglabel"
+    check_command() { return 0; }
+    luarocks() {
+        case "$1" in
+            show) return 1 ;;
+            install) return 1 ;;
+        esac
+    }
+    run install_lua_pkg "${pkg}"
+
+    echo $output
+    [ "$status" -eq 1 ]
+    [[ "$output" =~ "Failed to install ${pkg}." ]]
+}
