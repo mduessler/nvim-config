@@ -64,3 +64,19 @@ teardown() {
     [ "$status" -eq 2 ]
     [[ "$output" =~ "No package given. Please provide at least one packge." ]]
 }
+
+@test "[TEST]: install_lua_pkg - lua no package is already installed." {
+    local pkg="lpeglabel"
+    check_command() { return 0; }
+    luarocks() {
+        case "$1" in
+            show) return 0 ;;
+            install) return 0 ;;
+        esac
+    }
+    run install_lua_pkg "${pkg}"
+
+    echo $output
+    [ "$status" -eq 0 ]
+    [[ "$output" =~ "${pkg} is already installed, skipping..." ]]
+}
