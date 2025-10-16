@@ -37,3 +37,9 @@ setup() {
     [ "$status" -eq 0 ]
     [ "$output" = $'\033[33m' ]
 }
+
+@test "color_not_defined" {
+    run get_log_color "WRONG"
+    [ "$status" -eq 0 ]
+    [ "$output" = $'' ]
+}
