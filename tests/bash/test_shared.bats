@@ -1,6 +1,6 @@
 #!/usr/bin/env bats
 
-@test "Test '${NVIM_HOME}/installs/shared' exists" {
+@test "[TEST]: '${NVIM_HOME}/installs/shared' exists" {
     [ -f "${NVIM_HOME}"/installs/shared ]
 }
 
@@ -13,7 +13,7 @@ teardown() {
     unset PKG_MGR
 }
 
-@test "Test 'apt-get' pkg manager is identified" {
+@test "[TEST]: 'apt-get' pkg manager is identified" {
     check_command() { [ "$1" = "apt-get" ] && return 0 || return 1; }
     identify_system_pkg_mgr
     status=$?
@@ -22,7 +22,7 @@ teardown() {
     [ "${PKG_MGR}" = "apt-get" ]
 }
 
-@test "Test 'dnf' pkg manager is identified" {
+@test "[TEST]: 'dnf' pkg manager is identified" {
     check_command() { [ "$1" = "dnf" ] && return 0 || return 1; }
     identify_system_pkg_mgr
     status=$?
@@ -31,7 +31,7 @@ teardown() {
     [ "${PKG_MGR}" = "dnf" ]
 }
 
-@test "Test 'no' pkg manager is identified" {
+@test "[TEST]: 'no' pkg manager is identified" {
     check_command() { [ "$1" = "apk" ] && return 0 || return 1; }
     run identify_system_pkg_mgr
 
@@ -39,7 +39,7 @@ teardown() {
     [[ "$output" =~ "No valid package manager found." ]]
 }
 
-@test "Test pkg manager is set" {
+@test "[TEST]: pkg manager is set" {
     check_command() { [ "$1" = "dnf" ] && return 0 || return 1; }
     PKG_MGR="pacman"
     identify_system_pkg_mgr
