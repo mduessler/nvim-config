@@ -28,7 +28,7 @@ install_packages_with_pkg_mgr() {
         return 1
     fi
 
-    success "Installed packages: ${packages}"
+    success "Installed packages: ${packages}."
     return 0
 }
 
