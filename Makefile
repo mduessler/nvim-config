@@ -16,10 +16,10 @@ build-lua-install:
 	docker build -f $(env-path)/Dockerfile.fedora-install -t nvim-fedora:install-test .
 
 build-lua-fedora:
-	docker build -f $(env-path)/Dockerfile.fedora-lua -t nvim-fedora-lua:test .
+	docker build -f $(env-path)/Dockerfile.fedora-lua -t nvim-fedora:lua-test .
 
 build-lua-ubuntu:
-	docker build -f $(env-path)/Dockerfile.ubuntu-lua -t nvim-ubuntu-lua:test .
+	docker build -f $(env-path)/Dockerfile.ubuntu-lua -t nvim-ubuntu:lua-test .
 
 test-lua-fedora: build-lua-fedora
 	docker run --rm \
@@ -27,7 +27,7 @@ test-lua-fedora: build-lua-fedora
 	  --tmpfs /home/tester/.local/share/nvim \
 	  --tmpfs /home/tester/.local/state/nvim \
 	  --tmpfs /home/tester/.cache/nvim \
-	  nvim-fedora-lua:test
+	  nvim-fedora:lua-test
 
 test-lua-ubuntu: build-lua-ubuntu
 	docker run --rm \
@@ -35,11 +35,11 @@ test-lua-ubuntu: build-lua-ubuntu
 	  --tmpfs /home/tester/.local/share/nvim \
 	  --tmpfs /home/tester/.local/state/nvim \
 	  --tmpfs /home/tester/.cache/nvim \
-	  nvim-ubuntu-lua:test
+	  nvim-ubuntu:lua-test
 
 test-fedora: test-lua-fedora
 
 clean:
-	docker image rm nvim-fedora-lua
-	docker image rm nvim-ubuntu-lua
+	docker image rm nvim-fedora:lua-test
+	docker image rm nvim-ubuntu:lua-test
 	docker image rm nvim-fedora:install-test
