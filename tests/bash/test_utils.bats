@@ -100,7 +100,6 @@ setup() {
 }
 
 @test "[TEST]: check_command returns 1 for non-existing command" {
-    check_command fakecmd123
-    status=$?
+    run check_command fakecmd123
     [ "$status" -eq 1 ]
 }
