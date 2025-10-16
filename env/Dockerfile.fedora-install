@@ -19,4 +19,4 @@ WORKDIR $NVIM_HOME
 
 COPY ./ .
 
-ENTRYPOINT ["/home/tester/.config/nvim/tests/entrypoint"]
+ENTRYPOINT ["bats", "tests/bash/tests.bats"]
