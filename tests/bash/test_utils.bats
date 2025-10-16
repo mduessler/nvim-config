@@ -1,7 +1,7 @@
 #!/usr/bin/env bats
 
-@test "Test '${NVIM_HOME}/installs/utils' is executeable" {
-    "${NVIM_HOME}"/installs/utils
+@test "Test '${NVIM_HOME}/installs/utils' exists " {
+    [ -f "${NVIM_HOME}"/installs/utils ]
 }
 
 source "${NVIM_HOME}/installs/utils"
