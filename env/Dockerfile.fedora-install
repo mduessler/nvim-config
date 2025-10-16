@@ -10,6 +10,9 @@ ENV HOME=/home/tester
 RUN useradd -m -g tester tester
 ENV NVIM_HOME=$HOME/.config/nvim
 
+
+RUN dnf update && dnf install -y git && dnf clean all
+
 ENV BATS_CORE_GIT_DIR="${HOME}/.local/share/src/bats_core"
 RUN git clone https://github.com/bats-core/bats-core.git "${BATS_CORE_GIT_DIR}" || exit 1
 WORKDIR "${BATS_CORE_GIT_DIR}"
