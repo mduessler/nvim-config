@@ -4,7 +4,9 @@
     [ -f "${NVIM_HOME}"/installs/utils ]
 }
 
-source "${NVIM_HOME}/installs/utils"
+setup() {
+    source "${NVIM_HOME}/installs/utils"
+}
 
 @test "Test debug color" {
     run get_log_color "DEBUG"
