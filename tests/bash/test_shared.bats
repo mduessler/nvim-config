@@ -48,3 +48,11 @@ teardown() {
     [ "$status" -eq 0 ]
     [ "${PKG_MGR}" = "pacman" ]
 }
+
+@test "[TEST]: install_lua_pkg - lua is not installed" {
+    check_command() { return 1; }
+    run install_lua_pkg lpeglabel
+
+    [ "$status" -eq 3 ]
+    [[ "$output" =~ "Lua is not installed or rust and cargo not in '\$PATH'." ]]
+}
