@@ -4,9 +4,7 @@
     "${NVIM_HOME}"/installs/utils
 }
 
-setup() {
-    source "${NVIM_HOME}/installs/utils"
-}
+source "${NVIM_HOME}/installs/utils"
 
 @test "color_debug" {
     run get_log_color "DEBUG"
@@ -35,7 +33,7 @@ setup() {
 @test "color_error" {
     run get_log_color "ERROR"
     [ "$status" -eq 0 ]
-    [ "$output" = $'\033[33m' ]
+    [ "$output" = $'\033[31m' ]
 }
 
 @test "color_not_defined" {
