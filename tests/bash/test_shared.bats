@@ -65,7 +65,7 @@ teardown() {
     [[ "$output" =~ "No package given. Please provide at least one packge." ]]
 }
 
-@test "[TEST]: install_lua_pkg - lua no package is already installed." {
+@test "[TEST]: install_lua_pkg - lua package is already installed." {
     local pkg="lpeglabel"
     check_command() { return 0; }
     luarocks() {
