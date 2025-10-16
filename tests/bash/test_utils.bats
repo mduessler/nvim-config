@@ -3,3 +3,13 @@
 @test "can run script 'utils'" {
     "${NVIM_HOME}"/installs/utils
 }
+
+setup() {
+    source "${NVIM_HOME}/installs/utils"
+}
+
+@test "color_debug" {
+    run get_log_color "DEBUG"
+    [ "$status" -eq 0 ]
+    [ "$output" = $'\033[37m' ]
+}
