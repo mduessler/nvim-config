@@ -96,10 +96,10 @@ install_cargo_pkg() {
 
         info "Installing ${pkg}..."
         if ! cargo install "${pkg}"; then
-            error "Failed to install ${pkg}"
+            error "Failed to install ${pkg}."
             return 1
         fi
-        success "Installed ${pkg}"
+        success "Installed ${pkg}."
     done
     return 0
 }
