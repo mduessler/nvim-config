@@ -34,7 +34,9 @@ init_nerd_process() {
 kill_nerd_fonts_process() {
     if ! kill "${NERD_FONTS_PID}"; then
         warning "Can not kill nerd-fonts process '${NERD_FONTS_PID}'."
+        return 1
     fi
+    return 0
 }
 
 install_nerd_fonts() {
