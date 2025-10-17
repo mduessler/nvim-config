@@ -18,7 +18,7 @@ log() {
     local level="$1"
     shift
     local color
-    color="$(get_log_color "$level")"
+    color="$(get_log_color "${level}")"
     printf "%b[%s]%b %-7s| %b%s%b\n" "\033[36m" "$(date +'%H:%M:%S')" "${color}" "${level}" "\033[37m" "$*" "\033[0m"
 }
 
@@ -42,4 +42,72 @@ error() {
 
 check_command() {
     command -v "$1" >/dev/null 2>&1
+}
+
+dir_is_git_repo() {
+    local path=$1
+    if [ $# != 1 ]; then
+        error "Function needs exactly one 'path' argument."
+        return 2
+    fi
+    if git -C "${path}" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+        return 1
+    else
+        return 0
+    fi
+}
+
+pull_git_dir() {
+    local path=$1
+    if [ $# != 1 ]; then
+        error "Function needs exactly one 'path' argument."
+        return 2
+    fi
+    cd path || return 3
+    if ! git pull; then
+        error "Can not pull repo at '${path}'."
+        return 1
+    fi
+    success "Pulled repo at '${path}'."
+    return 0
+}
+
+clone_repo() {
+    if [ $# != 2 ]; then
+        error "Function needs exactly two arguments, 'repo-url' and 'dest-dir'."
+        return 2
+    fi
+    local repo_url=$1
+    local dest_dir=$2
+    local tmpfile pid
+
+    tmpfile=$(mktemp)
+    git clone --progress "$repo_url" "$dest_dir" >"$tmpfile" 2>&1 &
+    pid=$!
+    info "Started to clone with ${pid} "
+    echo "$pid $tmpfile"
+    return 0
+}
+
+wait_for_clone_process() {
+    if [ $# != 2 ]; then
+        error "Function needs exactly two arguments, 'pid' and 'tmpfile'."
+        return 2
+    fi
+    local pid=$1
+    local tmpfile=$2
+    info "Waiting for clone process ${pid} to finish."
+    tail -f "${tmpfile}"
+    wait "${pid}"
+}
+
+kill_clone_process() {
+    if [ $# != 1 ]; then
+        error "Function needs exactly one 'path' argument."
+        return 2
+    fi
+    local pid=$1
+    if ! kill "${NERD_FONTS_PROCESS}"; then
+        warning "Can not kill nerd-fonts process '${NERD_FONTS_PROCESS}'."
+    fi
 }
