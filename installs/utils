@@ -108,11 +108,11 @@ wait_for_clone_process() {
 
 kill_clone_process() {
     if [ $# != 1 ]; then
-        error "Function needs exactly one 'path' argument."
+        error "Function needs exactly one 'pid' argument."
         return 2
     fi
     local pid=$1
-    if ! kill "${NERD_FONTS_PROCESS}"; then
-        warning "Can not kill nerd-fonts process '${NERD_FONTS_PROCESS}'."
-    fi
+    kill "${pid}" || { warning "Can not kill nerd-fonts process '${pid}'." && return 1; }
+    success "Killed process ${pid}."
+    return 0
 }
