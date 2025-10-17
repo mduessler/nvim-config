@@ -110,3 +110,10 @@ setup() {
     [ "$status" -eq 2 ]
     [[ "$output" =~ "Function needs exactly one 'path' argument." ]]
 }
+
+@test "[TEST]: dir_is_git_repo - two arguments given" {
+    run dir_is_git_repo "${HOME}" "test"
+
+    [ "$status" -eq 2 ]
+    [[ "$output" =~ "Function needs exactly one 'path' argument." ]]
+}
