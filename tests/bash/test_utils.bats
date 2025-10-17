@@ -1,11 +1,11 @@
 #!/usr/bin/env bats
 
-@test "[TEST]: '${NVIM_HOME}/installs/utils' exists " {
-    [ -f "${NVIM_HOME}"/installs/utils ]
+@test "[TEST]: '${NVIM_CONFIG}/installs/utils' exists " {
+    [ -f "${NVIM_CONFIG}"/installs/utils ]
 }
 
 setup() {
-    source "${NVIM_HOME}/installs/utils"
+    source "${NVIM_CONFIG}/installs/utils"
 }
 
 @test "[TEST]: debug color" {
