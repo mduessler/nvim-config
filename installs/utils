@@ -68,7 +68,7 @@ pull_git_dir() {
         error "Function needs exactly one 'path' argument."
         return 2
     fi
-    cd "${path}" || return 3
+    cd "${path}" && git checkout HEAD || return 3
     if ! git pull; then
         error "Can not pull repo at '${path}'."
         return 1
