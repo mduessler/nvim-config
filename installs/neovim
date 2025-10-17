@@ -51,10 +51,10 @@ check_nvim_version() {
             warning "Neovim version is v${major}.${minor}.${patch}. But v${NVIM_MAJOR_REQ}.${NVIM_MINOR_REQ}.${NVIM_PATCH_REQ} is needed."
             return 3
         else
-            error "Invalid version format: ${major}.${minor}.${patch}"
+            error "Invalid version format."
             return 1
         fi
     fi
-    warning "Neovim not installed."
+    warning "Neovim is not installed."
     return 2
 }
