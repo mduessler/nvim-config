@@ -11,12 +11,29 @@ source "${DEPENDENCIES}" || exit 1
 install_nvim() {
     GIT_DEST_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/src"
     [ -d "${GIT_DEST_DIR}" ] || mkdir -p "${GIT_DEST_DIR}"
-    git clone https://github.com/neovim/neovim -b "v${NVIM_MAJOR_REQ}.${NVIM_MINOR_REQ}.${NVIM_PATCH_REQ}" "${GIT_DEST_DIR}/neovim" || return 1
-    debug "Cloned nvim repo"
-    cd "${GIT_DEST_DIR}/neovim" || return 1
-    make CMAKE_BUILD_TYPE=Release || return 1
-    sudo make install || return 1
+
+    local nvim_dir=${GIT_DEST_DIR}/neovim
+
+    if [ -d "${nvim_dir}" ] && dir_is_git_repo "${nvim_dir}"; then
+        pull_git_dir "${nvim_dir}" || return 2
+    elif [ ! -d "${nvim_dir}" ]; then
+        read -r pid tmpfile < <(clone_repo https://github.com/neovim/neovim "${nvim_dir}")
+        status=$?
+        if [ "${status}" -ne 0 ]; then
+            error "clone_repo function failed!"
+            return 3
+        fi
+        wait_for_clone_process "${pid}" "${tmpfile}"
+    else
+        error "Directory ${nvim_dir} already exists and is no git repo."
+        return 1
+    fi
+
+    cd "${nvim_dir}" && git checkout "v${NVIM_MAJOR_REQ}.${NVIM_MINOR_REQ}.${NVIM_PATCH_REQ}" || return 4
+    make CMAKE_BUILD_TYPE=Release || return 5
+    sudo make install || return 5
     success "Installed neovim version: $(nvim --version 2>/dev/null | head -n1)"
+    return 0
 }
 
 check_nvim_version() {
