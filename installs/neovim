@@ -19,7 +19,7 @@ install_nvim() {
         debug "Neovim git repo exists. Pulling ..."
         pull_git_dir "${nvim_dir}" || return 2
     elif [ ! -d "${nvim_dir}" ]; then
-        debug "Neovim git repo does not exists. Cloning ..."
+        debug "Neovim git repo not exists. Cloning ..."
         read -r pid tmpfile < <(clone_repo https://github.com/neovim/neovim "${nvim_dir}")
         status=$?
         if [ "${status}" -ne 0 ]; then
