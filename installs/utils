@@ -45,12 +45,16 @@ check_command() {
 }
 
 dir_is_git_repo() {
-    local path=$1
     if [ $# != 1 ]; then
         error "Function needs exactly one 'path' argument."
         return 2
     fi
-    if git -C "${path}" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    local path=$1
+    if [ ! -d "$path" ]; then
+        error "Path '$path' does not exist."
+        return 3
+    fi
+    if ! git -C "${path}" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
         error "Path '${path}' is not a git repo."
         return 1
     fi
