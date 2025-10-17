@@ -40,21 +40,21 @@ install_nvim() {
 }
 
 check_nvim_version() {
-    NVIM_VERSION_INFO=$(nvim --version 2>/dev/null | head -n1 | sed -E 's/^NVIM v([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
-
-    IFS="." read -r MAJOR MINOR PATCH <<EOF
-$NVIM_VERSION_INFO
-EOF
-    if [[ "$MAJOR" =~ ^[0-9]+$ && "$MINOR" =~ ^[0-9]+$ && "$PATCH" =~ ^[0-9]+$ ]]; then
-        debug "Installed nvim version is ${NVIM_VERSION_INFO}"
-
-        if [ "$MAJOR" -ge "$NVIM_MAJOR_REQ" ] && [ "$MINOR" -ge "$NVIM_MINOR_REQ" ] && [ "$PATCH" -ge "$NVIM_PATCH_REQ" ]; then
-            return 0
+    local nvim_version major minor patch
+    if nvim_version=$(nvim --version 2>/dev/null | awk 'NR==1{match($0,/v([0-9]+\.[0-9]+\.[0-9]+)/,a); print a[1]}'); then
+        IFS="." read -r major minor patch <<<"$nvim_version"
+        if [[ "${major}" =~ ^[0-9]+$ && "${minor}" =~ ^[0-9]+$ && "${patch}" =~ ^[0-9]+$ ]]; then
+            debug "Installed nvim version is ${nvim_version}"
+            if [ "${major}" = "$NVIM_MAJOR_REQ" ] && [ "${minor}" = "$NVIM_MINOR_REQ" ] && [ "${patch}" = "$NVIM_PATCH_REQ" ]; then
+                return 0
+            fi
+            warning "Neovim version is to low."
+            return 3
+        else
+            error "Invalid version format: ${major}.${minor}.${patch}"
+            return 1
         fi
-        warning "Neovim version is to low."
-        return 1
-    else
-        error "Invalid version format: ${MAJOR}.${MINOR}.${PATCH}"
     fi
-    return 1
+    warning "Neovim not installed."
+    return 2
 }
