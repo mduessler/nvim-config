@@ -51,10 +51,11 @@ dir_is_git_repo() {
         return 2
     fi
     if git -C "${path}" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+        error "Path '${path}' is not a git repo."
         return 1
-    else
-        return 0
     fi
+    success "Path '${path}' is a git repo."
+    return 0
 }
 
 pull_git_dir() {
