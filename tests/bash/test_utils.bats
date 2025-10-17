@@ -103,3 +103,10 @@ setup() {
     run check_command fakecmd123
     [ "$status" -eq 1 ]
 }
+
+@test "[TEST]: dir_is_git_repo - no argument given" {
+    run dir_is_git_repo
+
+    [ "$status" -eq 2 ]
+    [[ "$output" =~ "Function needs exactly one 'path' argument." ]]
+}
