@@ -215,7 +215,7 @@ teardown() {
     [[ "$output" == *"Function needs exactly two arguments, 'repo-url' and 'dest-dir'."* ]]
 }
 
-@test "[TEST]: clone_repo - two arguments given" {
+@test "[TEST]: clone_repo - clone success" {
     git() {
         echo "mock git called with: $*"
         sleep 1
@@ -223,17 +223,29 @@ teardown() {
     }
     run clone_repo "https://github.com/mduessler/nvim-config.git" "simply-the-best"
 
-    pid=$(echo "$output" | awk '{print $1}')
-    tmpfile=$(echo "$output" | awk '{print $2}')
+    echo "$output"
+    pid=$(echo "$output" | awk '{print $1}' | xargs)
+    tmpfile=$(echo "$output" | awk '{print $2}' | xargs)
 
     [ "$status" -eq 0 ]
-    [[ "${pid}" =~ ^[0-9]+$ ]]
+    [[ ${pid} =~ ^[0-9]+$ ]]
     [[ -f "${tmpfile}" ]]
 }
 
-@test "[TEST]: clone_repo - test path exists." {
-    run clone_repo "fake/pater/aasd"
 
-    [ "$status" -eq 3 ]
-    [[ "$output" == *"Path 'fake/pater/aasd' does not exist."* ]]
+@test "[TEST]: clone_repo - clone fails" {
+    git() {
+        echo "mock git called with: $*"
+        sleep 1
+        return 1
+    }
+    run clone_repo "https://github.com/mduessler/nvim-config.git" "simply-the-best"
+
+    echo "$output"
+    pid=$(echo "$output" | awk '{print $1}' | xargs)
+    tmpfile=$(echo "$output" | awk '{print $2}' | xargs)
+
+    [ "$status" -eq 0 ]
+    [[ ${pid} =~ ^[0-9]+$ ]]
+    [[ -f "${tmpfile}" ]]
 }
