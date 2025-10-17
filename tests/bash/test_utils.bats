@@ -139,3 +139,34 @@ setup() {
     [ "$status" -eq 1 ]
     [[ "$output" == *"Path '${HOME}' is not a git repo."* ]]
 }
+
+@test "[TEST]: pull_git_dir - no argument given" {
+    run pull_git_dir
+
+    [ "$status" -eq 2 ]
+    [[ "$output" == *"Function needs exactly one 'path' argument."* ]]
+}
+
+@test "[TEST]: pull_git_dir - test path exists." {
+    run pull_git_dir "fake/pater/aasd"
+
+    [ "$status" -eq 3 ]
+}
+
+@test "[TEST]: pull_git_dir - success" {
+    git() { return 0; }
+    cd() { return 0; }
+    run pull_git_dir "${HOME}"
+
+    [ "$status" -eq 0 ]
+    [[ "$output" == *"Pulled repo at '${HOME}'."* ]]
+}
+
+@test "[TEST]: pull_git_dir - fail" {
+    git() { return 1; }
+    cd() { return 0; }
+    run pull_git_dir "${HOME}"
+
+    [ "$status" -eq 1 ]
+    [[ "$output" == *"Can not pull repo at '${HOME}'."* ]]
+}
