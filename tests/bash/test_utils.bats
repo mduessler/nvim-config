@@ -124,3 +124,10 @@ setup() {
     [ "$status" -eq 0 ]
     [[ "$output" =~ "Path '${GIT_DIR}/neovim' is a git repo." ]]
 }
+
+@test "[TEST]: dir_is_git_repo - is not a git repo" {
+    run dir_is_git_repo "${HOME}"
+
+    [ "$status" -eq 1 ]
+    [[ "$output" =~ "Path '${HOME}' is not a git repo." ]]
+}
