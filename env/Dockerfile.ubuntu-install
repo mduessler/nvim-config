@@ -8,7 +8,7 @@ RUN mkdir -p /home/tester && groupadd tester
 ENV HOME=/home/tester
 
 RUN useradd -m -g tester tester
-ENV NVIM_HOME=$HOME/.config/nvim
+ENV NVIM_CONFIG=$HOME/.config/nvim
 
 RUN apt-get update && apt-get install --no-install-recommends -y git && rm -rf /var/lib/apt/lists/*
 
@@ -17,7 +17,7 @@ RUN git clone https://github.com/bats-core/bats-core.git "${BATS_CORE_GIT_DIR}" 
 WORKDIR "${BATS_CORE_GIT_DIR}"
 RUN ./install.sh /usr/local
 
-WORKDIR $NVIM_HOME
+WORKDIR $NVIM_CONFIG
 
 COPY ./ .
 
