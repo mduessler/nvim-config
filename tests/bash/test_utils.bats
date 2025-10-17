@@ -211,3 +211,73 @@ setup() {
     [[ ${pid} =~ ^[0-9]+$ ]]
     [[ -f "${tmpfile}" ]]
 }
+
+@test "[TEST]: wait_for_clone_process - two arguments needed" {
+    run wait_for_clone_process
+
+    [ "$status" -eq 2 ]
+    [[ "$output" == *"Function needs exactly two arguments, 'pid' and 'tmpfile'."* ]]
+}
+
+@test "[TEST]: wait_for_clone_process - success" {
+    tmpfile=$(mktemp)
+    pid=12345
+
+    tail() {
+        echo "mock tail $*"
+        return 0
+    }
+    wait() {
+        echo "mock wait $*"
+        return 0
+    }
+
+    run wait_for_clone_process "$pid" "$tmpfile"
+
+    [ "$status" -eq 0 ]
+    [[ "$output" == *"Waiting for clone process $pid to finish."* ]]
+
+    rm -f "$tmpfile"
+}
+
+@test "[TEST]: wait_for_clone_process - tail fails" {
+    tmpfile=$(mktemp)
+    pid=12345
+
+    tail() {
+        echo "mock tail $*"
+        return 1
+    }
+    wait() {
+        echo "mock wait $*"
+        return 0
+    }
+
+    run wait_for_clone_process "$pid" "$tmpfile"
+
+    [ "$status" -eq 3 ]
+    [[ "$output" == *"Can not tail ${tmpfile}."* ]]
+
+    rm -f "$tmpfile"
+}
+
+@test "[TEST]: wait_for_clone_process - wait fails" {
+    tmpfile=$(mktemp)
+    pid=12345
+
+    tail() {
+        echo "mock tail $*"
+        return 0
+    }
+    wait() {
+        echo "mock wait $*"
+        return 1
+    }
+
+    run wait_for_clone_process "$pid" "$tmpfile"
+
+    [ "$status" -eq 1 ]
+    [[ "$output" == *"Can not wait ${pid}."* ]]
+
+    rm -f "$tmpfile"
+}
