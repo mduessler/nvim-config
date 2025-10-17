@@ -207,3 +207,33 @@ teardown() {
     [ "$status" -eq 1 ]
     [[ "$output" =~ "Can not install package(s)." ]]
 }
+
+@test "[TEST]: clone_repo - two arguments needed" {
+    run clone_repo
+
+    [ "$status" -eq 2 ]
+    [[ "$output" == *"Function needs exactly two arguments, 'repo-url' and 'dest-dir'."* ]]
+}
+
+@test "[TEST]: clone_repo - two arguments given" {
+    git() {
+        echo "mock git called with: $*"
+        sleep 1
+        return 0
+    }
+    run clone_repo "https://github.com/mduessler/nvim-config.git" "simply-the-best"
+
+    pid=$(echo "$output" | awk '{print $1}')
+    tmpfile=$(echo "$output" | awk '{print $2}')
+
+    [ "$status" -eq 0 ]
+    [[ "${pid}" =~ ^[0-9]+$ ]]
+    [[ -f "${tmpfile}" ]]
+}
+
+@test "[TEST]: clone_repo - test path exists." {
+    run clone_repo "fake/pater/aasd"
+
+    [ "$status" -eq 3 ]
+    [[ "$output" == *"Path 'fake/pater/aasd' does not exist."* ]]
+}
