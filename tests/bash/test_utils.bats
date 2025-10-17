@@ -117,3 +117,10 @@ setup() {
     [ "$status" -eq 2 ]
     [[ "$output" =~ "Function needs exactly one 'path' argument." ]]
 }
+
+@test "[TEST]: dir_is_git_repo - is a git repo" {
+    run dir_is_git_repo "${GIT_DIR}/neovim"
+
+    [ "$status" -eq 0 ]
+    [[ "$output" =~ "Path '${GIT_DIR}/neovim' is a git repo." ]]
+}
