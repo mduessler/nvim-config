@@ -10,10 +10,10 @@ source "${DEPENDENCIES}" || exit 1
 
 install_nvim() {
     info "Installing neovim."
-    GIT_DEST_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/src"
-    [ -d "${GIT_DEST_DIR}" ] || mkdir -p "${GIT_DEST_DIR}"
+    local git_dest_dir="${XDG_DATA_HOME:-$HOME/.local/share}/src"
+    [ -d "${git_dest_dir}" ] || mkdir -p "${git_dest_dir}"
 
-    local nvim_dir=${GIT_DEST_DIR}/neovim
+    local nvim_dir=${git_dest_dir}/neovim
 
     if [ -d "${nvim_dir}" ] && dir_is_git_repo "${nvim_dir}"; then
         debug "Neovim git repo exists. Pulling ..."
