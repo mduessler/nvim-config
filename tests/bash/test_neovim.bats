@@ -5,5 +5,6 @@
 }
 
 setup() {
+    source "${NVIM_CONFIG}/dependencies"
     source "${NVIM_CONFIG}/installs/neovim"
 }
