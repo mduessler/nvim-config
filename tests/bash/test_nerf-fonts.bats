@@ -56,3 +56,17 @@ teardown() {
     run init_nerd_process
     [ "$status" -eq 3 ]
 }
+
+@test "[TEST]: kill_nerd_fonts_process - kill success" {
+    kill() { return 0; }
+
+    run kill_nerd_fonts_process
+    [ "$status" -eq 0 ]
+}
+
+@test "[TEST]: kill_nerd_fonts_process - kill fails" {
+    kill() { return 1; }
+
+    run kill_nerd_fonts_process
+    [ "$status" -eq 1 ]
+}
