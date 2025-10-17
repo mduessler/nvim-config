@@ -101,8 +101,17 @@ wait_for_clone_process() {
     local pid=$1
     local tmpfile=$2
     info "Waiting for clone process ${pid} to finish."
-    tail -f "${tmpfile}" || { error "Can not tail ${tmpfile}." && return 3; }
-    wait "${pid}" || { error "Can not wait ${pid}." && return 1; }
+    tail -f "${tmpfile}" &
+    local tail_pid=$!
+
+    if ! wait "${pid}"; then
+        error "Clone process ${pid} failed."
+        kill "${tail_pid}" 2>/dev/null || true
+        return 1
+    fi
+
+    kill "${tail_pid}" 2>/dev/null || true
+    info "Clone process ${pid} completed successfully."
     return 0
 }
 
