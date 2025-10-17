@@ -48,7 +48,7 @@ check_nvim_version() {
             if [ "${major}" = "$NVIM_MAJOR_REQ" ] && [ "${minor}" = "$NVIM_MINOR_REQ" ] && [ "${patch}" = "$NVIM_PATCH_REQ" ]; then
                 return 0
             fi
-            warning "Neovim version is to low."
+            warning "Neovim version is v${major}.${minor}.${patch}. But v${NVIM_MAJOR_REQ}.${NVIM_MINOR_REQ}.${NVIM_PATCH_REQ} is needed."
             return 3
         else
             error "Invalid version format: ${major}.${minor}.${patch}"
