@@ -9,14 +9,17 @@ source "${SCRIPT_DIR}/utils" || exit 1
 source "${DEPENDENCIES}" || exit 1
 
 install_nvim() {
+    info "Installing neovim."
     GIT_DEST_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/src"
     [ -d "${GIT_DEST_DIR}" ] || mkdir -p "${GIT_DEST_DIR}"
 
     local nvim_dir=${GIT_DEST_DIR}/neovim
 
     if [ -d "${nvim_dir}" ] && dir_is_git_repo "${nvim_dir}"; then
+        debug "Neovim git repo exists. Pulling ..."
         pull_git_dir "${nvim_dir}" || return 2
     elif [ ! -d "${nvim_dir}" ]; then
+        debug "Neovim git repo does not exists. Cloning ..."
         read -r pid tmpfile < <(clone_repo https://github.com/neovim/neovim "${nvim_dir}")
         status=$?
         if [ "${status}" -ne 0 ]; then
@@ -28,7 +31,7 @@ install_nvim() {
         error "Directory ${nvim_dir} already exists and is no git repo."
         return 1
     fi
-
+    debug "Change workdir to ${nvim_dir} and install neovim v${NVIM_MAJOR_REQ}.${NVIM_MINOR_REQ}.${NVIM_PATCH_REQ}"
     cd "${nvim_dir}" && git checkout "v${NVIM_MAJOR_REQ}.${NVIM_MINOR_REQ}.${NVIM_PATCH_REQ}" || return 4
     make CMAKE_BUILD_TYPE=Release || return 5
     sudo make install || return 5
