@@ -89,7 +89,6 @@ clone_repo() {
     tmpfile=$(mktemp)
     git clone --progress "$repo_url" "$dest_dir" >"$tmpfile" 2>&1 &
     pid=$!
-    info "Started to clone with ${pid} "
     echo "$pid $tmpfile"
     return 0
 }
