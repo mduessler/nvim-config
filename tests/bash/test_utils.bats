@@ -281,3 +281,28 @@ setup() {
 
     rm -f "$tmpfile"
 }
+
+@test "[TEST]: kill_clone_process - one argument needed" {
+    run kill_clone_process
+
+    [ "$status" -eq 2 ]
+    [[ "$output" == *"Function needs exactly one 'pid' argument."* ]]
+}
+
+@test "[TEST]: kill_clone_process - success" {
+    kill() { return 0; }
+    pid=12345
+    run kill_clone_process ${pid}
+
+    [ "$status" -eq 0 ]
+    [[ "$output" == *"Killed process ${pid}."* ]]
+}
+
+@test "[TEST]: kill_clone_process - fails" {
+    kill() { return 1; }
+    pid=12345
+    run kill_clone_process ${pid}
+
+    [ "$status" -eq 1 ]
+    [[ "$output" == *"Can not kill nerd-fonts process '${pid}'."* ]]
+}
