@@ -7,7 +7,7 @@ source "${SCRIPT_DIR}/utils" || exit 1
 TMPFILE=""
 NERD_FONTS_PID=""
 
-init_new() {
+init_nerd_process() {
     local git_dest_dir="${XDG_DATA_HOME:-$HOME/.local/share}/src"
     NERD_FONTS_DIR="${git_dest_dir}/nerd-fonts"
 
