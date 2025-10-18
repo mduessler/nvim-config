@@ -323,15 +323,9 @@ setup() {
     rm -f "$tmpfile"
 }
 
-@test "[TEST]: kill_clone_process - one argument needed" {
-    run kill_clone_process
-
-    [ ${status} -eq 2 ]
-    [[ ${output} == *"Function needs exactly one 'pid' argument."* ]]
-}
-
-@test "[TEST]: kill_clone_process - success" {
+@test "kill_clone_process: Function executed successfully" {
     kill() { return 0; }
+
     pid=12345
     run kill_clone_process ${pid}
 
@@ -339,11 +333,26 @@ setup() {
     [[ ${output} == *"Killed process ${pid}."* ]]
 }
 
-@test "[TEST]: kill_clone_process - fails" {
+@test "wait_for_clone_process: Function arguments do not match - no argument is given." {
+    run kill_clone_process
+
+    [ ${status} -eq 2 ]
+    [[ ${output} == *"Function needs exactly one 'pid' argument."* ]]
+}
+
+@test "wait_for_clone_process: Function arguments do not match - two arguments are given." {
+    run kill_clone_process
+
+    [ ${status} -eq 2 ]
+    [[ ${output} == *"Function needs exactly one 'pid' argument."* ]]
+}
+
+@test "wait_for_clone_process: Command to kill failed." {
     kill() { return 1; }
     pid=12345
+
     run kill_clone_process ${pid}
 
-    [ ${status} -eq 1 ]
+    [ ${status} -eq 3 ]
     [[ ${output} == *"Can not kill nerd-fonts process '${pid}'."* ]]
 }
