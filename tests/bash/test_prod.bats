@@ -65,5 +65,5 @@ setup() {
     run install_prod
 
     [ ${status} -eq 2 ]
-    [[ ${output} = "Curl exited with 2." ]]
+    [[ ${output} = "Curl exited with 1 and sh exited with 0." ]]
 }
