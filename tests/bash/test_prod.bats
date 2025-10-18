@@ -158,3 +158,12 @@ setup() {
     [ ${status} -eq 5 ]
     [[ ${output} == *"Can not install neovim."* ]]
 }
+
+@test "install_dependencies_independent_of_pkg_mgr: Function executed successfully" {
+    install_rust() { return 0; }
+    DEPS=(rust)
+    DEPS=${DEPS[*]} run install_dependencies_independent_of_pkg_mgr
+
+    [ ${status} -eq 0 ]
+    [[ ${output} == *"Installed all production dependencies defined in \$DEPS"* ]]
+}
