@@ -79,7 +79,7 @@ setup() {
     [[ ${output} =~ "INFO" ]]
 }
 
-@test "[TEST]: success log" {
+@test "success: Verify message is printed." {
     local msg="This is a test message"
     run success "${msg}"
     [ ${status} -eq 0 ]
