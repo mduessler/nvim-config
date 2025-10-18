@@ -130,7 +130,7 @@ function main() {
     char="-"
     string=$(printf '%.0s'"${char}" $(seq 1 $((width + 34))))
     for i in "${!BASH_TEST_FILES[@]}"; do
-        if ! ${failures}; then
+        if ! ${failures} && [[ ${BASH_STATUS_TESTS[${i}]} -ne 0 ]]; then
             printf "%s\n" "${string}"
         fi
         if [[ ${BASH_STATUS_TESTS[${i}]} -ne 0 ]]; then
