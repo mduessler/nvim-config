@@ -8,7 +8,7 @@ setup() {
     source "${NVIM_CONFIG}/installs/utils"
 }
 
-@test "[TEST]: debug color" {
+@test "get_log_color: Verify that the debug colour is correct." {
     run get_log_color "DEBUG"
     [ "$status" -eq 0 ]
     [ "$output" = $'\033[37m' ]
