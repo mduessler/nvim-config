@@ -206,3 +206,14 @@ setup() {
     [ ${status} -eq 2 ]
     [[ ${output} == *"Can not install lua requirements."* ]]
 }
+
+@test "install_prod_requirements: Installation of rust requirements fail" {
+    install_lua_pkg() { return 0; }
+    install_cargo_pkg() { return 1; }
+    RUST_REQ=(selene)
+    LUA_REQ=(selene)
+    RUST_REQ=${RUST_REQ[*]} LUA_REQ=${LUA_REQ[*]} run install_prod_requirements
+
+    [ ${status} -eq 3 ]
+    [[ ${output} == *"Can not install rust requirements."* ]]
+}
