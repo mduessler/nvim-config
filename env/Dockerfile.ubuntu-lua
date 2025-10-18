@@ -1,6 +1,7 @@
 FROM ubuntu:24.04
 
 ENV DISPLAY=:99
+ENV TERM=xterm
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # Create TestUser
@@ -29,6 +30,11 @@ ENV NVIM_GIT_DIR="${HOME}/.local/share/src/neovim"
 RUN git clone https://github.com/neovim/neovim -b "v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ}" "${NVIM_GIT_DIR}"
 WORKDIR "${NVIM_GIT_DIR}"
 RUN make CMAKE_BUILD_TYPE=Release && make install
+
+ENV BATS_CORE_GIT_DIR="${HOME}/.local/share/src/bats_core"
+RUN git clone https://github.com/bats-core/bats-core.git "${BATS_CORE_GIT_DIR}" || exit 1
+WORKDIR "${BATS_CORE_GIT_DIR}"
+RUN ./install.sh /usr/local
 
 WORKDIR "${HOME}"
 # Installing dependencies for nvim plugins.
@@ -65,11 +71,24 @@ RUN cargo install selene && luarocks install lpeglabel && luarocks install luaun
 
 WORKDIR "${NVIM_CONFIG}"
 
-COPY . ./
+COPY ./init.lua .
+COPY ./lua/lsp ./lua/lsp
+COPY ./lua/utils ./lua/utils
+COPY ./lua/config ./lua/config
+COPY ./lua/plugins ./lua/plugins
+COPY ./lazy-lock.json ./lazy-lock.json
 
 RUN chown -R tester:tester "${HOME}"
 USER tester
 
 RUN nvim --headless "+InitNVIM"
 
-ENTRYPOINT ["lua", "tests/lua/tests.lua"]
+COPY ./lua/core ./lua/core
+COPY ./installs .
+COPY ./install .
+COPY ./tests .
+COPY ./Makefile .
+
+COPY ./env/entrypoint ./env/entrypoint
+
+ENTRYPOINT ["./env/entrypoint"]
