@@ -69,11 +69,13 @@ setup() {
     [[ ${output} =~ "DEBUG" ]]
 }
 
-@test "[TEST]: info log" {
+@test "info: Verify message is printed." {
     local msg="This is a test message"
+
     run info "${msg}"
+
     [ ${status} -eq 0 ]
-    [[ ${output} =~ "${msg}" ]]
+    [[ ${output} == *"${msg}"* ]]
     [[ ${output} =~ "INFO" ]]
 }
 
