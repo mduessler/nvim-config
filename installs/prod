@@ -109,6 +109,6 @@ install_prod_requirements() {
         return 3
     fi
 
-    success "Installed requirements successfully."
+    success "Requirements have been successfully installed."
     return 0
 }
