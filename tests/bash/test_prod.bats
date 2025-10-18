@@ -56,3 +56,13 @@ setup() {
     [ ${status} -eq 0 ]
     [[ ${output} = "Rust is already installed." ]]
 }
+@test "rust_installer: Function can not download rust installer." {
+    check_command() { return 1; }
+    curl() { return 1; }
+    sh() { return 0; }
+
+    run install_prod
+
+    [ ${status} -eq 2 ]
+    [[ ${output} = "Curl exited with 2." ]]
+}
