@@ -25,3 +25,12 @@ setup() {
     [ ${status} -eq 2 ]
     [[ ${output} = "Can not install production dependencies." ]]
 }
+
+@test "install_prod: Function cannot install production requirements" {
+    install_prod_depnendencies() { return 0; }
+    install_prod_requirements() { return 1; }
+    run install_prod
+
+    [ ${status} -eq 3 ]
+    [[ ${output} = "Can not install production requirements." ]]
+}
