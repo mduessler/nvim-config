@@ -81,3 +81,20 @@ setup() {
     [ ${status} -eq 2 ]
     [[ ${output} == *"Curl exited with 0 and sh exited with 1."* ]]
 }
+
+@test "install_prod_dependencies: Function executed successfully" {
+    identify_system_pkg_mgr() { return 0; }
+    install_packages_with_pkg_mgr() { return 0; }
+    install_dependencies_independent_of_pkg_mgr() { return 0; }
+    check_nvim_version() { return 0; }
+
+    PKG_MGR="apt-get" run install_prod_dependencies
+
+    [ ${status} -eq 0 ]
+    [[ ${output} == *"Dependencies has been successfully installed."* ]]
+
+    PKG_MGR="dnf" run install_prod_dependencies
+
+    [ ${status} -eq 0 ]
+    [[ ${output} == *"Dependencies has been successfully installed."* ]]
+}
