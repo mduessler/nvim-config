@@ -167,3 +167,12 @@ setup() {
     [ ${status} -eq 0 ]
     [[ ${output} == *"Installed all production dependencies defined in \$DEPS"* ]]
 }
+
+@test "install_dependencies_independent_of_pkg_mgr: Dependency function failed." {
+    install_rust() { return 1; }
+    DEPS=(rust)
+    DEPS=${DEPS[*]} run install_dependencies_independent_of_pkg_mgr
+
+    [ ${status} -eq 2 ]
+    [[ ${output} == *"Failed to install dependency: ${DEPS[0]}"* ]]
+}
