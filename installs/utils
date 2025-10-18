@@ -73,7 +73,7 @@ pull_git_dir() {
 
     if ! git pull; then
         error "Can not pull repo at '${path}'."
-        return 1
+        return 4
     fi
     success "Pulled repo at '${path}'."
     return 0
