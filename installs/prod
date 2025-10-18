@@ -33,7 +33,7 @@ rust_installer() {
     CARGO_HOME="${CARGO_HOME:-$HOME/.cargo}"
     debug "CARGO_HOME is set to '${CARGO_HOME}'."
 
-    info "Downloading and install rust..."
+    debug "Downloading and install rust..."
     if ! curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y; then
         error "Installation of rust failed."
         return 1
