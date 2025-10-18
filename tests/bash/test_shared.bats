@@ -24,13 +24,15 @@ teardown() {
     [[ ${output} == *"Identified '${pkg_mgr}' as package manager."* ]]
 }
 
-@test "[TEST]: 'dnf' pkg manager is identified" {
-    check_command() { [ "$1" = "dnf" ] && return 0 || return 1; }
-    identify_system_pkg_mgr
-    status=$?
+@test "identify_system_pkg_mgr: Function executed successfully – case dnf pkg manager identified" {
+    local pkg_mgr="dnf"
+    check_command() { [ "$1" = "${pkg_mgr}" ] && return 0 || return 1; }
 
-    [ "$status" -eq 0 ]
-    [ "${PKG_MGR}" = "dnf" ]
+    run identify_system_pkg_mgr
+
+    [ ${status} -eq 0 ]
+    [ "${PKG_MGR}" = "${pkg_mgr}" ]
+    [[ ${output} == *"Identified '${pkg_mgr}' as package manager."* ]]
 }
 
 @test "[TEST]: 'no' pkg manager is identified" {
