@@ -35,22 +35,23 @@ teardown() {
     [[ ${output} == *"Identified '${pkg_mgr}' as package manager."* ]]
 }
 
+@test "identify_system_pkg_mgr: Function executed successfully – case pacman pkg manager identified" {
+    local pkg_mgr="pacman"
+    check_command() { [ "$1" = "dnf" ] && return 0 || return 1; }
+
+    run identify_system_pkg_mgr
+
+    [ ${status} -eq 0 ]
+    [ "${PKG_MGR}" = "${pkg_mgr}" ]
+    [[ ${output} == *"Identified '${pkg_mgr}' as package manager."* ]]
+}
+
 @test "[TEST]: 'no' pkg manager is identified" {
     check_command() { [ "$1" = "apk" ] && return 0 || return 1; }
     run identify_system_pkg_mgr
 
     [ "$status" -eq 1 ]
     [[ "$output" =~ "No valid package manager found." ]]
-}
-
-@test "[TEST]: pkg manager is set" {
-    check_command() { [ "$1" = "dnf" ] && return 0 || return 1; }
-    PKG_MGR="pacman"
-    identify_system_pkg_mgr
-    status=$?
-
-    [ "$status" -eq 0 ]
-    [ "${PKG_MGR}" = "pacman" ]
 }
 
 @test "[TEST]: install_lua_pkg - lua is not installed" {
