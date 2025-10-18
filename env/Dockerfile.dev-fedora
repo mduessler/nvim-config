@@ -58,11 +58,24 @@ RUN cargo install selene && luarocks install lpeglabel && luarocks install luaun
 
 WORKDIR "${NVIM_CONFIG}"
 
-COPY . ./
+COPY ./init.lua .
+COPY ./lua/lsp ./lua/lsp
+COPY ./lua/utils ./lua/utils
+COPY ./lua/config ./lua/config
+COPY ./lua/plugins ./lua/plugins
+COPY ./lazy-lock.json ./lazy-lock.json
 
 RUN chown -R tester:tester "${HOME}"
 USER tester
 
 RUN nvim --headless "+InitNVIM"
 
-ENTRYPOINT ["env/entrypoint"]
+COPY ./lua/core ./lua/core
+COPY ./installs .
+COPY ./install .
+COPY ./tests .
+COPY ./Makefile .
+
+COPY ./env/entrypoint ./env/entrypoint
+
+ENTRYPOINT ["./env/entrypoint"]
