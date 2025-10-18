@@ -24,7 +24,7 @@ install_prod() {
     return 0
 }
 
-rust_installer() {
+install_rust() {
     if check_command rustc; then
         info "Rust is already installed."
         return 0
@@ -80,7 +80,7 @@ install_prod_dependencies() {
 
 install_dependencies_independent_of_pkg_mgr() {
     for dep in "${DEPS[@]}"; do
-        func="${dep}_installer"
+        func="install_${dep}"
         if declare -f "$func" >/dev/null; then
             if ! "$func"; then
                 error "Failed to install dependency: ${dep}"
