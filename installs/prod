@@ -101,12 +101,12 @@ install_dependencies_independent_of_pkg_mgr() {
 install_prod_requirements() {
     if ! install_lua_pkg "${LUA_REQ[@]}"; then
         error "Can not install lua requirements."
-        return 1
+        return 2
     fi
 
     if ! install_cargo_pkg "${RUST_REQ[@]}"; then
         error "Can not install rust requirements."
-        return 1
+        return 3
     fi
 
     success "Installed requirements successfully."
