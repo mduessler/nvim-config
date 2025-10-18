@@ -35,6 +35,8 @@ install_rust() {
 
     debug "Downloading and install rust..."
     if ! curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y; then
+        debug "Curl exited with ${PIPESTATUS[0]}."
+        debug "SH exited with ${PIPESTATUS[0]}."
         error "Installation of rust failed."
         return 2
     fi
