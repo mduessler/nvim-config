@@ -121,7 +121,7 @@ setup() {
     PKG_MGR="pacman" run install_prod_dependencies
 
     [ ${status} -eq 3 ]
-    [[ ${output} == *"Unsupported package manager: apt-get"* ]]
+    [[ ${output} == *"Unsupported package manager: pacman"* ]]
 }
 
 @test "install_prod_dependencies: Function can not install packages without package manager" {
