@@ -176,3 +176,11 @@ setup() {
     [ ${status} -eq 2 ]
     [[ ${output} == *"Failed to install dependency: ${DEPS[0]}"* ]]
 }
+
+@test "install_dependencies_independent_of_pkg_mgr: Dependency installation function implemented." {
+    DEPS=(bash)
+    DEPS=${DEPS[*]} run install_dependencies_independent_of_pkg_mgr
+
+    [ ${status} -eq 3 ]
+    [[ ${output} == *"Failed to install dependency: ${DEPS[0]}"* ]]
+}
