@@ -39,6 +39,7 @@ rust_installer() {
         return 2
     fi
     echo ":$PATH:" | grep -q ":${CARGO_HOME}/bin:" || export PATH="${CARGO_HOME}/bin:${PATH}"
+    debug "Added '${CARGO_HOME}/bin' to PATH $"
 
     success "Installed rust."
     return 0
