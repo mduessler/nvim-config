@@ -48,7 +48,7 @@ tests-fedora: build-fedora
 	  --tmpfs /home/tester/.cache/nvim \
 	  nvim-fedora:test
 
-tests-ubuntu: build-lua-ubuntu
+tests-ubuntu: build-ubuntu
 	docker run --rm \
 	  -v "$$HOME/.config/nvim:/home/tester/.config/nvim:ro" \
 	  --tmpfs /home/tester/.local/share/nvim \
