@@ -22,10 +22,28 @@ function execute_bash_tests() {
     for test in "${BASH_TEST_FILES[@]}"; do
         output=$(bats "${BASH_TESTS_DIR}/${test}")
         status="$?"
+        count_tests "${output}"
         if [ ${status} -ne 0 ]; then
             printf "%s" "${status}"
         fi
     done
+}
+
+function count_tests() {
+    output=$1
+    regex_success="^(ok [1-9]+ ).*$"
+    regex_failure="^(not ok [1-9]+ ).*$"
+    local counter_success=0
+    local counter_failure=0
+    while IFS= read -r line; do
+        if [[ ${line} =~ ${regex_success} ]]; then
+            ((counter_success++))
+        elif [[ ${line} =~ ${regex_failure} ]]; then
+            ((counter_failure++))
+        fi
+    done <<<"${output}"
+    COUNTER_SUCCESS_TESTS+=(counter_success)
+    COUNTER_FAILURE_TESTS+=(counter_failure)
 }
 
 get_bash_test_files
