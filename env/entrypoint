@@ -43,8 +43,8 @@ function count_tests() {
             ((counter_failure++))
         fi
     done <<<"${output}"
-    BASH_COUNTER_SUCCESS_TESTS+=("$counter_success")
-    BASH_COUNTER_FAILURE_TESTS+=("$counter_failure")
+    BASH_COUNTER_SUCCESS_TESTS+=("${counter_success}")
+    BASH_COUNTER_FAILURE_TESTS+=("${counter_failure}")
 }
 
 function print_wrong_output() {
@@ -62,5 +62,8 @@ function print_wrong_output() {
     done <<<"$output"
 }
 
-get_bash_test_files
-execute_bash_tests
+function main() {
+    printf "-------------------------- Starting Tests --------------------------\n"
+    get_bash_test_files
+    execute_bash_tests
+}
