@@ -40,6 +40,8 @@ dependencies:
 
 ### Naming
 
+All functions must be tested in ascending order of return value.
+
 1. **Bash tests** -- Syntax: `<Identifier>: <Description> - <Note>`.
    - *Identifier* is the name of the function to be tested.
    - *Description* is a brief description of the function result to be tested
