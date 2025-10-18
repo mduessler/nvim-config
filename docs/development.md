@@ -36,6 +36,19 @@ dependencies:
    - **DNF_DEV_DEPS** -- Dependencies installed by dnf package manger.
    - **LUA_DEV_REQ** -- Requirements installed with luarocks.
 
+## Tests
+
+### Naming
+
+1. **Bash tests** -- Syntax: `<Identifier>: <Description> - <Note>`.
+   - *Identifier* is the name of the function to be tested.
+   - *Description* is a brief description of the function result to be tested
+     with this test.
+   - *Notes* are additional information.
+   - Examples:
+     1. `rust_installer: Function executed successfully - rust has been installed`
+     2. `install_prod: Function cannot install production requirements`
+
 ## Commands
 
 ### Named Commands
