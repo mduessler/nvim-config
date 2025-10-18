@@ -10,36 +10,42 @@ setup() {
 
 @test "get_log_color: Verify that the debug colour is correct." {
     run get_log_color "DEBUG"
+
     [ ${status} -eq 0 ]
     [ "${output}" = $'\033[37m' ]
 }
 
 @test "get_log_color: Verify that the info colour is correct." {
     run get_log_color "INFO"
+
     [ ${status} -eq 0 ]
     [ "${output}" = $'\033[34m' ]
 }
 
 @test "get_log_color: Verify that the success colour is correct." {
     run get_log_color "SUCCESS"
+
     [ ${status} -eq 0 ]
     [ "${output}" = $'\033[32m' ]
 }
 
 @test "get_log_color: Verify that the warning colour is correct." {
     run get_log_color "WARNING"
+
     [ ${status} -eq 0 ]
     [ "${output}" = $'\033[33m' ]
 }
 
 @test "get_log_color: Verify that the error colour is correct." {
     run get_log_color "ERROR"
+
     [ ${status} -eq 0 ]
     [ "${output}" = $'\033[31m' ]
 }
 
 @test "get_log_color: Verify that the no log colour is correct." {
     run get_log_color "WRONG"
+
     [ ${status} -eq 0 ]
     [ "${output}" = $'\033[0m' ]
 }
