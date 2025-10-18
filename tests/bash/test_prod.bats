@@ -6,6 +6,7 @@
 
 setup() {
     source "${NVIM_CONFIG}/installs/prod"
+    source "${NVIM_CONFIG}/dependencies"
 }
 
 @test "install_prod: Function executed successfully" {
@@ -109,4 +110,21 @@ setup() {
 
     [ ${status} -eq 2 ]
     [[ ${output} == *"Can not identify system package manager."* ]]
+}
+
+@test "install_prod_dependencies: Function can not install packages with package manager" {
+    identify_system_pkg_mgr() { return 0; }
+    install_packages_with_pkg_mgr() { return 1; }
+    install_dependencies_independent_of_pkg_mgr() { return 0; }
+    check_nvim_version() { return 0; }
+
+    PKG_MGR="apt-get" run install_prod_dependencies
+
+    [ ${status} -eq 3 ]
+    [[ ${output} == *"Unsupported package manager: apt-get"* ]]
+
+    PKG_MGR="dnf" run install_prod_dependencies
+
+    [ ${status} -eq 3 ]
+    [[ ${output} == *"Unsupported package manager: dnf"* ]]
 }
