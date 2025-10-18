@@ -41,7 +41,7 @@ identify_system_pkg_mgr() {
             PKG_MGR="dnf"
         else
             warning "No valid package manager found."
-            return 1
+            return 2
         fi
     else
         debug "Package manager was already defined as '${PKG_MGR}'"
