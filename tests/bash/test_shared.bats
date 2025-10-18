@@ -44,6 +44,7 @@ teardown() {
     [ ${status} -eq 0 ]
     [ "${PKG_MGR}" = "${pkg_mgr}" ]
     [[ ${output} == *"Identified '${pkg_mgr}' as package manager."* ]]
+    [[ ${output} == *"No valid package manager found."* ]]
 }
 
 @test "[TEST]: 'no' pkg manager is identified" {
