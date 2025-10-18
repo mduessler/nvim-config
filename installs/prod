@@ -12,12 +12,16 @@ source "${SCRIPT_DIR}/shared" || exit 1
 
 install_prod() {
     if ! install_prod_dependencies; then
-        return 1
+        error "Can not install production dependencies."
+        return 2
     fi
 
     if ! install_prod_requirements; then
-        return 1
+        error "Can not install production requirements."
+        return 3
     fi
+    success "Installed production dependencies and requirements."
+    return 0
 }
 
 rust_installer() {
