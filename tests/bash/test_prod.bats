@@ -128,3 +128,20 @@ setup() {
     [ ${status} -eq 3 ]
     [[ ${output} == *"Unsupported package manager: dnf"* ]]
 }
+
+@test "install_prod_dependencies: Function can not install packages without package manager" {
+    identify_system_pkg_mgr() { return 0; }
+    install_packages_with_pkg_mgr() { return 0; }
+    install_dependencies_independent_of_pkg_mgr() { return 1; }
+    check_nvim_version() { return 0; }
+
+    PKG_MGR="apt-get" run install_prod_dependencies
+
+    [ ${status} -eq 4 ]
+    [[ ${output} == *"Can not install dependencies independent of package manager."* ]]
+
+    PKG_MGR="dnf" run install_prod_dependencies
+
+    [ ${status} -eq 4 ]
+    [[ ${output} == *"Can not install dependencies independent of package manager."* ]]
+}
