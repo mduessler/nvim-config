@@ -66,7 +66,7 @@ setup() {
 
     [ ${status} -eq 0 ]
     [[ ${output} == *"${msg}"* ]]
-    [[ ${output} =~ "DEBUG" ]]
+    [[ ${output} == *"DEBUG"* ]]
 }
 
 @test "info: Verify message is printed." {
@@ -76,7 +76,7 @@ setup() {
 
     [ ${status} -eq 0 ]
     [[ ${output} == *"${msg}"* ]]
-    [[ ${output} =~ "INFO" ]]
+    [[ ${output} == *"INFO"* ]]
 }
 
 @test "success: Verify message is printed." {
@@ -86,7 +86,7 @@ setup() {
 
     [ ${status} -eq 0 ]
     [[ ${output} == *"${msg}"* ]]
-    [[ ${output} =~ "SUCCESS" ]]
+    [[ ${output} == *"SUCCESS"* ]]
 }
 
 @test "warning: Verify message is printed." {
@@ -96,7 +96,7 @@ setup() {
 
     [ ${status} -eq 0 ]
     [[ ${output} == *"${msg}"* ]]
-    [[ ${output} =~ "WARNING" ]]
+    [[ ${output} == *"WARNING"* ]]
 }
 
 @test "error: Verify message is printed." {
@@ -106,7 +106,7 @@ setup() {
 
     [ ${status} -eq 0 ]
     [[ ${output} == *"${msg}"* ]]
-    [[ ${output} =~ "ERROR" ]]
+    [[ ${output} == *"ERROR"* ]]
 }
 
 @test "[TEST]: check_command returns 0 for existing command" {
