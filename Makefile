@@ -22,7 +22,7 @@ build-fedora:
 	docker build -f $(env-path)/Dockerfile.dev-fedora -t nvim-fedora:test .
 
 build-ubuntu:
-	docker build -f $(env-path)/Dockerfile.ubuntu-lua -t nvim-ubuntu:test .
+	docker build -f $(env-path)/Dockerfile.dev-ubuntu -t nvim-ubuntu:test .
 
 test-install-fedora: build-install-fedora
 	docker run --rm \
