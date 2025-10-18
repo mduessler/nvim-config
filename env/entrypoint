@@ -28,7 +28,7 @@ function get_bash_test_files() {
 }
 
 function execute_bash_test() {
-    output=$(bats "${BASH_TESTS_DIR}/$1")
+    output=$(bats --tap "${BASH_TESTS_DIR}/$1")
     status="$?"
     BASH_STATUS_TESTS+=("${status}")
     BASH_OUTPUT_TESTS+=("${output}")
@@ -37,8 +37,8 @@ function execute_bash_test() {
 
 function count_tests() {
     output=$1
-    regex_success="^(ok [1-9]+ ).*$"
-    regex_failure="^(not ok [1-9]+ ).*$"
+    regex_success="^(ok [0-9]+ ).*$"
+    regex_failure="^(not ok [0-9]+ ).*$"
     local counter_success=0
     local counter_failure=0
     while IFS= read -r line; do
