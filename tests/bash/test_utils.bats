@@ -121,39 +121,40 @@ setup() {
     [ ${status} -eq 1 ]
 }
 
-@test "[TEST]: dir_is_git_repo - no argument given" {
-    run dir_is_git_repo
-
-    [ ${status} -eq 2 ]
-    [[ ${output} == *"Function needs exactly one 'path' argument."* ]]
-}
-
-@test "[TEST]: dir_is_git_repo - two arguments given" {
-    run dir_is_git_repo "${HOME}" "test"
-
-    [ ${status} -eq 2 ]
-    [[ ${output} == *"Function needs exactly one 'path' argument."* ]]
-}
-
-@test "[TEST]: dir_is_git_repo - test path exists." {
-    run dir_is_git_repo "fake/pater/aasd"
-
-    [ ${status} -eq 3 ]
-    [[ ${output} == *"Path 'fake/pater/aasd' does not exist."* ]]
-}
-
-@test "[TEST]: dir_is_git_repo - is a git repo" {
+@test "dir_is_git_repo: Function executed successfully" {
     git() { return 0; }
+
     run dir_is_git_repo "${HOME}"
 
     [ ${status} -eq 0 ]
     [[ ${output} == *"Path '${HOME}' is a git repo."* ]]
 }
 
-@test "[TEST]: dir_is_git_repo - is not a git repo" {
+@test "dir_is_git_repo: Function arguments do not match - no argument is given." {
+    run dir_is_git_repo
+
+    [ ${status} -eq 2 ]
+    [[ ${output} == *"Function needs exactly one 'path' argument."* ]]
+}
+
+@test "dir_is_git_repo: Function arguments do not match - two arguments are given." {
+    run dir_is_git_repo "${HOME}" "test"
+
+    [ ${status} -eq 2 ]
+    [[ ${output} == *"Function needs exactly one 'path' argument."* ]]
+}
+
+@test "dir_is_git_repo: Given path does not exist." {
+    run dir_is_git_repo "fake/pater/aasd"
+
+    [ ${status} -eq 3 ]
+    [[ ${output} == *"Path 'fake/pater/aasd' does not exist."* ]]
+}
+
+@test "dir_is_git_repo: Given path is not a git repo." {
     run dir_is_git_repo "${HOME}"
 
-    [ ${status} -eq 1 ]
+    [ ${status} -eq 4 ]
     [[ ${output} == *"Path '${HOME}' is not a git repo."* ]]
 }
 
