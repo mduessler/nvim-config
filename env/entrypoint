@@ -3,6 +3,8 @@
 BASH_TESTS_DIR="${NVIM_CONFIG}/tests/bash"
 
 BASH_TEST_FILES=()
+COUNTER_SUCCESS_TESTS=()
+COUNTER_FAILURE_TESTS=()
 
 function get_bash_test_files() {
     local content=""
@@ -16,4 +18,15 @@ function get_bash_test_files() {
     done <<<"${content}"
 }
 
+function execute_bash_tests() {
+    for test in "${BASH_TEST_FILES[@]}"; do
+        output=$(bats "${BASH_TESTS_DIR}/${test}")
+        status="$?"
+        if [ ${status} -ne 0 ]; then
+            printf "%s" "${status}"
+        fi
+    done
+}
+
 get_bash_test_files
+execute_bash_tests
