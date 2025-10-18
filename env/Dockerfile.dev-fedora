@@ -21,6 +21,11 @@ RUN git clone https://github.com/neovim/neovim -b "v${MAJOR_REQ}.${MINOR_REQ}.${
 WORKDIR "${NVIM_GIT_DIR}"
 RUN make CMAKE_BUILD_TYPE=Release && make install
 
+ENV BATS_CORE_GIT_DIR="${HOME}/.local/share/src/bats_core"
+RUN git clone https://github.com/bats-core/bats-core.git "${BATS_CORE_GIT_DIR}" || exit 1
+WORKDIR "${BATS_CORE_GIT_DIR}"
+RUN ./install.sh /usr/local
+
 WORKDIR "${HOME}"
 # Installing dependencies for nvim plugins.
 # Install dependencies via packet manager
