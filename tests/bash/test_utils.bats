@@ -246,14 +246,7 @@ setup() {
     [[ ${output} == *"Function needs exactly two arguments, 'repo-url' and 'dest-dir'."* ]]
 }
 
-@test "[TEST]: wait_for_clone_process - two arguments needed" {
-    run wait_for_clone_process
-
-    [ ${status} -eq 2 ]
-    [[ ${output} == *"Function needs exactly two arguments, 'pid' and 'tmpfile'."* ]]
-}
-
-@test "[TEST]: wait_for_clone_process - success" {
+@test "wait_for_clone_process: Function executed successfully" {
     tmpfile=$(mktemp)
     pid=12345
 
@@ -274,7 +267,21 @@ setup() {
     rm -f "$tmpfile"
 }
 
-@test "[TEST]: wait_for_clone_process - tail fails" {
+@test "wait_for_clone_process: Function arguments do not match - no argument is given." {
+    run wait_for_clone_process
+
+    [ ${status} -eq 2 ]
+    [[ ${output} == *"Function needs exactly two arguments, 'pid' and 'tmpfile'."* ]]
+}
+
+@test "wait_for_clone_process: Function arguments do not match - one argument is given." {
+    run wait_for_clone_process "sack"
+
+    [ ${status} -eq 2 ]
+    [[ ${output} == *"Function needs exactly two arguments, 'pid' and 'tmpfile'."* ]]
+}
+
+@test "wait_for_clone_process: Tail process fails." {
     tmpfile=$(mktemp)
     pid=12345
 
@@ -295,7 +302,7 @@ setup() {
     rm -f "$tmpfile"
 }
 
-@test "[TEST]: wait_for_clone_process - wait fails" {
+@test "wait_for_clone_process: Wait process fails." {
     tmpfile=$(mktemp)
     pid=12345
 
@@ -310,7 +317,7 @@ setup() {
 
     run wait_for_clone_process "$pid" "$tmpfile"
 
-    [ ${status} -eq 1 ]
+    [ ${status} -eq 4 ]
     [[ ${output} == *"Can not wait ${pid}."* ]]
 
     rm -f "$tmpfile"
