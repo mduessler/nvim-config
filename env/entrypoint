@@ -1,0 +1,19 @@
+#!/usr/bin/bash
+
+BASH_TESTS_DIR="${NVIM_CONFIG}/tests/bash"
+
+BASH_TEST_FILES=()
+
+function get_bash_test_files() {
+    local content=""
+    local regex=""
+    content="$(cd "${BASH_TESTS_DIR}" && ls -l test_*.bats)"
+    regex="^.*(test_.*\.bats)$"
+    while IFS= read -r line; do
+        if [[ ${line} =~ ${regex} ]]; then
+            BASH_TEST_FILES+=("${BASH_REMATCH[1]}")
+        fi
+    done <<<"${content}"
+}
+
+get_bash_test_files
