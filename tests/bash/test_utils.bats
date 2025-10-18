@@ -333,21 +333,21 @@ setup() {
     [[ ${output} == *"Killed process ${pid}."* ]]
 }
 
-@test "wait_for_clone_process: Function arguments do not match - no argument is given." {
+@test "kill_clone_process: Function arguments do not match - no argument is given." {
     run kill_clone_process
 
     [ ${status} -eq 2 ]
     [[ ${output} == *"Function needs exactly one 'pid' argument."* ]]
 }
 
-@test "wait_for_clone_process: Function arguments do not match - two arguments are given." {
+@test "kill_clone_process: Function arguments do not match - two arguments are given." {
     run kill_clone_process
 
     [ ${status} -eq 2 ]
     [[ ${output} == *"Function needs exactly one 'pid' argument."* ]]
 }
 
-@test "wait_for_clone_process: Command to kill failed." {
+@test "kill_clone_process: Command to kill failed." {
     kill() { return 1; }
     pid=12345
 
