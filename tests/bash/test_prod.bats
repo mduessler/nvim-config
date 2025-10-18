@@ -43,7 +43,7 @@ setup() {
     curl() { return 0; }
     sh() { return 0; }
 
-    run install_prod
+    run install_rust
 
     [ ${status} -eq 0 ]
     [[ ${output} == *"Rust has been successfully installed."* ]]
@@ -54,7 +54,7 @@ setup() {
     curl() { return 1; }
     sh() { return 0; }
 
-    run install_prod
+    run install_rust
 
     [ ${status} -eq 0 ]
     [[ ${output} == *"Rust is already installed."* ]]
@@ -63,12 +63,12 @@ setup() {
 @test "rust_installer: Function can not download rust installer." {
     check_command() { return 1; }
     curl() { return 1; }
-    sh() { return 0; }
+    sh() { return 1; }
 
-    run install_prod
+    run install_rust
 
     [ ${status} -eq 2 ]
-    [[ ${output} == *"Installation of rust failed."* ]]
+    [[ ${output} == *"Curl exited with 1 and sh exited with 1."* ]]
 }
 
 @test "rust_installer: Function can not execute rustup.rs with sh." {
@@ -76,8 +76,8 @@ setup() {
     curl() { return 0; }
     sh() { return 1; }
 
-    run install_prod
+    run install_rust
 
     [ ${status} -eq 2 ]
-    [[ ${output} == *"Installation of rust failed."* ]]
+    [[ ${output} == *"Curl exited with 0 and sh exited with 1."* ]]
 }
