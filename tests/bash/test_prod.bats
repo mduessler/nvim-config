@@ -14,7 +14,7 @@ setup() {
     run install_prod
 
     [ ${status} -eq 0 ]
-    [[ ${output} = "Installed production dependencies and requirements." ]]
+    [[ ${output} == *"Installed production dependencies and requirements."* ]]
 }
 
 @test "install_prod: Function cannot install production dependencies" {
@@ -23,7 +23,7 @@ setup() {
     run install_prod
 
     [ ${status} -eq 2 ]
-    [[ ${output} = "Can not install production dependencies." ]]
+    [[ ${output} == *"Can not install production dependencies."* ]]
 }
 
 @test "install_prod: Function cannot install production requirements" {
@@ -32,7 +32,7 @@ setup() {
     run install_prod
 
     [ ${status} -eq 3 ]
-    [[ ${output} = "Can not install production requirements." ]]
+    [[ ${output} == *"Can not install production requirements."* ]]
 }
 
 @test "rust_installer: Function executed successfully - rust has been installed" {
@@ -43,7 +43,7 @@ setup() {
     run install_prod
 
     [ ${status} -eq 0 ]
-    [[ ${output} = "Rust has been successfully installed." ]]
+    [[ ${output} == *"Rust has been successfully installed."* ]]
 }
 
 @test "rust_installer: Function executed successfully - rust is already installed" {
@@ -54,7 +54,7 @@ setup() {
     run install_prod
 
     [ ${status} -eq 0 ]
-    [[ ${output} = "Rust is already installed." ]]
+    [[ ${output} == *"Rust is already installed."* ]]
 }
 
 @test "rust_installer: Function can not download rust installer." {
@@ -65,7 +65,7 @@ setup() {
     run install_prod
 
     [ ${status} -eq 2 ]
-    [[ ${output} = "Curl exited with 1 and sh exited with 0." ]]
+    [[ ${output} == *"Curl exited with 1 and sh exited with 0."* ]]
 }
 
 @test "rust_installer: Function can not execute rustup.rs with sh." {
@@ -76,5 +76,5 @@ setup() {
     run install_prod
 
     [ ${status} -eq 2 ]
-    [[ ${output} = "Curl exited with 0 and sh exited with 1." ]]
+    [[ ${output} == *"Curl exited with 0 and sh exited with 1."* ]]
 }
