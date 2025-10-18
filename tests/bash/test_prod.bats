@@ -8,7 +8,7 @@ setup() {
     source "${NVIM_CONFIG}/installs/prod"
 }
 
-@test "install_prod: Function executed successfully - returns 0" {
+@test "install_prod: Function executed successfully" {
     install_prod_depnendencies() { return 0; }
     install_prod_requirements() { return 0; }
     run install_prod
