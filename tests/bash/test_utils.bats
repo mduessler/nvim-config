@@ -50,20 +50,22 @@ setup() {
     [ "${output}" = $'\033[0m' ]
 }
 
-@test "[TEST]: debug log NVIM_DEV=false" {
+@test "debug: Verify message is not printed." {
     local msg="This is a test message"
-    NVIM_DEV=false
-    run debug "${msg}"
+
+    NVIM_DEV=false run debug "${msg}"
+
     [ ${status} -eq 0 ]
-    [ -z ${output} ]
+    [ -z "${output}" ]
 }
 
-@test "[TEST]: debug log NVIM_DEV=true" {
+@test "debug: Verify message is printed." {
     local msg="This is a test message"
-    NVIM_DEV=true
-    run debug "${msg}"
+
+    NVIM_DEV=true run debug "${msg}"
+
     [ ${status} -eq 0 ]
-    [[ ${output} =~ "${msg}" ]]
+    [[ ${output} == *"${msg}"* ]]
     [[ ${output} =~ "DEBUG" ]]
 }
 
