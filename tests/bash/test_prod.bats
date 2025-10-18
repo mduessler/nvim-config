@@ -98,3 +98,15 @@ setup() {
     [ ${status} -eq 0 ]
     [[ ${output} == *"Dependencies has been successfully installed."* ]]
 }
+
+@test "install_prod_dependencies: Function can not idenify system package manager" {
+    identify_system_pkg_mgr() { return 1; }
+    install_packages_with_pkg_mgr() { return 0; }
+    install_dependencies_independent_of_pkg_mgr() { return 0; }
+    check_nvim_version() { return 0; }
+
+    run install_prod_dependencies
+
+    [ ${status} -eq 2 ]
+    [[ ${output} == *"Can not identify system package manager."* ]]
+}
