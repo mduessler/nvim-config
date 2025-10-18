@@ -51,6 +51,7 @@ install_prod_dependencies() {
 
     if [ -z "${PKG_MGR}" ]; then
         if ! identify_system_pkg_mgr; then
+            error "Can not identify system package manager."
             return 2
         fi
     fi
@@ -65,17 +66,18 @@ install_prod_dependencies() {
     esac
 
     if ! install_dependencies_independent_of_pkg_mgr; then
+        error "Can not install dependencies independent of package manager."
         return 4
     fi
 
     if ! check_nvim_version; then
         if ! install_nvim; then
-            error "Neovim installation failed."
+            error "Can not install neovim."
             return 5
         fi
     fi
 
-    success "Installed dependencies successfully."
+    success "Dependencies has been successfully installed."
     return 0
 }
 
