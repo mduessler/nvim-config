@@ -87,10 +87,11 @@ install_dependencies_independent_of_pkg_mgr() {
         if declare -f "$func" >/dev/null; then
             if ! "$func"; then
                 error "Failed to install dependency: ${dep}"
-                return 1
+                return 2
             fi
         else
             warning "No installer function defined for ${dep}, skipping."
+            return 3
         fi
     done
     success "Installed all production dependencies defined in \$DEPS"
