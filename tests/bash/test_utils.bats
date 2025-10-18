@@ -109,14 +109,15 @@ setup() {
     [[ ${output} == *"ERROR"* ]]
 }
 
-@test "[TEST]: check_command returns 0 for existing command" {
-    check_command ls
-    status=$?
+@test "check_command: Function executed successfully" {
+    run check_command ls
+
     [ ${status} -eq 0 ]
 }
 
-@test "[TEST]: check_command returns 1 for non-existing command" {
+@test "check_command: Function execution failed" {
     run check_command fakecmd123
+
     [ ${status} -eq 1 ]
 }
 
