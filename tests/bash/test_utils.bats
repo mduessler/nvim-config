@@ -81,17 +81,21 @@ setup() {
 
 @test "success: Verify message is printed." {
     local msg="This is a test message"
+
     run success "${msg}"
+
     [ ${status} -eq 0 ]
-    [[ ${output} =~ "${msg}" ]]
+    [[ ${output} == *"${msg}"* ]]
     [[ ${output} =~ "SUCCESS" ]]
 }
 
-@test "[TEST]: warning log" {
+@test "warning: Verify message is printed." {
     local msg="This is a test message"
+
     run warning "${msg}"
+
     [ ${status} -eq 0 ]
-    [[ ${output} =~ "${msg}" ]]
+    [[ ${output} == *"${msg}"* ]]
     [[ ${output} =~ "WARNING" ]]
 }
 
