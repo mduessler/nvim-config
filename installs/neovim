@@ -40,21 +40,24 @@ install_nvim() {
 }
 
 check_nvim_version() {
-    local nvim_version major minor patch
-    if nvim_version=$(nvim --version 2>/dev/null | awk 'NR==1{match($0,/v([0-9]+\.[0-9]+\.[0-9]+)/,a); print a[1]}'); then
-        IFS="." read -r major minor patch <<<"$nvim_version"
-        if [[ "${major}" =~ ^[0-9]+$ && "${minor}" =~ ^[0-9]+$ && "${patch}" =~ ^[0-9]+$ ]]; then
-            debug "Installed nvim version is ${nvim_version}"
-            if [ "${major}" = "$NVIM_MAJOR_REQ" ] && [ "${minor}" = "$NVIM_MINOR_REQ" ] && [ "${patch}" = "$NVIM_PATCH_REQ" ]; then
-                return 0
-            fi
-            warning "Neovim version is v${major}.${minor}.${patch}. But v${NVIM_MAJOR_REQ}.${NVIM_MINOR_REQ}.${NVIM_PATCH_REQ} is needed."
-            return 3
-        else
-            error "Invalid version format."
-            return 1
-        fi
+    local regex="^NVIM .([0-9]+).([0-9]+).([0-9]+)"
+    nvim --version
+    status="$?"
+    if [ ${status}  -ne 0 ]; then
+        warning "Can not execute neovim."
+        return 2
     fi
-    warning "Neovim is not installed."
-    return 2
+    if [[ $(nvim --version 2>/dev/null | head -1) =~ ${regex} ]]; then
+        local major=${BASH_REMATCH[1]}
+        local minor=${BASH_REMATCH[2]}
+        local patch=${BASH_REMATCH[3]}
+        info "Installed nvim version is v${major}.${minor}.${patch}."
+        if [ "${major}" = "$NVIM_MAJOR_REQ" ] && [ "${minor}" = "$NVIM_MINOR_REQ" ] && [ "${patch}" = "$NVIM_PATCH_REQ" ]; then
+            return 0
+        fi
+        warning "Neovim version is v${major}.${minor}.${patch}. But v${NVIM_MAJOR_REQ}.${NVIM_MINOR_REQ}.${NVIM_PATCH_REQ} is needed."
+        return 3
+    fi
+    warning "Invalid version format."
+    return 1
 }
