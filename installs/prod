@@ -93,6 +93,7 @@ install_dependencies_independent_of_pkg_mgr() {
             warning "No installer function defined for ${dep}, skipping."
         fi
     done
+    success "Installed all production dependencies defined in \$DEPS"
     return 0
 }
 
