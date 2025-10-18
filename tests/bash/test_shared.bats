@@ -1,12 +1,12 @@
 #!/usr/bin/env bats
 
-@test "[TEST]: '${NVIM_CONFIG}/installs/shared' exists" {
+@test "Test if script '${NVIM_CONFIG}/installs/shared' exists." {
     [ -f "${NVIM_CONFIG}"/installs/shared ]
 }
 
 setup() {
-    unset PKG_MGR
     source "${NVIM_CONFIG}/installs/shared"
+    unset PKG_MGR
 }
 
 teardown() {
