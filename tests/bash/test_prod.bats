@@ -44,3 +44,12 @@ setup() {
     [ ${status} -eq 0 ]
     [[ ${output} = "Rust has been successfully installed." ]]
 }
+
+@test "rust_installer: Function executed successfully - rust is already installed" {
+    check_command() { return 0; }
+
+    run install_prod
+
+    [ ${status} -eq 0 ]
+    [[ ${output} = "Rust is already installed." ]]
+}
