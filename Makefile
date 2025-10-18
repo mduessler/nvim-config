@@ -21,7 +21,7 @@ build-install-ubuntu:
 build-fedora:
 	docker build -f $(env-path)/Dockerfile.dev-fedora -t nvim-fedora:test .
 
-build-lua-ubuntu:
+build-ubuntu:
 	docker build -f $(env-path)/Dockerfile.ubuntu-lua -t nvim-ubuntu:test .
 
 test-install-fedora: build-install-fedora
@@ -48,7 +48,7 @@ tests-fedora: build-fedora
 	  --tmpfs /home/tester/.cache/nvim \
 	  nvim-fedora:test
 
-test-lua-ubuntu: build-lua-ubuntu
+tests-ubuntu: build-lua-ubuntu
 	docker run --rm \
 	  -v "$$HOME/.config/nvim:/home/tester/.config/nvim:ro" \
 	  --tmpfs /home/tester/.local/share/nvim \
