@@ -9,7 +9,7 @@ setup() {
 }
 
 @test "install_prod: Function executed successfully" {
-    install_prod_depnendencies() { return 0; }
+    install_prod_dependencies() { return 0; }
     install_prod_requirements() { return 0; }
 
     run install_prod
@@ -19,7 +19,7 @@ setup() {
 }
 
 @test "install_prod: Function cannot install production dependencies" {
-    install_prod_depnendencies() { return 1; }
+    install_prod_dependencies() { return 1; }
     install_prod_requirements() { return 0; }
 
     run install_prod
@@ -29,7 +29,7 @@ setup() {
 }
 
 @test "install_prod: Function cannot install production requirements" {
-    install_prod_depnendencies() { return 0; }
+    install_prod_dependencies() { return 0; }
     install_prod_requirements() { return 1; }
 
     run install_prod
