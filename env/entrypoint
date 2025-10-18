@@ -57,7 +57,7 @@ function print_wrong_output() {
     local print_next=0
     while IFS= read -r line; do
         if [[ $line =~ ^not\ ok\ ([0-9]+)\ (.*) ]]; then
-            printf "%b[TEST]%b %b%3s%b: %b%s%b\n" "${RED}" "${RESET}" "${BOLD}" "${BASH_REMATCH[1]}" "${RESET}" "${ORANGE}" "${BASH_REMATCH[2]}" "${RESET}"
+            printf "%b[TEST]%b %b%3s%b %b%s%b\n" "${RED}" "${RESET}" "${BOLD}" "${BASH_REMATCH[1]}" "${RESET}" "${ORANGE}" "${BASH_REMATCH[2]}" "${RESET}"
             print_next=1
         elif [[ $print_next -eq 1 && $line =~ ^# ]]; then
             printf "%s\n" "${line}"
@@ -99,7 +99,7 @@ function main() {
     for test in "${BASH_TEST_FILES[@]}"; do
         execute_bash_test "${test}"
         index=$(("${#BASH_STATUS_TESTS[@]}" - 1))
-        printf "%b[FILE]%b: %-*s" "${CYAN}" "${BOLD}" "${width}" "${test}"
+        printf "%b[FILE]%b %-*s" "${CYAN}" "${BOLD}" "${width}" "${test}"
 
         if [[ ${BASH_COUNTER_FAILURE_TESTS[${index}]} -gt 0 ]]; then
             failures=true
@@ -135,7 +135,7 @@ function main() {
         fi
         if [[ ${BASH_STATUS_TESTS[${i}]} -ne 0 ]]; then
             failures=true
-            printf "%b[FILE]%b: %s\n" "${CYAN}" "${BOLD}" "${BASH_TEST_FILES[${i}]}"
+            printf "%b[FILE]%b %s\n" "${CYAN}" "${BOLD}" "${BASH_TEST_FILES[${i}]}"
             print_wrong_output "${BASH_OUTPUT_TESTS[$i]}"
         fi
     done
