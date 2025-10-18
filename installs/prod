@@ -25,7 +25,7 @@ install_prod() {
 }
 
 rust_installer() {
-    if command -v rustc >/dev/null 2>&1; then
+    if check_command rustc; then
         info "Rust is already installed."
         return 0
     fi
