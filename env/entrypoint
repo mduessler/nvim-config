@@ -3,8 +3,8 @@
 BASH_TESTS_DIR="${NVIM_CONFIG}/tests/bash"
 
 BASH_TEST_FILES=()
-COUNTER_SUCCESS_TESTS=()
-COUNTER_FAILURE_TESTS=()
+BASH_COUNTER_SUCCESS_TESTS=()
+BASH_COUNTER_FAILURE_TESTS=()
 
 function get_bash_test_files() {
     local content=""
@@ -42,8 +42,8 @@ function count_tests() {
             ((counter_failure++))
         fi
     done <<<"${output}"
-    COUNTER_SUCCESS_TESTS+=(counter_success)
-    COUNTER_FAILURE_TESTS+=(counter_failure)
+    BASH_COUNTER_SUCCESS_TESTS+=(counter_success)
+    BASH_COUNTER_FAILURE_TESTS+=(counter_failure)
 }
 
 get_bash_test_files
