@@ -38,10 +38,10 @@ repos:
     rev: v2.14.0
     hooks:
       - id: hadolint
-        args: ["env/Dockerfile.fedora-lua", "env/Dockerfile.ubuntu-lua", "env/Dockerfile.fedora-install", "env/Dockerfile.ubuntu-install", "--ignore", "DL3059", "--ignore", "SC2034", "--ignore", "DL3008", "--ignore", "SC2094", "--ignore", "SC1091", "--ignore", "DL3041"]
+        args: ["env/Dockerfile.dev-fedora", "env/Dockerfile.ubuntu-lua", "env/Dockerfile.fedora-install", "env/Dockerfile.ubuntu-install", "--ignore", "DL3059", "--ignore", "SC2034", "--ignore", "DL3008", "--ignore", "SC2094", "--ignore", "SC1091", "--ignore", "DL3041"]
         files: |
           (?x)^(
-            env/Dockerfile.fedora-lua |
+            env/Dockerfile.dev-fedora |
             env/Dockerfile.ubuntu-lua |
             env/Dockerfile.fedora-install |
             env/Dockerfile.ubuntu-install |
