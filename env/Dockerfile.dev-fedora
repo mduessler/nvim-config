@@ -9,7 +9,7 @@ ENV HOME=/home/tester
 ENV NVIM_CONFIG="${HOME}/.config/nvim"
 
 # clone and install nvim from github.
-RUN dnf update && dnf install -y ninja-build cmake gcc make gettext curl glibc-gconv-extra git && dnf clean all
+RUN dnf update -y && dnf install -y ninja-build cmake gcc make gettext curl glibc-gconv-extra git && dnf clean all
 ENV MAJOR_REQ=0
 ENV MINOR_REQ=11
 ENV PATCH_REQ=4
