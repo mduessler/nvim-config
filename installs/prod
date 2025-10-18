@@ -36,7 +36,7 @@ rust_installer() {
     debug "Downloading and install rust..."
     if ! curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y; then
         error "Installation of rust failed."
-        return 1
+        return 2
     fi
     echo ":$PATH:" | grep -q ":${CARGO_HOME}/bin:" || export PATH="${CARGO_HOME}/bin:${PATH}"
 
