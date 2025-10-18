@@ -67,3 +67,14 @@ setup() {
     [ ${status} -eq 2 ]
     [[ ${output} = "Curl exited with 1 and sh exited with 0." ]]
 }
+
+@test "rust_installer: Function can not execute rustup.rs with sh." {
+    check_command() { return 1; }
+    curl() { return 0; }
+    sh() { return 1; }
+
+    run install_prod
+
+    [ ${status} -eq 2 ]
+    [[ ${output} = "Curl exited with 0 and sh exited with 1." ]]
+}
