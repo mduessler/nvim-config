@@ -182,7 +182,7 @@ setup() {
     DEPS=${DEPS[*]} run install_dependencies_independent_of_pkg_mgr
 
     [ ${status} -eq 3 ]
-    [[ ${output} == *"Failed to install dependency: ${DEPS[0]}"* ]]
+    [[ ${output} == *"No installer function defined for ${DEPS[0]}, skipping."* ]]
 }
 
 @test "install_prod_requirements: Function executed successfully" {
