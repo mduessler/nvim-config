@@ -3,6 +3,8 @@
 BASH_TESTS_DIR="${NVIM_CONFIG}/tests/bash"
 
 BASH_TEST_FILES=()
+BASH_STATUS_TESTS=()
+BASH_OUTPUT_TESTS=()
 BASH_COUNTER_SUCCESS_TESTS=()
 BASH_COUNTER_FAILURE_TESTS=()
 
@@ -22,10 +24,9 @@ function execute_bash_tests() {
     for test in "${BASH_TEST_FILES[@]}"; do
         output=$(bats "${BASH_TESTS_DIR}/${test}")
         status="$?"
+        BASH_STATUS_TESTS+=("${status}")
+        BASH_OUTPUT_TESTS+=("${output}")
         count_tests "${output}"
-        if [ ${status} -ne 0 ]; then
-            print_wrong_output "${output}"
-        fi
     done
 }
 
