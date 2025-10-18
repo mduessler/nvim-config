@@ -140,3 +140,21 @@ setup() {
     [ ${status} -eq 4 ]
     [[ ${output} == *"Can not install dependencies independent of package manager."* ]]
 }
+
+@test "install_prod_dependencies: Function can not install neovim." {
+    identify_system_pkg_mgr() { return 0; }
+    install_packages_with_pkg_mgr() { return 0; }
+    install_dependencies_independent_of_pkg_mgr() { return 0; }
+    check_nvim_version() { return 1; }
+    install_vim() { return 1; }
+
+    PKG_MGR="apt-get" run install_prod_dependencies
+
+    [ ${status} -eq 5 ]
+    [[ ${output} == *"Can not install neovim."* ]]
+
+    PKG_MGR="dnf" run install_prod_dependencies
+
+    [ ${status} -eq 5 ]
+    [[ ${output} == *"Can not install neovim."* ]]
+}
