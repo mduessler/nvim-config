@@ -14,31 +14,31 @@ setup() {
     [ "${output}" = $'\033[37m' ]
 }
 
-@test "[TEST]: info color" {
+@test "get_log_color: Verify that the info colour is correct." {
     run get_log_color "INFO"
     [ ${status} -eq 0 ]
     [ "${output}" = $'\033[34m' ]
 }
 
-@test "[TEST]: success color" {
+@test "get_log_color: Verify that the success colour is correct." {
     run get_log_color "SUCCESS"
     [ ${status} -eq 0 ]
     [ "${output}" = $'\033[32m' ]
 }
 
-@test "[TEST]: warning color" {
+@test "get_log_color: Verify that the warning colour is correct." {
     run get_log_color "WARNING"
     [ ${status} -eq 0 ]
     [ "${output}" = $'\033[33m' ]
 }
 
-@test "[TEST]: error color" {
+@test "get_log_color: Verify that the error colour is correct." {
     run get_log_color "ERROR"
     [ ${status} -eq 0 ]
     [ "${output}" = $'\033[31m' ]
 }
 
-@test "[TEST]: wrong color" {
+@test "get_log_color: Verify that the no log colour is correct." {
     run get_log_color "WRONG"
     [ ${status} -eq 0 ]
     [ "${output}" = $'\033[0m' ]
