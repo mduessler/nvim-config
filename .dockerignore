@@ -1,5 +1,6 @@
 ./git
 ./pre-commit-config.yaml
 ./env
+!env/entrypoint
 LICENSE
 README.md
