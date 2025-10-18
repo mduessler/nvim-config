@@ -24,7 +24,7 @@ RUN make CMAKE_BUILD_TYPE=Release && make install
 WORKDIR "${HOME}"
 # Installing dependencies for nvim plugins.
 # Install dependencies via packet manager
-RUN dnf update && dnf install -y \
+RUN dnf update -y && dnf install -y \
     clang \
     gcc-c++ \
     golang \
@@ -60,4 +60,4 @@ USER tester
 
 RUN nvim --headless "+InitNVIM"
 
-ENTRYPOINT ["lua", "tests/lua/tests.lua"]
+ENTRYPOINT ["env/entrypoint"]
