@@ -4,6 +4,11 @@ This document holds all information needed for the Development process. Read it
 carefully before you execute the command to install the dependencies to execute
 the development environments.
 
+## Install
+
+To install the dependencies required to run the development environments,
+simply run `make install-dev`. This will execute `./install dev`.
+
 ## Dependencies
 
 All dependencies are stored in the file `dependencies` in the root of the
@@ -30,11 +35,6 @@ dependencies:
    - **APT_DEPS** -- Dependencies installed by apt-get package manager.
    - **DNF_DEV_DEPS** -- Dependencies installed by dnf package manger.
    - **LUA_DEV_REQ** -- Requirements installed with luarocks.
-
-## Install
-
-To install dependencies needed to run the development environments simply
-run `make install-dev`. This executed `./install dev`.
 
 ## Commands
 
