@@ -68,7 +68,7 @@ setup() {
     run install_prod
 
     [ ${status} -eq 2 ]
-    [[ ${output} == *"Curl exited with 1 and sh exited with 0."* ]]
+    [[ ${output} == *"Installation of rust failed."* ]]
 }
 
 @test "rust_installer: Function can not execute rustup.rs with sh." {
@@ -79,5 +79,5 @@ setup() {
     run install_prod
 
     [ ${status} -eq 2 ]
-    [[ ${output} == *"Curl exited with 0 and sh exited with 1."* ]]
+    [[ ${output} == *"Installation of rust failed."* ]]
 }
