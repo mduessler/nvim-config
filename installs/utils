@@ -114,7 +114,7 @@ kill_clone_process() {
         return 2
     fi
     local pid=$1
-    kill "${pid}" || { warning "Can not kill nerd-fonts process '${pid}'." && return 1; }
+    kill "${pid}" || { warning "Can not kill nerd-fonts process '${pid}'." && return 3; }
     success "Killed process ${pid}."
     return 0
 }
