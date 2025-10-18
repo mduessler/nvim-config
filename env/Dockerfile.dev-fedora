@@ -1,6 +1,8 @@
 FROM fedora:42
 
 ENV DISPLAY=:99
+ENV TERM=xterm
+
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # Create TestUser
