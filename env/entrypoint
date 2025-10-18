@@ -24,7 +24,7 @@ function execute_bash_tests() {
         status="$?"
         count_tests "${output}"
         if [ ${status} -ne 0 ]; then
-            printf "%s" "${status}"
+            print_wrong_output "${output}"
         fi
     done
 }
@@ -42,8 +42,23 @@ function count_tests() {
             ((counter_failure++))
         fi
     done <<<"${output}"
-    BASH_COUNTER_SUCCESS_TESTS+=(counter_success)
-    BASH_COUNTER_FAILURE_TESTS+=(counter_failure)
+    BASH_COUNTER_SUCCESS_TESTS+=("$counter_success")
+    BASH_COUNTER_FAILURE_TESTS+=("$counter_failure")
+}
+
+function print_wrong_output() {
+    local output="$1"
+    local print_next=0
+    while IFS= read -r line; do
+        if [[ $line =~ ^not\ ok\ ([0-9]+)\ (.*) ]]; then
+            printf "[TEST] %s: %s\n" "${BASH_REMATCH[1]}" "${BASH_REMATCH[2]}"
+            print_next=1
+        elif [[ $print_next -eq 1 && $line =~ ^# ]]; then
+            printf "%s\n" "${line}"
+        else
+            print_next=0
+        fi
+    done <<<"$output"
 }
 
 get_bash_test_files
