@@ -14,4 +14,5 @@ setup() {
     run install_prod
 
     [ ${status} -eq 0 ]
+    [[ ${output} = "Installed production dependencies and requirements." ]]
 }
