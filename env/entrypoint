@@ -1,5 +1,9 @@
 #!/usr/bin/bash
 
+RESET="\033[0m"
+RED="\033[31m"
+GREEN="\033[92m"
+
 BASH_TESTS_DIR="${NVIM_CONFIG}/tests/bash"
 
 BASH_TEST_FILES=()
@@ -20,14 +24,12 @@ function get_bash_test_files() {
     done <<<"${content}"
 }
 
-function execute_bash_tests() {
-    for test in "${BASH_TEST_FILES[@]}"; do
-        output=$(bats "${BASH_TESTS_DIR}/${test}")
-        status="$?"
-        BASH_STATUS_TESTS+=("${status}")
-        BASH_OUTPUT_TESTS+=("${output}")
-        count_tests "${output}"
-    done
+function execute_bash_test() {
+    output=$(bats "${BASH_TESTS_DIR}/$1")
+    status="$?"
+    BASH_STATUS_TESTS+=("${status}")
+    BASH_OUTPUT_TESTS+=("${output}")
+    count_tests "${output}"
 }
 
 function count_tests() {
@@ -62,8 +64,55 @@ function print_wrong_output() {
     done <<<"$output"
 }
 
-function main() {
-    printf "-------------------------- Starting Tests --------------------------\n"
-    get_bash_test_files
-    execute_bash_tests
+function get_test_counter() {
+    local bats_tests_counter=0
+    bats_tests_counter=$(bats -c "${BASH_TESTS_DIR}")
+    local lua_tests_counter=0
+    echo $(("${bats_tests_counter}" + "${lua_tests_counter}"))
 }
+
+function main() {
+    get_bash_test_files
+
+    local width=10
+    for test in "${BASH_TEST_FILES[@]}"; do
+        if [[ ${#test} -gt $width ]]; then
+            width=${#test}
+            if [[ ${#test} ]]; then
+                width=$((width + 1))
+            fi
+        fi
+    done
+    # 24 - 16
+    width=$((width + 6))
+    local string="-"
+    char="-"
+    string=$(printf '%.0s'"${char}" $(seq 1 $(((width + 18) / 2))))
+
+    printf "%s Starting Tests %s\n" "${string}" "${string}"
+    printf "Collected %d tests\n" "$(get_test_counter)"
+
+    for test in "${BASH_TEST_FILES[@]}"; do
+        execute_bash_test "${test}"
+        index=$(("${#BASH_STATUS_TESTS[@]}" - 1))
+        printf "[TEST]: %-*s" "${width}" "${test}"
+
+        if [[ ${BASH_COUNTER_FAILURE_TESTS[${index}]} -gt 0 ]]; then
+            printf "%b" "${RED}"
+        else
+            printf "%b" "${GREEN}"
+        fi
+
+        printf "%-2d passed / %-2d failure" "${BASH_COUNTER_SUCCESS_TESTS[${index}]}" "${BASH_COUNTER_FAILURE_TESTS[${index}]}"
+
+        if [[ ${BASH_COUNTER_FAILURE_TESTS[${index}]} -gt 0 ]]; then
+            printf "  %b" "${RESET}"
+        else
+            printf "  %b" "${RESET}"
+        fi
+
+        printf "\n"
+    done
+
+}
+main
