@@ -34,3 +34,13 @@ setup() {
     [ ${status} -eq 3 ]
     [[ ${output} = "Can not install production requirements." ]]
 }
+
+@test "rust_installer: Function executed successfully - rust has been installed" {
+    check_command() { return 1; }
+    curl() { return 0; }
+
+    run install_prod
+
+    [ ${status} -eq 0 ]
+    [[ ${output} = "Rust has been successfully installed." ]]
+}
