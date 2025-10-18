@@ -99,11 +99,13 @@ setup() {
     [[ ${output} =~ "WARNING" ]]
 }
 
-@test "[TEST]: error log" {
+@test "error: Verify message is printed." {
     local msg="This is a test message"
+
     run error "${msg}"
+
     [ ${status} -eq 0 ]
-    [[ ${output} =~ "${msg}" ]]
+    [[ ${output} == *"${msg}"* ]]
     [[ ${output} =~ "ERROR" ]]
 }
 
