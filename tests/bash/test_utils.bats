@@ -198,31 +198,24 @@ setup() {
     [[ ${output} == *"Can not pull repo at '${HOME}'."* ]]
 }
 
-@test "[TEST]: clone_repo - two arguments needed" {
-    run clone_repo
-
-    [ ${status} -eq 2 ]
-    [[ ${output} == *"Function needs exactly two arguments, 'repo-url' and 'dest-dir'."* ]]
-}
-
-@test "[TEST]: clone_repo - clone success" {
+@test "clone_repo: Function executed successfully" {
     git() {
         echo "mock git called with: $*"
         sleep 1
         return 0
     }
+
     run clone_repo "https://github.com/mduessler/nvim-config.git" "simply-the-best"
 
-    echo ${output}
-    pid=$(echo ${output} | awk '{print $1}' | xargs)
-    tmpfile=$(echo ${output} | awk '{print $2}' | xargs)
+    pid=$(echo "${output}" | awk '{print $1}' | xargs)
+    tmpfile=$(echo "${output}" | awk '{print $2}' | xargs)
 
     [ ${status} -eq 0 ]
     [[ ${pid} =~ ^[0-9]+$ ]]
     [[ -f "${tmpfile}" ]]
 }
 
-@test "[TEST]: clone_repo - clone fails" {
+@test "clone_repo: Git clone command fails." {
     git() {
         echo "mock git called with: $*"
         sleep 1
@@ -237,6 +230,20 @@ setup() {
     [ ${status} -eq 0 ]
     [[ ${pid} =~ ^[0-9]+$ ]]
     [[ -f "${tmpfile}" ]]
+}
+
+@test "clone_repo: Function arguments do not match - no argument is given." {
+    run clone_repo
+
+    [ ${status} -eq 2 ]
+    [[ ${output} == *"Function needs exactly two arguments, 'repo-url' and 'dest-dir'."* ]]
+}
+
+@test "clone_repo: Function arguments do not match - one argument is given." {
+    run clone_repo "fake-argument"
+
+    [ ${status} -eq 2 ]
+    [[ ${output} == *"Function needs exactly two arguments, 'repo-url' and 'dest-dir'."* ]]
 }
 
 @test "[TEST]: wait_for_clone_process - two arguments needed" {
