@@ -1,6 +1,6 @@
 #!/usr/bin/env bats
 
-@test "[TEST]: '${NVIM_CONFIG}/installs/utils' exists " {
+@test "Test if script '${NVIM_CONFIG}/installs/utils' exists." {
     [ -f "${NVIM_CONFIG}"/installs/utils ]
 }
 
@@ -109,7 +109,7 @@ setup() {
     [[ ${output} == *"ERROR"* ]]
 }
 
-@test "check_command: Function executed successfully" {
+@test "check_command: Function executed successfully." {
     run check_command ls
 
     [ ${status} -eq 0 ]
@@ -121,7 +121,7 @@ setup() {
     [ ${status} -eq 1 ]
 }
 
-@test "dir_is_git_repo: Function executed successfully" {
+@test "dir_is_git_repo: Function executed successfully." {
     git() { return 0; }
 
     run dir_is_git_repo "${HOME}"
@@ -158,7 +158,7 @@ setup() {
     [[ ${output} == *"Path '${HOME}' is not a git repo."* ]]
 }
 
-@test "pull_git_dir: Function executed successfully" {
+@test "pull_git_dir: Function executed successfully." {
     git() { return 0; }
     cd() { return 0; }
 
@@ -198,7 +198,7 @@ setup() {
     [[ ${output} == *"Can not pull repo at '${HOME}'."* ]]
 }
 
-@test "clone_repo: Function executed successfully" {
+@test "clone_repo: Function executed successfully." {
     git() {
         echo "mock git called with: $*"
         sleep 1
@@ -246,7 +246,7 @@ setup() {
     [[ ${output} == *"Function needs exactly two arguments, 'repo-url' and 'dest-dir'."* ]]
 }
 
-@test "wait_for_clone_process: Function executed successfully" {
+@test "wait_for_clone_process: Function executed successfully." {
     tmpfile=$(mktemp)
     pid=12345
 
@@ -323,7 +323,7 @@ setup() {
     rm -f "$tmpfile"
 }
 
-@test "kill_clone_process: Function executed successfully" {
+@test "kill_clone_process: Function executed successfully." {
     kill() { return 0; }
 
     pid=12345
