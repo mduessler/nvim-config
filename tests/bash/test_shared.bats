@@ -39,7 +39,7 @@ teardown() {
     local pkg_mgr="pacman"
     check_command() { [ "$1" = "dnf" ] && return 0 || return 1; }
 
-    run identify_system_pkg_mgr
+    PKG_MGR=$pkg_mgr run identify_system_pkg_mgr
 
     [ ${status} -eq 0 ]
     [ "${PKG_MGR}" = "${pkg_mgr}" ]
