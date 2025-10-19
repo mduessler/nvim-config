@@ -99,7 +99,11 @@ install_dependencies_independent_of_pkg_mgr() {
         fi
     done
     if [ ${status} -gt 0 ]; then
-        warning "Can not install all production dependencies independent of package manger. Only installed ${installed[*]}"
+        if [ "${installed[*]}" = "" ]; then
+            error "Can not install production dependencies independent of package manger."
+        else
+            warning "Can not install all production dependencies independent of package manger. Only installed ${installed[*]}"
+        fi
     else
         success "Installed all production dependencies independent of package manger successfully."
     fi
