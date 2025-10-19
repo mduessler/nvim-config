@@ -50,6 +50,42 @@ setup() {
     [[ ${output} == *"No valid package manager found."* ]]
 }
 
+@test "identify_system_pkg_mgr: Function executed successfully." {
+    sudo() { return 0; }
+    identify_system_pkg_mgr
+
+    run install_packages_with_pkg_mgr neovim
+
+    [ ${status} -eq 0 ]
+    [[ ${output} == *"Installed packages: neovim"* ]]
+}
+
+@test "identify_system_pkg_mgr: Can not install packages - pkg manager can not install pgk." {
+    sudo() { return 1; }
+    identify_system_pkg_mgr
+
+    run install_packages_with_pkg_mgr neovim
+
+    [ ${status} -eq 1 ]
+    [[ ${output} == *"Can not install package(s)."* ]]
+}
+
+@test "identify_system_pkg_mgr: Can not install packages - PKG_MGR is not set." {
+    run install_packages_with_pkg_mgr neovim
+
+    [ ${status} -eq 2 ]
+    [[ ${output} == *"Need to set 'PKG_MGR', or call 'identify_system_pkg_mgr'."* ]]
+}
+
+@test "identify_system_pkg_mgr: Can not install packages - no pkg is given." {
+    identify_system_pkg_mgr
+
+    run install_packages_with_pkg_mgr
+
+    [ ${status} -eq 3 ]
+    [[ ${output} == *"No package given. Please provide at least one packge."* ]]
+}
+
 @test "install_lua_pkg: Function executed successfully – pkg is alreay installed." {
     local pkg="lpeglabel"
     check_command() { return 0; }
@@ -188,42 +224,6 @@ setup() {
     check_command() { return 0; }
 
     run install_cargo_pkg
-
-    [ ${status} -eq 3 ]
-    [[ ${output} == *"No package given. Please provide at least one packge."* ]]
-}
-
-@test "identify_system_pkg_mgr: Function executed successfully." {
-    sudo() { return 0; }
-    identify_system_pkg_mgr
-
-    run install_packages_with_pkg_mgr neovim
-
-    [ ${status} -eq 0 ]
-    [[ ${output} == *"Installed packages: neovim"* ]]
-}
-
-@test "identify_system_pkg_mgr: Can not install packages - pkg manager can not install pgk." {
-    sudo() { return 1; }
-    identify_system_pkg_mgr
-
-    run install_packages_with_pkg_mgr neovim
-
-    [ ${status} -eq 1 ]
-    [[ ${output} == *"Can not install package(s)."* ]]
-}
-
-@test "identify_system_pkg_mgr: Can not install packages - PKG_MGR is not set." {
-    run install_packages_with_pkg_mgr neovim
-
-    [ ${status} -eq 2 ]
-    [[ ${output} == *"Need to set 'PKG_MGR', or call 'identify_system_pkg_mgr'."* ]]
-}
-
-@test "identify_system_pkg_mgr: Can not install packages - no pkg is given." {
-    identify_system_pkg_mgr
-
-    run install_packages_with_pkg_mgr
 
     [ ${status} -eq 3 ]
     [[ ${output} == *"No package given. Please provide at least one packge."* ]]
