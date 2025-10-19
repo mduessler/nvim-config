@@ -89,3 +89,21 @@ setup() {
     [ ${status} -eq 3 ]
     [[ ${output} == *"Unsupported package manager: ${pkg_mgr}"* ]]
 }
+
+@test "install_dev_requirements: Function executed successfully." {
+    install_lua_pkg() { return 0; }
+
+    run install_dev_requirements
+
+    [ ${status} -eq 0 ]
+    [[ ${output} == *"Installed development requirements successfully."* ]]
+}
+
+@test "install_dev_requirements: Can not install lua requirements." {
+    install_lua_pkg() { return 1; }
+
+    run install_dev_requirements
+
+    [ ${status} -eq 1 ]
+    [[ ${output} == *"Can not install lua requirements."* ]]
+}
