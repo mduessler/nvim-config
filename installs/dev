@@ -86,6 +86,6 @@ install_dev_requirements() {
         error "Can not install lua requirements."
         return 1
     fi
-    success "Installed requirements successfully."
+    success "Installed development requirements successfully."
     return 0
 }
