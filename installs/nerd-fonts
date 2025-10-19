@@ -20,14 +20,15 @@ init_nerd_process() {
         read -r NERD_FONTS_PID TMPFILE < <(clone_repo https://github.com/ryanoasis/nerd-fonts "${NERD_FONTS_DIR}")
         status=$?
         if [ "${status}" -ne 0 ]; then
-            error "clone_repo function failed!"
-            return 2
+            debug "Read exited with ${PIPESTATUS[0]} and clone_repo exited with ${PIPESTATUS[1]}."
+            warning "Error occured during clone repo."
+            return 3
         fi
         printf pid
         return 0
     else
         error "Directory ${NERD_FONTS_DIR} already exists and is no git repo."
-        return 3
+        return 4
     fi
 }
 
