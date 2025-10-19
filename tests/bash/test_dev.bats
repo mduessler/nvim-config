@@ -41,8 +41,8 @@ setup() {
 
 @test "install_dev_dependencies: Function executed successfully." {
     identify_system_pkg_mgr() { return 0; }
-    install_docker_ubuntu() { return 0; }
-    install_docker_fedora() { return 0; }
+    install_apt_get_dependencies() { return 0; }
+    install_dnf_dependencies() { return 0; }
 
     PKG_MGR="apt-get" run install_dev_dependencies
 
@@ -57,8 +57,8 @@ setup() {
 
 @test "install_dev_dependencies: Function can not install docker." {
     identify_system_pkg_mgr() { return 0; }
-    install_docker_ubuntu() { return 1; }
-    install_docker_fedora() { return 1; }
+    install_apt_get_dependencies() { return 1; }
+    install_dnf_dependencies() { return 1; }
 
     PKG_MGR="apt-get" run install_dev_dependencies
 
