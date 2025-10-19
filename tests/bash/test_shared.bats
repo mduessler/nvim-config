@@ -118,24 +118,8 @@ setup() {
     [[ ${output} == *"Failed to install ${pkg}."* ]]
 }
 
-@test "[TEST]: install_cargo_pkg - rust is not installed" {
-    check_command() { return 1; }
-    run install_cargo_pkg selene
-
-    [ "$status" -eq 3 ]
-    [[ "$output" =~ "Rust is not installed or rust and cargo not in '\$PATH'." ]]
-}
-
-@test "[TEST]: install_cargo_pkg - No package is given" {
-    check_command() { return 0; }
-    run install_cargo_pkg
-
-    [ "$status" -eq 2 ]
-    [[ "$output" =~ "No package given. Please provide at least one packge." ]]
-}
-
-@test "[TEST]: install_cargo_pkg - rust package is already installed." {
-    local pkg="lpeglabel"
+@test "install_cargo_pkg: Function executed successfully – pkg is alreay installed." {
+    local pkg="selene"
     check_command() { return 0; }
     cargo() {
         case "$2" in
@@ -144,30 +128,52 @@ setup() {
         esac
     }
     grep() { return 0; }
+
     run install_cargo_pkg "${pkg}"
 
-    [ "$status" -eq 0 ]
-    [[ "$output" =~ "${pkg} is already installed, skipping..." ]]
+    [ ${status} -eq 0 ]
+    [[ ${output} == *"${pkg} is already installed, skipping ..."* ]]
+    [[ ${output} == *"Finished package installation."* ]]
 }
 
-@test "[TEST]: install_cargo_pkg - rust package installation is successful." {
-    local pkg="lpeglabel"
+@test "install_cargo_pkg: Function executed successfully – pkg succssfully installed." {
+    local pkg="selene"
     check_command() { return 0; }
     cargo() {
         case "$2" in
             --list) return 1 ;;
-            "${pkg}") return 0 ;;
+            install) return 0 ;;
         esac
     }
     grep() { return 1; }
+
     run install_cargo_pkg "${pkg}"
 
-    [ "$status" -eq 0 ]
-    [[ "$output" =~ "Installed ${pkg}." ]]
+    [ ${status} -eq 0 ]
+    [[ ${output} == *"Installing ${pkg} ..."* ]]
+    [[ ${output} == *"Installed ${pkg}."* ]]
+    [[ ${output} == *"Finished package installation."* ]]
+}
+@test "install_cargo_pkg: Can not install package - rust is not installed." {
+    check_command() { return 1; }
+
+    run install_cargo_pkg lpeglabel
+
+    [ ${status} -eq 2 ]
+    [[ ${output} == *"Rust is not installed or rust and cargo not in '\$PATH'."* ]]
 }
 
-@test "[TEST]: install_cargo_pkg - rust package installation fails." {
-    local pkg="lpeglabel"
+@test "install_cargo_pkg: Can not install package - no package is given." {
+    check_command() { return 0; }
+
+    run install_cargo_pkg
+
+    [ ${status} -eq 3 ]
+    [[ ${output} == *"No package given. Please provide at least one packge."* ]]
+}
+
+@test "install_cargo_pkg: Package cannot be installed – Installation of pkg with luarocks failed." {
+    local pkg="selene"
     check_command() { return 0; }
     cargo() {
         case "$2" in
@@ -176,10 +182,12 @@ setup() {
         esac
     }
     grep() { return 1; }
+
     run install_cargo_pkg "${pkg}"
 
-    [ "$status" -eq 1 ]
-    [[ "$output" =~ "Failed to install ${pkg}." ]]
+    [ ${status} -eq 4 ]
+    [[ ${output} == *"Installing ${pkg} ..."* ]]
+    [[ ${output} == *"Failed to install ${pkg}."* ]]
 }
 
 @test "[TEST]: install_packages_with_pkg_mgr - PKG_MGR is not set" {
