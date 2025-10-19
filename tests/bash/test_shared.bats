@@ -49,6 +49,38 @@ setup() {
     [[ ${output} == *"No valid package manager found."* ]]
 }
 
+@test "install_lua_pkg: Function executed successfully – pkg is alreay installed." {
+    local pkg="lpeglabel"
+    check_command() { return 0; }
+    luarocks() {
+        case "$1" in
+            show) return 0 ;;
+            install) return 0 ;;
+        esac
+    }
+    run install_lua_pkg "${pkg}"
+
+    [ ${status} -eq 0 ]
+    [[ ${output} == *"${pkg} is already installed, skipping ..."* ]]
+    [[ ${output} == *"Finished package installation."* ]]
+}
+
+@test "install_lua_pkg: Function executed successfully – pkg succssfully installed." {
+    local pkg="lpeglabel"
+    check_command() { return 0; }
+    luarocks() {
+        case "$1" in
+            show) return 1 ;;
+            install) return 0 ;;
+        esac
+    }
+    run install_lua_pkg "${pkg}"
+
+    [ ${status} -eq 0 ]
+    [[ ${output} == *"Installing ${pkg} ..."* ]]
+    [[ ${output} == *"Installed ${pkg}."* ]]
+    [[ ${output} == *"Finished package installation."* ]]
+}
 @test "[TEST]: install_lua_pkg - lua is not installed" {
     check_command() { return 1; }
     run install_lua_pkg lpeglabel
@@ -63,36 +95,6 @@ setup() {
 
     [ "$status" -eq 2 ]
     [[ "$output" =~ "No package given. Please provide at least one packge." ]]
-}
-
-@test "[TEST]: install_lua_pkg - lua package is already installed." {
-    local pkg="lpeglabel"
-    check_command() { return 0; }
-    luarocks() {
-        case "$1" in
-            show) return 0 ;;
-            install) return 0 ;;
-        esac
-    }
-    run install_lua_pkg "${pkg}"
-
-    [ "$status" -eq 0 ]
-    [[ "$output" =~ "${pkg} is already installed, skipping..." ]]
-}
-
-@test "[TEST]: install_lua_pkg - lua package installation is successful." {
-    local pkg="lpeglabel"
-    check_command() { return 0; }
-    luarocks() {
-        case "$1" in
-            show) return 1 ;;
-            install) return 0 ;;
-        esac
-    }
-    run install_lua_pkg "${pkg}"
-
-    [ "$status" -eq 0 ]
-    [[ "$output" =~ "Installed ${pkg}." ]]
 }
 
 @test "[TEST]: install_lua_pkg - lua package installation fails." {
