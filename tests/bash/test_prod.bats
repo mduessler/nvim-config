@@ -68,7 +68,7 @@ setup() {
 
     run install_rust
 
-    [ ${status} -eq 2 ]
+    [ ${status} -eq 1 ]
     [[ ${output} == *"Curl exited with 1 and sh exited with 1."* ]]
 }
 
@@ -79,7 +79,7 @@ setup() {
 
     run install_rust
 
-    [ ${status} -eq 2 ]
+    [ ${status} -eq 1 ]
     [[ ${output} == *"Curl exited with 0 and sh exited with 1."* ]]
 }
 
@@ -98,6 +98,23 @@ setup() {
 
     [ ${status} -eq 0 ]
     [[ ${output} == *"Dependencies has been successfully installed."* ]]
+}
+
+@test "install_prod_dependencies: Function can not install packages without package manager." {
+    identify_system_pkg_mgr() { return 0; }
+    install_packages_with_pkg_mgr() { return 0; }
+    install_dependencies_independent_of_pkg_mgr() { return 1; }
+    check_nvim_version() { return 0; }
+
+    PKG_MGR="apt-get" run install_prod_dependencies
+
+    [ ${status} -eq 1 ]
+    [[ ${output} == *"Can not install dependencies independent of package manager."* ]]
+
+    PKG_MGR="dnf" run install_prod_dependencies
+
+    [ ${status} -eq 1 ]
+    [[ ${output} == *"Can not install dependencies independent of package manager."* ]]
 }
 
 @test "install_prod_dependencies: Function can not idenify system package manager." {
@@ -124,23 +141,6 @@ setup() {
     [[ ${output} == *"Unsupported package manager: pacman"* ]]
 }
 
-@test "install_prod_dependencies: Function can not install packages without package manager." {
-    identify_system_pkg_mgr() { return 0; }
-    install_packages_with_pkg_mgr() { return 0; }
-    install_dependencies_independent_of_pkg_mgr() { return 1; }
-    check_nvim_version() { return 0; }
-
-    PKG_MGR="apt-get" run install_prod_dependencies
-
-    [ ${status} -eq 4 ]
-    [[ ${output} == *"Can not install dependencies independent of package manager."* ]]
-
-    PKG_MGR="dnf" run install_prod_dependencies
-
-    [ ${status} -eq 4 ]
-    [[ ${output} == *"Can not install dependencies independent of package manager."* ]]
-}
-
 @test "install_prod_dependencies: Function can not install neovim.." {
     identify_system_pkg_mgr() { return 0; }
     install_packages_with_pkg_mgr() { return 0; }
@@ -150,47 +150,54 @@ setup() {
 
     PKG_MGR="apt-get" run install_prod_dependencies
 
-    [ ${status} -eq 5 ]
+    [ ${status} -eq 4 ]
     [[ ${output} == *"Can not install neovim."* ]]
 
     PKG_MGR="dnf" run install_prod_dependencies
 
-    [ ${status} -eq 5 ]
+    [ ${status} -eq 4 ]
     [[ ${output} == *"Can not install neovim."* ]]
 }
 
 @test "install_dependencies_independent_of_pkg_mgr: Function executed successfully." {
     install_rust() { return 0; }
-    DEPS=(rust)
-    DEPS=${DEPS[*]} run install_dependencies_independent_of_pkg_mgr
+    local deps=(rust)
+
+    DEPS=${deps[*]} run install_dependencies_independent_of_pkg_mgr
 
     [ ${status} -eq 0 ]
-    [[ ${output} == *"Installed all production dependencies defined in \$DEPS"* ]]
+    [[ ${output} == *"Installed production dependencies ${deps[*]}."* ]]
 }
 
 @test "install_dependencies_independent_of_pkg_mgr: Dependency installation function failed.." {
     install_rust() { return 1; }
-    DEPS=(rust)
-    DEPS=${DEPS[*]} run install_dependencies_independent_of_pkg_mgr
+    deps=(rust)
 
-    [ ${status} -eq 2 ]
-    [[ ${output} == *"Failed to install dependency: ${DEPS[0]}"* ]]
+    DEPS=${deps[*]} run install_dependencies_independent_of_pkg_mgr
+
+    [ ${status} -eq 0 ]
+    [[ ${output} == *"Failed to install dependency: ${deps[0]}. Continue ..."* ]]
+    [[ ${output} == *"Installed production dependencies ."* ]]
 }
 
 @test "install_dependencies_independent_of_pkg_mgr: Dependency installation function implemented.." {
-    DEPS=(bash)
-    DEPS=${DEPS[*]} run install_dependencies_independent_of_pkg_mgr
+    install_rust() { return 0; }
+    deps=(bash rust)
 
-    [ ${status} -eq 3 ]
-    [[ ${output} == *"No installer function defined for ${DEPS[0]}, skipping."* ]]
+    DEPS=${deps[*]} run install_dependencies_independent_of_pkg_mgr
+
+    [ ${status} -eq 0 ]
+    [[ ${output} == *"No installer function defined for ${deps[0]}. Skipping ..."* ]]
+    [[ ${output} == *"Installed production dependencies ${deps[1]}."* ]]
 }
 
 @test "install_prod_requirements: Function executed successfully." {
     install_lua_pkg() { return 0; }
     install_cargo_pkg() { return 0; }
-    RUST_REQ=(selene)
-    LUA_REQ=(selene)
-    RUST_REQ=${RUST_REQ[*]} LUA_REQ=${LUA_REQ[*]} run install_prod_requirements
+    rust_req=(selene)
+    lua_req=(selene)
+
+    RUST_REQ=${rust_req[*]} LUA_REQ=${lua_req[*]} run install_prod_requirements
 
     [ ${status} -eq 0 ]
     [[ ${output} == *"Requirements have been successfully installed."* ]]
@@ -199,9 +206,10 @@ setup() {
 @test "install_prod_requirements: Installation of lua requirements fail." {
     install_lua_pkg() { return 1; }
     install_cargo_pkg() { return 0; }
-    RUST_REQ=(selene)
-    LUA_REQ=(selene)
-    RUST_REQ=${RUST_REQ[*]} LUA_REQ=${LUA_REQ[*]} run install_prod_requirements
+    rust_req=(selene)
+    lua_req=(selene)
+
+    RUST_REQ=${rust_req[*]} LUA_REQ=${lua_req[*]} run install_prod_requirements
 
     [ ${status} -eq 2 ]
     [[ ${output} == *"Can not install lua requirements."* ]]
@@ -210,9 +218,10 @@ setup() {
 @test "install_prod_requirements: Installation of rust requirements fail." {
     install_lua_pkg() { return 0; }
     install_cargo_pkg() { return 1; }
-    RUST_REQ=(selene)
-    LUA_REQ=(selene)
-    RUST_REQ=${RUST_REQ[*]} LUA_REQ=${LUA_REQ[*]} run install_prod_requirements
+    rust_req=(selene)
+    lua_req=(selene)
+
+    RUST_REQ=${rust_req[*]} LUA_REQ=${lua_req[*]} run install_prod_requirements
 
     [ ${status} -eq 3 ]
     [[ ${output} == *"Can not install rust requirements."* ]]

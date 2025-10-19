@@ -37,7 +37,7 @@ install_rust() {
     if ! curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y; then
         debug "Curl exited with ${PIPESTATUS[0]} and sh exited with ${PIPESTATUS[1]}."
         error "Installation of rust failed."
-        return 2
+        return 1
     fi
     echo ":$PATH:" | grep -q ":${CARGO_HOME}/bin:" || export PATH="${CARGO_HOME}/bin:${PATH}"
     debug "Added '${CARGO_HOME}/bin' to PATH $"
@@ -67,13 +67,13 @@ install_prod_dependencies() {
 
     if ! install_dependencies_independent_of_pkg_mgr; then
         error "Can not install dependencies independent of package manager."
-        return 4
+        return 1
     fi
 
     if ! check_nvim_version; then
         if ! install_nvim; then
             error "Can not install neovim."
-            return 5
+            return 4
         fi
     fi
 
@@ -82,19 +82,19 @@ install_prod_dependencies() {
 }
 
 install_dependencies_independent_of_pkg_mgr() {
+    local installed=()
     for dep in "${DEPS[@]}"; do
         func="install_${dep}"
         if declare -f "$func" >/dev/null; then
             if ! "$func"; then
-                error "Failed to install dependency: ${dep}"
-                return 2
+                warning "Failed to install dependency: ${dep}. Continue ..."
             fi
         else
-            warning "No installer function defined for ${dep}, skipping."
-            return 3
+            warning "No installer function defined for ${dep}. Skipping ..."
         fi
+        installed+=("${dep}")
     done
-    success "Installed all production dependencies defined in \$DEPS"
+    success "Installed production dependencies ${installed[*]}."
     return 0
 }
 
