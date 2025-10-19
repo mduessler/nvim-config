@@ -9,10 +9,10 @@ source "${SCRIPT_DIR}/utils"
 install_packages_with_pkg_mgr() {
     if [ -z "${PKG_MGR}" ]; then
         warning "Need to set 'PKG_MGR', or call 'identify_system_pkg_mgr'."
-        return 3
+        return 2
     elif [ $# -eq 0 ]; then
         warning "No package given. Please provide at least one packge."
-        return 2
+        return 3
     fi
 
     local packages="$*"
@@ -25,7 +25,7 @@ install_packages_with_pkg_mgr() {
     debug "Installing package(s)."
     if ! sudo "${PKG_MGR}" install -y "$@"; then
         error "Can not install package(s)."
-        return 1
+        return 4
     fi
 
     success "Installed packages: ${packages}."
