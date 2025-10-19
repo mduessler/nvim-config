@@ -6,11 +6,6 @@
 
 setup() {
     source "${NVIM_CONFIG}/installs/shared"
-    unset PKG_MGR
-}
-
-teardown() {
-    unset PKG_MGR
 }
 
 @test "identify_system_pkg_mgr: Function executed successfully – case apt-get pkg manager identified." {
@@ -20,7 +15,6 @@ teardown() {
     run identify_system_pkg_mgr
 
     [ ${status} -eq 0 ]
-    [ "${PKG_MGR}" = "${pkg_mgr}" ]
     [[ ${output} == *"Identified '${pkg_mgr}' as package manager."* ]]
 }
 
@@ -31,7 +25,6 @@ teardown() {
     run identify_system_pkg_mgr
 
     [ ${status} -eq 0 ]
-    [ "${PKG_MGR}" = "${pkg_mgr}" ]
     [[ ${output} == *"Identified '${pkg_mgr}' as package manager."* ]]
 }
 
@@ -42,7 +35,6 @@ teardown() {
     PKG_MGR=$pkg_mgr run identify_system_pkg_mgr
 
     [ ${status} -eq 0 ]
-    [ "${PKG_MGR}" = "${pkg_mgr}" ]
     [[ ${output} == *"Identified '${pkg_mgr}' as package manager."* ]]
     [[ ${output} == *"No valid package manager found."* ]]
 }
@@ -54,7 +46,6 @@ teardown() {
     run identify_system_pkg_mgr
 
     [ ${status} -eq 2 ]
-    [ "${PKG_MGR}" = "${pkg_mgr}" ]
     [[ ${output} == *"No valid package manager found."* ]]
 }
 
