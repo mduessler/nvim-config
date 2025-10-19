@@ -56,7 +56,6 @@ teardown() {
     NVIM_DEV=true run init_nerd_process
 
     [ ${status} -eq 3 ]
-
     [[ ${output} == *"Error occured during clone repo."* ]]
 }
 
@@ -86,43 +85,59 @@ teardown() {
     [ ${status} -eq 2 ]
 }
 
-@test "[TEST]: install_nerd_fonts - install success" {
+@test "install_nerd_fonts: Function executed successfully." {
     wait_for_clone_process() { return 0; }
     chmod() { return 0; }
 
     NERD_FONTS_DIR="${TEST_DATA}/success" run install_nerd_fonts
-    [ "$status" -eq 0 ]
+
+    [ ${status} -eq 0 ]
+    [[ ${output} == *"Installed nerd-fonts."* ]]
 }
 
-@test "[TEST]: install_nerd_fonts - install fails" {
+@test "install_nerd_fonts: Function executed successfully." {
     wait_for_clone_process() { return 0; }
     chmod() { return 0; }
 
     NERD_FONTS_DIR="${TEST_DATA}/fail" run install_nerd_fonts
-    [ "$status" -eq 1 ]
-    [[ "$output" == *"Install nerd-fonts (instal.sh) exited (${status}) with: This test will fail."* ]]
+
+    [ ${status} -eq 1 ]
+    [[ ${output} == *"Install nerd-fonts (instal.sh) exited (1) with: This test will fail.."* ]]
+    [[ ${output} == *"Can not install nerd-fonts."* ]]
 }
 
-@test "[TEST]: install_nerd_fonts - can not make file executable" {
+@test "install_nerd_fonts: Wait for clone process failed." {
+    wait_for_clone_process() { return 1; }
+
+    run install_nerd_fonts
+
+    [ ${status} -eq 2 ]
+}
+
+@test "install_nerd_fonts: Nerd-fonts directory is not set." {
+    wait_for_clone_process() { return 0; }
+
+    NERD_FONTS_DIR="" run install_nerd_fonts
+
+    [ ${status} -eq 3 ]
+    [[ ${output} == *"Not Nerd-fonts directory defined."* ]]
+}
+
+@test "install_nerd_fonts: Can not change directory" {
+    wait_for_clone_process() { return 0; }
+    cd() { return 1; }
+
+    run install_nerd_fonts
+
+    [ ${status} -eq 4 ]
+}
+
+@test "install_nerd_fonts: Can not make file executable" {
     wait_for_clone_process() { return 0; }
     cd() { return 0; }
     chmod() { return 1; }
 
     run install_nerd_fonts
-    [ "$status" -eq 2 ]
-}
 
-@test "[TEST]: install_nerd_fonts - can not change dir" {
-    wait_for_clone_process() { return 0; }
-    cd() { return 1; }
-
-    run install_nerd_fonts
-    [ "$status" -eq 2 ]
-}
-
-@test "[TEST]: install_nerd_fonts - wait for clone process fails" {
-    wait_for_clone_process() { return 1; }
-
-    run install_nerd_fonts
-    [ "$status" -eq 3 ]
+    [ ${status} -eq 4 ]
 }
