@@ -36,7 +36,7 @@ setup() {
 
     [ ${status} -eq 0 ]
     [[ ${output} == *"Identified '${pkg_mgr}' as package manager."* ]]
-    [[ ${output} == *"No valid package manager found."* ]]
+    [[ ${output} == *"Package manager was already defined as '${pkg_mgr}'"* ]]
 }
 
 @test "identify_system_pkg_mgr: Can not idenify a system pkg manager." {
