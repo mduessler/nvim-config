@@ -10,7 +10,7 @@ DEPENDENCIES=$(pwd)/dependencies
 
 source "${SCRIPT_DIR}/utils" || {
     info "No production install found."
-    exit 1
+    exit 2
 }
 
 if ! source "${DEPENDENCIES}"; then
@@ -21,7 +21,7 @@ fi
 
 source "${SCRIPT_DIR}/prod" || {
     info "No production install found."
-    exit 1
+    exit 3
 }
 
 for arg in "$@"; do
@@ -33,7 +33,7 @@ for arg in "$@"; do
             INSTALL_NERD_FONTS=true
             source "${SCRIPT_DIR}/nerd-fonts" || {
                 info "Nerd-fonts install not found."
-                exit 1
+                exit 4
             }
             ;;
     esac
@@ -53,20 +53,20 @@ main() {
         if ${INSTALL_NERD_FONTS}; then
             kill_nerd_fonts_process
         fi
-        return 1
+        return 5
     fi
 
     if ${NVIM_DEV}; then
         source "${SCRIPT_DIR}/dev" || {
             info "No dev install found."
-            exit 1
+            exit 6
         }
         if ! install_dev; then
             error "Can not install development dependencies."
             if ${INSTALL_NERD_FONTS}; then
                 kill_nerd_fonts_process
             fi
-            return 1
+            return 7
         fi
     fi
 
