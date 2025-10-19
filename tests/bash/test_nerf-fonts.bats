@@ -70,18 +70,20 @@ teardown() {
     [[ ${output} == *"Directory ${HOME}/.local/share/src/nerd-fonts already exists and is no git repo."* ]]
 }
 
-@test "[TEST]: kill_nerd_fonts_process - kill success" {
+@test "kill_nerd_fonts_process: Function executed successfully." {
     kill() { return 0; }
 
     run kill_nerd_fonts_process
-    [ "$status" -eq 0 ]
+
+    [ ${status} -eq 0 ]
 }
 
-@test "[TEST]: kill_nerd_fonts_process - kill fails" {
+@test "kill_nerd_fonts_process: Can not kill nerd-fonts process." {
     kill() { return 1; }
 
     run kill_nerd_fonts_process
-    [ "$status" -eq 1 ]
+
+    [ ${status} -eq 2 ]
 }
 
 @test "[TEST]: install_nerd_fonts - install success" {
