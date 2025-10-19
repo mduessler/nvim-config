@@ -92,12 +92,12 @@ setup() {
     PKG_MGR="apt-get" run install_prod_dependencies
 
     [ ${status} -eq 0 ]
-    [[ ${output} == *"Dependencies has been successfully installed."* ]]
+    [[ ${output} == *"Dependencies have been successfully installed."* ]]
 
     PKG_MGR="dnf" run install_prod_dependencies
 
     [ ${status} -eq 0 ]
-    [[ ${output} == *"Dependencies has been successfully installed."* ]]
+    [[ ${output} == *"Dependencies have been successfully installed."* ]]
 }
 
 @test "install_prod_dependencies: Function can not install packages without package manager." {

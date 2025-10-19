@@ -77,7 +77,7 @@ install_prod_dependencies() {
         fi
     fi
 
-    success "Dependencies has been successfully installed."
+    success "Dependencies have been successfully installed."
     return 0
 }
 
