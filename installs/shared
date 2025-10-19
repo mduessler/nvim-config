@@ -6,6 +6,24 @@ SCRIPT_DIR="${SCRIPT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
 
 source "${SCRIPT_DIR}/utils"
 
+identify_system_pkg_mgr() {
+    if [ -z "${PKG_MGR}" ]; then
+        info "Identifing package manger."
+        if check_command apt-get; then
+            PKG_MGR="apt-get"
+        elif check_command dnf; then
+            PKG_MGR="dnf"
+        else
+            warning "No valid package manager found."
+            return 2
+        fi
+    else
+        debug "Package manager was already defined as '${PKG_MGR}'"
+    fi
+    success "Identified '${PKG_MGR}' as package manager."
+    return 0
+}
+
 install_packages_with_pkg_mgr() {
     if [ -z "${PKG_MGR}" ]; then
         warning "Need to set 'PKG_MGR', or call 'identify_system_pkg_mgr'."
@@ -29,24 +47,6 @@ install_packages_with_pkg_mgr() {
     fi
 
     success "Installed packages: ${packages}."
-    return 0
-}
-
-identify_system_pkg_mgr() {
-    if [ -z "${PKG_MGR}" ]; then
-        info "Identifing package manger."
-        if check_command apt-get; then
-            PKG_MGR="apt-get"
-        elif check_command dnf; then
-            PKG_MGR="dnf"
-        else
-            warning "No valid package manager found."
-            return 2
-        fi
-    else
-        debug "Package manager was already defined as '${PKG_MGR}'"
-    fi
-    success "Identified '${PKG_MGR}' as package manager."
     return 0
 }
 
