@@ -46,7 +46,7 @@ setup() {
 
     run identify_system_pkg_mgr
 
-    [ ${status} -eq 2 ]
+    [ ${status} -eq 1 ]
     [[ ${output} == *"No valid package manager found."* ]]
 }
 
@@ -84,6 +84,24 @@ setup() {
     [[ ${output} == *"Installed ${pkg}."* ]]
     [[ ${output} == *"Finished package installation."* ]]
 }
+
+@test "install_lua_pkg: Package cannot be installed – Installation of pkg with luarocks failed." {
+    local pkg="lpeglabel"
+    check_command() { return 0; }
+    luarocks() {
+        case "$1" in
+            show) return 1 ;;
+            install) return 1 ;;
+        esac
+    }
+
+    run install_lua_pkg "${pkg}"
+
+    [ ${status} -eq 1 ]
+    [[ ${output} == *"Installing ${pkg} ..."* ]]
+    [[ ${output} == *"Failed to install ${pkg}."* ]]
+}
+
 @test "install_lua_pkg: Can not install package - lua is not installed." {
     check_command() { return 1; }
 
@@ -100,23 +118,6 @@ setup() {
 
     [ ${status} -eq 3 ]
     [[ ${output} == *"No package given. Please provide at least one packge."* ]]
-}
-
-@test "install_lua_pkg: Package cannot be installed – Installation of pkg with luarocks failed." {
-    local pkg="lpeglabel"
-    check_command() { return 0; }
-    luarocks() {
-        case "$1" in
-            show) return 1 ;;
-            install) return 1 ;;
-        esac
-    }
-
-    run install_lua_pkg "${pkg}"
-
-    [ ${status} -eq 4 ]
-    [[ ${output} == *"Installing ${pkg} ..."* ]]
-    [[ ${output} == *"Failed to install ${pkg}."* ]]
 }
 
 @test "install_cargo_pkg: Function executed successfully – pkg is alreay installed." {
@@ -155,6 +156,25 @@ setup() {
     [[ ${output} == *"Installed ${pkg}."* ]]
     [[ ${output} == *"Finished package installation."* ]]
 }
+
+@test "install_cargo_pkg: Package cannot be installed – Installation of pkg with luarocks failed." {
+    local pkg="selene"
+    check_command() { return 0; }
+    cargo() {
+        case "$2" in
+            --list) return 1 ;;
+            "${pkg}") return 1 ;;
+        esac
+    }
+    grep() { return 1; }
+
+    run install_cargo_pkg "${pkg}"
+
+    [ ${status} -eq 1 ]
+    [[ ${output} == *"Installing ${pkg} ..."* ]]
+    [[ ${output} == *"Failed to install ${pkg}."* ]]
+}
+
 @test "install_cargo_pkg: Can not install package - rust is not installed." {
     check_command() { return 1; }
 
@@ -173,24 +193,6 @@ setup() {
     [[ ${output} == *"No package given. Please provide at least one packge."* ]]
 }
 
-@test "install_cargo_pkg: Package cannot be installed – Installation of pkg with luarocks failed." {
-    local pkg="selene"
-    check_command() { return 0; }
-    cargo() {
-        case "$2" in
-            --list) return 1 ;;
-            "${pkg}") return 1 ;;
-        esac
-    }
-    grep() { return 1; }
-
-    run install_cargo_pkg "${pkg}"
-
-    [ ${status} -eq 4 ]
-    [[ ${output} == *"Installing ${pkg} ..."* ]]
-    [[ ${output} == *"Failed to install ${pkg}."* ]]
-}
-
 @test "identify_system_pkg_mgr: Function executed successfully." {
     sudo() { return 0; }
     identify_system_pkg_mgr
@@ -199,6 +201,16 @@ setup() {
 
     [ ${status} -eq 0 ]
     [[ ${output} == *"Installed packages: neovim"* ]]
+}
+
+@test "identify_system_pkg_mgr: Can not install packages - pkg manager can not install pgk." {
+    sudo() { return 1; }
+    identify_system_pkg_mgr
+
+    run install_packages_with_pkg_mgr neovim
+
+    [ ${status} -eq 1 ]
+    [[ ${output} == *"Can not install package(s)."* ]]
 }
 
 @test "identify_system_pkg_mgr: Can not install packages - PKG_MGR is not set." {
@@ -215,14 +227,4 @@ setup() {
 
     [ ${status} -eq 3 ]
     [[ ${output} == *"No package given. Please provide at least one packge."* ]]
-}
-
-@test "identify_system_pkg_mgr: Can not install packages - pkg manager can not install pgk." {
-    sudo() { return 1; }
-    identify_system_pkg_mgr
-
-    run install_packages_with_pkg_mgr neovim
-
-    [ ${status} -eq 4 ]
-    [[ ${output} == *"Can not install package(s)."* ]]
 }

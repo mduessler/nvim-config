@@ -15,7 +15,7 @@ identify_system_pkg_mgr() {
             PKG_MGR="dnf"
         else
             warning "No valid package manager found."
-            return 2
+            return 1
         fi
     else
         debug "Package manager was already defined as '${PKG_MGR}'"
@@ -43,7 +43,7 @@ install_packages_with_pkg_mgr() {
     debug "Installing package(s)."
     if ! sudo "${PKG_MGR}" install -y "$@"; then
         error "Can not install package(s)."
-        return 4
+        return 1
     fi
 
     success "Installed packages: ${packages}."
@@ -70,7 +70,7 @@ install_lua_pkg() {
         debug "Installing ${pkg} ..."
         if ! luarocks install --local "${pkg}"; then
             error "Failed to install ${pkg}."
-            return 4
+            return 1
         fi
         info "Installed ${pkg}."
     done
@@ -98,7 +98,7 @@ install_cargo_pkg() {
         debug "Installing ${pkg} ..."
         if ! cargo install "${pkg}"; then
             error "Failed to install ${pkg}."
-            return 4
+            return 1
         fi
         info "Installed ${pkg}."
     done
