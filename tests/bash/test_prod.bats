@@ -161,34 +161,35 @@ setup() {
 
 @test "install_dependencies_independent_of_pkg_mgr: Function executed successfully." {
     install_rust() { return 0; }
-    local deps=(rust)
+    DEPS=(rust)
 
-    DEPS=${deps[*]} run install_dependencies_independent_of_pkg_mgr
+    run install_dependencies_independent_of_pkg_mgr
 
     [ ${status} -eq 0 ]
-    [[ ${output} == *"Installed production dependencies ${deps[*]}."* ]]
+    [[ ${output} == *"Installed all production dependencies independent of package manger successfully."* ]]
 }
 
 @test "install_dependencies_independent_of_pkg_mgr: Dependency installation function failed.." {
     install_rust() { return 1; }
-    deps=(rust)
+    DEPS=(bash rust)
 
-    DEPS=${deps[*]} run install_dependencies_independent_of_pkg_mgr
+    run install_dependencies_independent_of_pkg_mgr
 
-    [ ${status} -eq 0 ]
-    [[ ${output} == *"Failed to install dependency: ${deps[0]}. Continue ..."* ]]
-    [[ ${output} == *"Installed production dependencies ."* ]]
+    [ ${status} -eq 1 ]
+    [[ ${output} == *"No installer function defined for ${DEPS[0]}. Skipping ..."* ]]
+    [[ ${output} == *"Failed to install dependency: ${DEPS[1]}. Continue ..."* ]]
+    [[ ${output} == *"Can not install production dependencies independent of package manger."* ]]
 }
 
 @test "install_dependencies_independent_of_pkg_mgr: Dependency installation function implemented.." {
     install_rust() { return 0; }
-    deps=(bash rust)
+    DEPS=(bash rust)
 
-    DEPS=${deps[*]} run install_dependencies_independent_of_pkg_mgr
+    run install_dependencies_independent_of_pkg_mgr
 
-    [ ${status} -eq 0 ]
-    [[ ${output} == *"No installer function defined for ${deps[0]}. Skipping ..."* ]]
-    [[ ${output} == *"Installed production dependencies ${deps[1]}."* ]]
+    [ ${status} -eq 2 ]
+    [[ ${output} == *"No installer function defined for ${DEPS[0]}. Skipping ..."* ]]
+    [[ ${output} == *"Can not install all production dependencies independent of package manger. Only installed ${DEPS[1]}"* ]]
 }
 
 @test "install_prod_requirements: Function executed successfully." {
