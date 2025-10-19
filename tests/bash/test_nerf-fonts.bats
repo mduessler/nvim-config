@@ -65,7 +65,7 @@ teardown() {
 
     run init_nerd_process
 
-    [ ${status} -eq 4 ]
+    [ ${status} -eq 1 ]
     [[ ${output} == *"Directory ${HOME}/.local/share/src/nerd-fonts already exists and is no git repo."* ]]
 }
 
@@ -82,7 +82,7 @@ teardown() {
 
     run kill_nerd_fonts_process
 
-    [ ${status} -eq 2 ]
+    [ ${status} -eq 1 ]
 }
 
 @test "install_nerd_fonts: Function executed successfully." {

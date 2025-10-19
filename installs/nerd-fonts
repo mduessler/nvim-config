@@ -28,14 +28,14 @@ init_nerd_process() {
         return 0
     else
         error "Directory ${NERD_FONTS_DIR} already exists and is no git repo."
-        return 4
+        return 1
     fi
 }
 
 kill_nerd_fonts_process() {
     if ! kill "${NERD_FONTS_PID}"; then
         warning "Can not kill nerd-fonts process '${NERD_FONTS_PID}'."
-        return 2
+        return 1
     fi
     return 0
 }
