@@ -28,18 +28,22 @@ install_dev_dependencies() {
 
     if [ -z "${PKG_MGR}" ]; then
         if ! identify_system_pkg_mgr; then
-            return 1
+            error "Can not identify system package manager."
+            return 2
         fi
     fi
 
     case "${PKG_MGR}" in
-        apt-get) install_docker_ubuntu ;;
-        dnf) install_docker_fedora ;;
+        apt-get) install_docker_ubuntu || { error "Can not install docker with ${PKG_MGR}" && return 1; } ;;
+        dnf) install_docker_fedora || { error "Can not install docker with ${PKG_MGR}" && return 1; } ;;
         *)
             error "Unsupported package manager: ${PKG_MGR}"
-            return 1
+            return 3
             ;;
     esac
+
+    success "Dependencies have been successfully installed."
+    return 0
 }
 
 install_docker_ubuntu() {
