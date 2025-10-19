@@ -21,13 +21,13 @@ init_nerd_process() {
         status=$?
         if [ "${status}" -ne 0 ]; then
             error "clone_repo function failed!"
-            return 3
+            return 2
         fi
         printf pid
         return 0
     else
         error "Directory ${NERD_FONTS_DIR} already exists and is no git repo."
-        return 1
+        return 3
     fi
 }
 
