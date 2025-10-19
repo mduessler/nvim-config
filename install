@@ -5,39 +5,41 @@ set -e
 NVIM_DEV=false
 INSTALL_NERD_FONTS=false
 
-SCRIPT_DIR="$(pwd)/installs"
-DEPENDENCIES=$(pwd)/dependencies
+[ -z "${SCRIPT_DIR}" ] && SCRIPT_DIR="$(pwd)/installs"
+[ -z "${DEPENDENCIES}" ] && DEPENDENCIES=$(pwd)/dependencies
 
 source "${SCRIPT_DIR}/utils" || {
-    info "No production install found."
     exit 2
 }
 
 if ! source "${DEPENDENCIES}"; then
-    error "No dependencies found."
-    debug "Expect dependency file at ${DEPENDENCIES}"
+    error "Expected a dependency file at ${DEPENDENCIES}. But not able to load the given path."
     exit 1
 fi
 
 source "${SCRIPT_DIR}/prod" || {
-    info "No production install found."
+    error "Not production installation script found in ${SCRIPT_DIR}."
     exit 3
 }
 
-for arg in "$@"; do
-    case "$arg" in
-        dev)
-            NVIM_DEV=true
-            ;;
-        --nerd-fonts)
-            INSTALL_NERD_FONTS=true
-            source "${SCRIPT_DIR}/nerd-fonts" || {
-                info "Nerd-fonts install not found."
-                exit 4
-            }
-            ;;
-    esac
-done
+function set_arguments() {
+    for arg in "$@"; do
+        case "$arg" in
+            dev)
+                NVIM_DEV=true
+                ;;
+            --nerd-fonts)
+                INSTALL_NERD_FONTS=true
+                source "${SCRIPT_DIR}/nerd-fonts" || {
+                    info "Nerd-fonts install not found."
+                    exit 4
+                }
+                ;;
+        esac
+    done
+}
+
+set_arguments "${@}"
 
 main() {
     if ${INSTALL_NERD_FONTS}; then
