@@ -23,7 +23,8 @@ install_nvim() {
         read -r pid tmpfile < <(clone_repo https://github.com/neovim/neovim "${nvim_dir}")
         status=$?
         if [ "${status}" -ne 0 ]; then
-            error "clone_repo function failed!"
+            debug "Read exited with ${PIPESTATUS[0]} and clone_repo exited with ${PIPESTATUS[1]}."
+            error "Can not clone repo."
             return 3
         fi
         wait_for_clone_process "${pid}" "${tmpfile}"
@@ -35,7 +36,7 @@ install_nvim() {
     cd "${nvim_dir}" && git checkout "v${NVIM_MAJOR_REQ}.${NVIM_MINOR_REQ}.${NVIM_PATCH_REQ}" || return 4
     make CMAKE_BUILD_TYPE=Release || return 5
     sudo make install || return 6
-    success "Installed neovim version: $(nvim --version 2>/dev/null | head -n1)"
+    success "Installed $(nvim --version 2>/dev/null | head -n1)."
     return 0
 }
 
@@ -43,7 +44,7 @@ check_nvim_version() {
     local regex="^NVIM .([0-9]+).([0-9]+).([0-9]+)"
     nvim --version
     status="$?"
-    if [ ${status}  -ne 0 ]; then
+    if [ ${status} -ne 0 ]; then
         warning "Can not execute neovim."
         return 2
     fi
