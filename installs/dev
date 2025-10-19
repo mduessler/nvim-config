@@ -11,12 +11,16 @@ source "${SCRIPT_DIR}/shared" || exit 1
 
 install_dev() {
     if ! install_dev_dependencies; then
-        return 1
+        error "Can not install development dependencies."
+        return 2
     fi
 
     if ! install_dev_requirements; then
-        return 1
+        error "Can not install development requirements."
+        return 3
     fi
+    success "Installed development dependencies and requirements."
+    return 0
 }
 
 install_dev_dependencies() {
