@@ -6,6 +6,7 @@
 
 setup() {
     source "${NVIM_CONFIG}/installs/shared"
+    unset PKG_MGR
 }
 
 @test "identify_system_pkg_mgr: Function executed successfully – case apt-get pkg manager identified." {
@@ -190,36 +191,38 @@ setup() {
     [[ ${output} == *"Failed to install ${pkg}."* ]]
 }
 
-@test "[TEST]: install_packages_with_pkg_mgr - PKG_MGR is not set" {
-    unset PKG_MGR
-    run install_packages_with_pkg_mgr neovim
-
-    [ "$status" -eq 3 ]
-    [[ "$output" =~ "Need to set 'PKG_MGR', or call 'identify_system_pkg_mgr'." ]]
-}
-
-@test "[TEST]: install_packages_with_pkg_mgr - No package is given." {
-    identify_system_pkg_mgr
-    run install_packages_with_pkg_mgr
-
-    [ "$status" -eq 2 ]
-    [[ "$output" =~ "No package given. Please provide at least one packge." ]]
-}
-
-@test "[TEST]: install_packages_with_pkg_mgr - package installation is successful." {
+@test "identify_system_pkg_mgr: Function executed successfully." {
     sudo() { return 0; }
     identify_system_pkg_mgr
+
     run install_packages_with_pkg_mgr neovim
 
-    [ "$status" -eq 0 ]
-    [[ "$output" =~ "Installed packages: neovim" ]]
+    [ ${status} -eq 0 ]
+    [[ ${output} == *"Installed packages: neovim"* ]]
 }
 
-@test "[TEST]: install_packages_with_pkg_mgr - package installation fails." {
-    sudo() { return 1; }
-    identify_system_pkg_mgr
+@test "identify_system_pkg_mgr: Can not install packages - PKG_MGR is not set." {
     run install_packages_with_pkg_mgr neovim
 
-    [ "$status" -eq 1 ]
-    [[ "$output" =~ "Can not install package(s)." ]]
+    [ ${status} -eq 2 ]
+    [[ ${output} == *"Need to set 'PKG_MGR', or call 'identify_system_pkg_mgr'."* ]]
+}
+
+@test "identify_system_pkg_mgr: Can not install packages - no pkg is given." {
+    identify_system_pkg_mgr
+
+    run install_packages_with_pkg_mgr
+
+    [ ${status} -eq 3 ]
+    [[ ${output} == *"No package given. Please provide at least one packge."* ]]
+}
+
+@test "identify_system_pkg_mgr: Can not install packages - pkg manager can not install pgk." {
+    sudo() { return 1; }
+    identify_system_pkg_mgr
+
+    run install_packages_with_pkg_mgr neovim
+
+    [ ${status} -eq 4 ]
+    [[ ${output} == *"Can not install package(s)."* ]]
 }
