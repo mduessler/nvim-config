@@ -58,6 +58,7 @@ setup() {
             install) return 0 ;;
         esac
     }
+
     run install_lua_pkg "${pkg}"
 
     [ ${status} -eq 0 ]
@@ -74,6 +75,7 @@ setup() {
             install) return 0 ;;
         esac
     }
+
     run install_lua_pkg "${pkg}"
 
     [ ${status} -eq 0 ]
@@ -81,23 +83,25 @@ setup() {
     [[ ${output} == *"Installed ${pkg}."* ]]
     [[ ${output} == *"Finished package installation."* ]]
 }
-@test "[TEST]: install_lua_pkg - lua is not installed" {
+@test "install_lua_pkg: Can not install package - lua is not installed." {
     check_command() { return 1; }
+
     run install_lua_pkg lpeglabel
 
-    [ "$status" -eq 3 ]
-    [[ "$output" =~ "Lua is not installed or rust and cargo not in '\$PATH'." ]]
+    [ ${status} -eq 2 ]
+    [[ ${output} == *"Lua is not installed or rust and cargo not in '\$PATH'."* ]]
 }
 
-@test "[TEST]: install_lua_pkg - lua no package is given" {
+@test "install_lua_pkg: Can not install package - no package is given." {
     check_command() { return 0; }
+
     run install_lua_pkg
 
-    [ "$status" -eq 2 ]
-    [[ "$output" =~ "No package given. Please provide at least one packge." ]]
+    [ ${status} -eq 3 ]
+    [[ ${output} == *"No package given. Please provide at least one packge."* ]]
 }
 
-@test "[TEST]: install_lua_pkg - lua package installation fails." {
+@test "install_lua_pkg: Package cannot be installed – Installation of pkg with luarocks failed." {
     local pkg="lpeglabel"
     check_command() { return 0; }
     luarocks() {
@@ -106,10 +110,12 @@ setup() {
             install) return 1 ;;
         esac
     }
+
     run install_lua_pkg "${pkg}"
 
-    [ "$status" -eq 1 ]
-    [[ "$output" =~ "Failed to install ${pkg}." ]]
+    [ ${status} -eq 4 ]
+    [[ ${output} == *"Installing ${pkg} ..."* ]]
+    [[ ${output} == *"Failed to install ${pkg}."* ]]
 }
 
 @test "[TEST]: install_cargo_pkg - rust is not installed" {
