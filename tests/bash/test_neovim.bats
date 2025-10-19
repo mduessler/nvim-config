@@ -1,6 +1,6 @@
 #!/usr/bin/env bats
 
-@test "[TEST]: '${NVIM_CONFIG}/installs/neovim' exists " {
+@test "Test if script '${NVIM_CONFIG}/installs/neovim' exists." {
     [ -f "${NVIM_CONFIG}"/installs/neovim ]
 }
 
@@ -15,7 +15,7 @@ setup() {
     dir_is_git_repo() { return 1; }
 
     run install_nvim
-    [ "$status" -eq 1 ]
+    [ ${status} -eq 1 ]
 }
 
 @test "[TEST]: install_nvim - pull_git_dir_fails" {
@@ -24,7 +24,7 @@ setup() {
     pull_git_dir() { return 1; }
 
     run install_nvim
-    [ "$status" -eq 2 ]
+    [ ${status} -eq 2 ]
 }
 
 @test "[TEST]: install_nvim - clone_git_dir_fails" {
@@ -38,7 +38,7 @@ setup() {
     }
 
     run install_nvim
-    [ "$status" -eq 3 ]
+    [ ${status} -eq 3 ]
 }
 
 @test "[TEST]: install_nvim - checkout fails" {
@@ -48,7 +48,7 @@ setup() {
     git() { return 1; }
 
     run install_nvim
-    [ "$status" -eq 4 ]
+    [ ${status} -eq 4 ]
 }
 
 @test "[TEST]: install_nvim - make build fails" {
@@ -59,7 +59,7 @@ setup() {
     make() { return 1; }
 
     run install_nvim
-    [ "$status" -eq 5 ]
+    [ ${status} -eq 5 ]
 }
 
 @test "[TEST]: install_nvim - make install fails" {
@@ -71,7 +71,7 @@ setup() {
     sudo() { return 1; }
 
     run install_nvim
-    [ "$status" -eq 6 ]
+    [ ${status} -eq 6 ]
 }
 
 @test "[TEST]: check_nvim_version - version machtes" {
@@ -79,7 +79,7 @@ setup() {
 
     run check_nvim_version
 
-    [ "$status" -eq 0 ]
+    [ ${status} -eq 0 ]
     [[ "${output}" == *"Installed nvim version is v${NVIM_MAJOR_REQ}.${NVIM_MINOR_REQ}.${NVIM_PATCH_REQ}."* ]]
 }
 
@@ -87,14 +87,14 @@ setup() {
     nvim() { echo "NVIM v${NVIM_MAJOR_REQ}.${NVIM_MINOR_REQ}" && return 0; }
 
     run check_nvim_version
-    [ "$status" -eq 1 ]
+    [ ${status} -eq 1 ]
     [[ "${output}" == *"Invalid version format."* ]]
 }
 
 @test "[TEST]: check_nvim_version - neovim is not installed" {
     PATH="" run check_nvim_version
     echo $status
-    [ "$status" -eq 2 ]
+    [ ${status} -eq 2 ]
     [[ "${output}" == *"Can not execute neovim."* ]]
 }
 
@@ -103,6 +103,6 @@ setup() {
     nvim() { echo "NVIM v${NVIM_MAJOR_REQ}.${minor_patch}.${NVIM_PATCH_REQ}" && return 0; }
 
     run check_nvim_version
-    [ "$status" -eq 3 ]
+    [ ${status} -eq 3 ]
     [[ "${output}" == *"Neovim version is v${NVIM_MAJOR_REQ}.${minor_patch}.${NVIM_PATCH_REQ}. But v${NVIM_MAJOR_REQ}.${NVIM_MINOR_REQ}.${NVIM_PATCH_REQ} is needed."* ]]
 }
