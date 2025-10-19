@@ -53,24 +53,24 @@ identify_system_pkg_mgr() {
 install_lua_pkg() {
     if ! check_command lua; then
         warning "Lua is not installed or rust and cargo not in '\$PATH'."
-        return 3
+        return 2
     elif [ $# -eq 0 ]; then
         warning "No package given. Please provide at least one packge."
-        return 2
+        return 3
     fi
 
     local packages=("$@")
 
     for pkg in "${packages[@]}"; do
         if luarocks show "${pkg}" >/dev/null 2>&1; then
-            info "${pkg} is already installed, skipping..."
+            info "${pkg} is already installed, skipping ..."
             continue
         fi
 
         info "Installing ${pkg}..."
         if ! luarocks install --local "${pkg}"; then
             error "Failed to install ${pkg}."
-            return 1
+            return 4
         fi
         success "Installed ${pkg}."
     done
