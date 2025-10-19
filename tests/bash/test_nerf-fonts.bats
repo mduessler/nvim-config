@@ -95,7 +95,7 @@ teardown() {
     [[ ${output} == *"Installed nerd-fonts."* ]]
 }
 
-@test "install_nerd_fonts: Function executed successfully." {
+@test "install_nerd_fonts: Can not install nerd-fonts." {
     wait_for_clone_process() { return 0; }
     chmod() { return 0; }
 
@@ -127,7 +127,8 @@ teardown() {
     wait_for_clone_process() { return 0; }
     cd() { return 1; }
 
-    run install_nerd_fonts
+    NERD_FONTS_DIR="${TEST_DATA}/success" run install_nerd_fonts
+    echo $status
 
     [ ${status} -eq 4 ]
 }
@@ -137,7 +138,7 @@ teardown() {
     cd() { return 0; }
     chmod() { return 1; }
 
-    run install_nerd_fonts
+    NERD_FONTS_DIR="${TEST_DATA}/success" run install_nerd_fonts
 
     [ ${status} -eq 4 ]
 }
