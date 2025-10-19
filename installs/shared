@@ -81,26 +81,27 @@ install_lua_pkg() {
 install_cargo_pkg() {
     if ! check_command rustc || ! check_command cargo; then
         warning "Rust is not installed or rust and cargo not in '\$PATH'."
-        return 3
+        return 2
     elif [ $# -eq 0 ]; then
         warning "No package given. Please provide at least one packge."
-        return 2
+        return 3
     fi
 
     local packages=("$@")
 
     for pkg in "${packages[@]}"; do
         if cargo install --list | grep -q "^${pkg} "; then
-            info "${pkg} is already installed, skipping..."
+            info "${pkg} is already installed, skipping ..."
             continue
         fi
 
-        info "Installing ${pkg}..."
+        debug "Installing ${pkg} ..."
         if ! cargo install "${pkg}"; then
             error "Failed to install ${pkg}."
-            return 1
+            return 4
         fi
-        success "Installed ${pkg}."
+        info "Installed ${pkg}."
     done
+    success "Finished package installation."
     return 0
 }
