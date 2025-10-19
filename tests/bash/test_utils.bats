@@ -130,6 +130,13 @@ setup() {
     [[ ${output} == *"Path '${HOME}' is a git repo."* ]]
 }
 
+@test "dir_is_git_repo: Given path is not a git repo." {
+    run dir_is_git_repo "${HOME}"
+
+    [ ${status} -eq 1 ]
+    [[ ${output} == *"Path '${HOME}' is not a git repo."* ]]
+}
+
 @test "dir_is_git_repo: Function arguments do not match - no argument is given." {
     run dir_is_git_repo
 
@@ -151,13 +158,6 @@ setup() {
     [[ ${output} == *"Path 'fake/pater/aasd' does not exist."* ]]
 }
 
-@test "dir_is_git_repo: Given path is not a git repo." {
-    run dir_is_git_repo "${HOME}"
-
-    [ ${status} -eq 4 ]
-    [[ ${output} == *"Path '${HOME}' is not a git repo."* ]]
-}
-
 @test "pull_git_dir: Function executed successfully." {
     git() { return 0; }
     cd() { return 0; }
@@ -166,6 +166,16 @@ setup() {
 
     [ ${status} -eq 0 ]
     [[ ${output} == *"Pulled repo at '${HOME}'."* ]]
+}
+
+@test "pull_git_dir: The pull of the repository failed." {
+    git() { return 1; }
+    cd() { return 0; }
+
+    run pull_git_dir "${HOME}"
+
+    [ ${status} -eq 1 ]
+    [[ ${output} == *"Can not pull repo at '${HOME}'."* ]]
 }
 
 @test "pull_git_dir: Function arguments do not match - no argument is given." {
@@ -186,16 +196,6 @@ setup() {
     run pull_git_dir "fake/pater/aasd"
 
     [ ${status} -eq 3 ]
-}
-
-@test "pull_git_dir: The pull of the repository failed." {
-    git() { return 1; }
-    cd() { return 0; }
-
-    run pull_git_dir "${HOME}"
-
-    [ ${status} -eq 4 ]
-    [[ ${output} == *"Can not pull repo at '${HOME}'."* ]]
 }
 
 @test "clone_repo: Function executed successfully." {
@@ -267,6 +267,27 @@ setup() {
     rm -f "$tmpfile"
 }
 
+@test "wait_for_clone_process: Wait process fails." {
+    tmpfile=$(mktemp)
+    pid=12345
+
+    tail() {
+        echo "mock tail $*"
+        return 0
+    }
+    wait() {
+        echo "mock wait $*"
+        return 1
+    }
+
+    run wait_for_clone_process "$pid" "$tmpfile"
+
+    [ ${status} -eq 1 ]
+    [[ ${output} == *"Can not wait ${pid}."* ]]
+
+    rm -f "$tmpfile"
+}
+
 @test "wait_for_clone_process: Function arguments do not match - no argument is given." {
     run wait_for_clone_process
 
@@ -302,27 +323,6 @@ setup() {
     rm -f "$tmpfile"
 }
 
-@test "wait_for_clone_process: Wait process fails." {
-    tmpfile=$(mktemp)
-    pid=12345
-
-    tail() {
-        echo "mock tail $*"
-        return 0
-    }
-    wait() {
-        echo "mock wait $*"
-        return 1
-    }
-
-    run wait_for_clone_process "$pid" "$tmpfile"
-
-    [ ${status} -eq 4 ]
-    [[ ${output} == *"Can not wait ${pid}."* ]]
-
-    rm -f "$tmpfile"
-}
-
 @test "kill_clone_process: Function executed successfully." {
     kill() { return 0; }
 
@@ -331,6 +331,16 @@ setup() {
 
     [ ${status} -eq 0 ]
     [[ ${output} == *"Killed process ${pid}."* ]]
+}
+
+@test "kill_clone_process: Command to kill failed." {
+    kill() { return 1; }
+    pid=12345
+
+    run kill_clone_process ${pid}
+
+    [ ${status} -eq 1 ]
+    [[ ${output} == *"Can not kill nerd-fonts process '${pid}'."* ]]
 }
 
 @test "kill_clone_process: Function arguments do not match - no argument is given." {
@@ -345,14 +355,4 @@ setup() {
 
     [ ${status} -eq 2 ]
     [[ ${output} == *"Function needs exactly one 'pid' argument."* ]]
-}
-
-@test "kill_clone_process: Command to kill failed." {
-    kill() { return 1; }
-    pid=12345
-
-    run kill_clone_process ${pid}
-
-    [ ${status} -eq 3 ]
-    [[ ${output} == *"Can not kill nerd-fonts process '${pid}'."* ]]
 }
