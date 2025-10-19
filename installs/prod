@@ -83,19 +83,27 @@ install_prod_dependencies() {
 
 install_dependencies_independent_of_pkg_mgr() {
     local installed=()
+    local status=0
     for dep in "${DEPS[@]}"; do
         func="install_${dep}"
         if declare -f "$func" >/dev/null; then
             if ! "$func"; then
-                warning "Failed to install dependency: ${dep}. Continue ..."
+                status=1
+                info "Failed to install dependency: ${dep}. Continue ..."
+            else
+                installed+=("${dep}")
             fi
         else
-            warning "No installer function defined for ${dep}. Skipping ..."
+            [[ ${status} -eq 0 ]] && status=2
+            info "No installer function defined for ${dep}. Skipping ..."
         fi
-        installed+=("${dep}")
     done
-    success "Installed production dependencies ${installed[*]}."
-    return 0
+    if [ ${status} -gt 0 ]; then
+        warning "Can not install all production dependencies independent of package manger. Only installed ${installed[*]}"
+    else
+        success "Installed all production dependencies independent of package manger successfully."
+    fi
+    return ${status}
 }
 
 install_prod_requirements() {
