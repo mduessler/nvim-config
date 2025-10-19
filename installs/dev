@@ -46,7 +46,7 @@ install_dev_dependencies() {
     return 0
 }
 
-install_docker_ubuntu() {
+install_apt_get_dependencies() {
     sudo apt-get remove -y docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc
     install_packages_with_pkg_mgr ca-certificates
     sudo install -m 0755 -d /etc/apt/keyrings
@@ -62,7 +62,7 @@ install_docker_ubuntu() {
     install_packages_with_pkg_mgr "${APT_DEV_DEPS[@]}"
 }
 
-install_docker_fedora() {
+install_dnf_dependencies() {
     sudo dnf remove -y docker \
         docker-client \
         docker-client-latest \
