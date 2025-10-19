@@ -2,7 +2,7 @@
 
 TEST_DATA=${NVIM_CONFIG}/tests/bash/data
 
-@test "[TEST]: '${NVIM_CONFIG}/installs/nerd-fonts' exists " {
+@test "Test if script '${NVIM_CONFIG}/installs/nerd-fonts' exists." {
     [ -f "${NVIM_CONFIG}"/installs/nerd-fonts ]
 }
 
@@ -17,46 +17,57 @@ teardown() {
     rm -rf "${HOME}/.local/share/src/nerd-fonts"
 }
 
-@test "[TEST]: init_nerd_process - test success pull" {
+@test "init_nerd_process: Function executed successfully - repo is pulled." {
     mkdir -p "${HOME}/.local/share/src/nerd-fonts"
     dir_is_git_repo() { return 0; }
     pull_git_dir() { return 0; }
 
     run init_nerd_process
-    [ "$status" -eq 0 ]
+
+    [ ${status} -eq 0 ]
+    [[ ${output} == *"Nerd-fonts git repo exists. Pulling ..."* ]]
 }
 
-@test "[TEST]: init_nerd_process - test success clone" {
+@test "init_nerd_process: Function executed successfully - repo is cloned." {
+
     read() { return 0; }
     clone_repo() { return 0; }
 
     run init_nerd_process
-    [ "$status" -eq 0 ]
+
+    [ ${status} -eq 0 ]
+    [[ ${output} == *"Nerd-fonts git repo not exists. Cloning ..."* ]]
 }
 
-@test "[TEST]: init_nerd_process - can not clone or pull" {
-    mkdir -p "${HOME}/.local/share/src/nerd-fonts"
-    dir_is_git_repo() { return 1; }
-
-    run init_nerd_process
-    [ "$status" -eq 1 ]
-}
-
-@test "[TEST]: init_nerd_process - test fail pull" {
+@test "init_nerd_process: Can not pull the git repo." {
     mkdir -p "${HOME}/.local/share/src/nerd-fonts"
     dir_is_git_repo() { return 0; }
     pull_git_dir() { return 1; }
 
     run init_nerd_process
-    [ "$status" -eq 2 ]
+
+    [ ${status} -eq 2 ]
 }
 
-@test "[TEST]: init_nerd_process - test fail clone" {
+@test "init_nerd_process: Can not clone the git repo." {
     read() { return 1; }
     clone_repo() { return 0; }
 
+    NVIM_DEV=true run init_nerd_process
+
+    [ ${status} -eq 3 ]
+
+    [[ ${output} == *"Error occured during clone repo."* ]]
+}
+
+@test "init_nerd_process: Given directory is not a git repo." {
+    mkdir -p "${HOME}/.local/share/src/nerd-fonts"
+    dir_is_git_repo() { return 1; }
+
     run init_nerd_process
-    [ "$status" -eq 3 ]
+
+    [ ${status} -eq 4 ]
+    [[ ${output} == *"Directory ${HOME}/.local/share/src/nerd-fonts already exists and is no git repo."* ]]
 }
 
 @test "[TEST]: kill_nerd_fonts_process - kill success" {
