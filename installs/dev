@@ -34,8 +34,8 @@ install_dev_dependencies() {
     fi
 
     case "${PKG_MGR}" in
-        apt-get) install_docker_ubuntu || { error "Can not install docker with ${PKG_MGR}" && return 1; } ;;
-        dnf) install_docker_fedora || { error "Can not install docker with ${PKG_MGR}" && return 1; } ;;
+        apt-get) install_apt_get_dependencies || { error "Can not install docker with ${PKG_MGR}" && return 1; } ;;
+        dnf) install_dnf_dependencies || { error "Can not install docker with ${PKG_MGR}" && return 1; } ;;
         *)
             error "Unsupported package manager: ${PKG_MGR}"
             return 3
