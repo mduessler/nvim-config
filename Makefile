@@ -25,13 +25,12 @@ build-ubuntu:
 	docker build -f $(env-path)/Dockerfile.dev-ubuntu -t nvim-ubuntu:test .
 
 test-install-fedora: build-install-fedora
-	docker run --rm \
-	  -v "$$HOME/.config/nvim:/home/tester/.config/nvim:ro" \
-	  -v "$$HOME/.local/share/src/nerd-fonts:/home/tester/.local/share/src/nerd-fonts" \
-	  --tmpfs /home/tester/.local/share/nvim \
-	  --tmpfs /home/tester/.local/state/nvim \
-	  --tmpfs /home/tester/.cache/nvim \
-	  nvim-fedora:install
+	@regex="^On branch (.*)"; \
+	if [[ $$(git status 2>/dev/null | head -1) =~ $${regex} ]]; then \
+		docker run --rm \
+			-e BRANCH_TO_TEST="$${BASH_REMATCH[1]}" \
+			nvim-fedora:install
+	fi
 
 test-install-ubuntu: build-install-ubuntu
 	docker run --rm \
