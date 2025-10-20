@@ -2,5 +2,6 @@
 ./pre-commit-config.yaml
 ./env
 !env/entrypoint
+!env/entrypoint-install
 LICENSE
 README.md
