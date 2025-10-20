@@ -21,4 +21,4 @@ COPY ./ .
 RUN chown -R tester:tester ${HOME}
 USER tester
 
-ENTRYPOINT ["./install", "dev"]
+ENTRYPOINT ["./env/entrypoint-install"]
