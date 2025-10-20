@@ -9,7 +9,7 @@ NERD_FONTS_PID=""
 
 init_nerd_process() {
     local git_dest_dir="${XDG_DATA_HOME:-$HOME/.local/share}/src"
-    NERD_FONTS_DIR="${git_dest_dir}/nerd-fonts"
+    [ -z "${NERD_FONTS_DIR}" ] && NERD_FONTS_DIR="${git_dest_dir}/nerd-fonts"
 
     if [ -d "${NERD_FONTS_DIR}" ] && dir_is_git_repo "${NERD_FONTS_DIR}"; then
         debug "Nerd-fonts git repo exists. Pulling ..."
