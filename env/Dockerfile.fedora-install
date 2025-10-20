@@ -21,4 +21,6 @@ COPY ./ .
 RUN chown -R tester:tester "${HOME}"
 USER tester
 
+RUN mkdir -p ${HOME}/.local/share/src
+
 ENTRYPOINT ["./install", "dev", "--nerd-fonts"]
