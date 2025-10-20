@@ -4,6 +4,9 @@ ENV DISPLAY=:99
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # Create TestUser
+
+RUN dnf update -y && dnf install -y git && dnf clean all
+
 RUN mkdir -p /home/tester && groupadd tester
 ENV HOME=/home/tester
 
