@@ -12,6 +12,7 @@ RUN mkdir -p /home/tester && groupadd tester
 ENV HOME=/home/tester
 
 RUN useradd -m -g tester tester
+
 RUN echo 'tester ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/tester \
     && echo 'Defaults:tester !requiretty' >> /etc/sudoers.d/tester \
     && chmod 0440 /etc/sudoers.d/tester
@@ -21,7 +22,7 @@ WORKDIR $NVIM_CONFIG
 
 COPY ./ .
 
-RUN chown -R tester:tester "${HOME}"
+RUN chown -R tester:tester ${HOME}
 USER tester
 
 ENTRYPOINT ["./install", "dev"]
