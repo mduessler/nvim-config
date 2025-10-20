@@ -16,7 +16,7 @@ build-install-fedora:
 	docker build -f $(env-path)/Dockerfile.fedora-install -t nvim-fedora:install .
 
 build-install-ubuntu:
-	docker build -f $(env-path)/Dockerfile.fedora-install -t nvim-ubuntu:install-test .
+	docker build -f $(env-path)/Dockerfile.ubuntu-install -t nvim-ubuntu:install .
 
 build-fedora:
 	docker build -f $(env-path)/Dockerfile.dev-fedora -t nvim-fedora:test .
@@ -33,7 +33,12 @@ test-install-fedora: build-install-fedora
 	fi
 
 test-install-ubuntu: build-install-ubuntu
-	docker run --rm nvim-ubuntu:install-test
+	@regex="^On branch (.*)"; \
+	if [[ $$(git status 2>/dev/null | head -1) =~ $${regex} ]]; then \
+		docker run --rm \
+			-e BRANCH_TO_TEST="$${BASH_REMATCH[1]}" \
+			nvim-ubuntu:install
+	fi
 
 tests-fedora: build-fedora
 	docker run --rm nvim-fedora:test
