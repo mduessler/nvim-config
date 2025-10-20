@@ -8,19 +8,11 @@ INSTALL_NERD_FONTS=false
 [ -z "${SCRIPT_DIR}" ] && SCRIPT_DIR="$(pwd)/installs"
 [ -z "${DEPENDENCIES}" ] && DEPENDENCIES=$(pwd)/dependencies
 
-source "${SCRIPT_DIR}/utils" || {
-    exit 2
-}
-
-if ! source "${DEPENDENCIES}"; then
-    error "Expected a dependency file at ${DEPENDENCIES}. But not able to load the given path."
-    exit 1
-fi
-
-source "${SCRIPT_DIR}/prod" || {
-    error "Not production installation script found in ${SCRIPT_DIR}."
-    exit 3
-}
+source "${DEPENDENCIES}"
+source "${SCRIPT_DIR}/utils"
+source "${SCRIPT_DIR}/prod"
+source "${SCRIPT_DIR}/nerd-fonts"
+source "${SCRIPT_DIR}/dev"
 
 function set_arguments() {
     for arg in "$@"; do
@@ -30,18 +22,15 @@ function set_arguments() {
                 ;;
             --nerd-fonts)
                 INSTALL_NERD_FONTS=true
-                source "${SCRIPT_DIR}/nerd-fonts" || {
-                    info "Nerd-fonts install not found."
-                    exit 4
-                }
                 ;;
         esac
     done
+    return 0
 }
 
-set_arguments "${@}"
-
 main() {
+    set_arguments "${@}"
+
     if ${INSTALL_NERD_FONTS}; then
         init_nerd_process
         info "Cloning nerd-fonts in background."
@@ -59,10 +48,6 @@ main() {
     fi
 
     if ${NVIM_DEV}; then
-        source "${SCRIPT_DIR}/dev" || {
-            info "No dev install found."
-            exit 6
-        }
         if ! install_dev; then
             error "Can not install development dependencies."
             if ${INSTALL_NERD_FONTS}; then
