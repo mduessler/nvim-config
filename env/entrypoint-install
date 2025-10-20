@@ -1,5 +1,7 @@
 #!/usr/bin/bash
 
+set -e
+
 git checkout "${BRANCH_TO_TEST}" -q
 
-./install dev
+./install dev || exit 1
