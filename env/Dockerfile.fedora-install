@@ -14,14 +14,6 @@ ENV HOME=/home/tester
 RUN useradd -m -g tester tester
 ENV NVIM_CONFIG=$HOME/.config/nvim
 
-
-RUN dnf update && dnf install -y git && dnf clean all
-
-ENV GIT_DIR=${HOME}/.local/share/src
-RUN mkdir -p ${GIT_DIR}
-
-RUN git clone https://github.com/neovim/neovim -b "v${NVIM_MAJOR_REQ}.${NVIM_MINOR_REQ}.${NVIM_PATCH_REQ}"  || return 1
-
 WORKDIR $NVIM_CONFIG
 
 COPY ./ .
@@ -29,4 +21,4 @@ COPY ./ .
 RUN chown -R tester:tester "${HOME}"
 USER tester
 
-ENTRYPOINT ["./install"]
+ENTRYPOINT ["./install", "dev", "--nerd-fonts"]
