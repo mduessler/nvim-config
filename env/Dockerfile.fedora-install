@@ -1,9 +1,5 @@
 FROM fedora:42
 
-ENV NVIM_MAJOR_REQ=0
-ENV NVIM_MINOR_REQ=11
-ENV NVIM_PATCH_REQ=4
-
 ENV DISPLAY=:99
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
