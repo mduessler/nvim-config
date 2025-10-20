@@ -13,7 +13,7 @@ install-dev:
 	./install dev
 
 build-install-fedora:
-	docker build -f $(env-path)/Dockerfile.fedora-install -t nvim-fedora:install-test .
+	docker build -f $(env-path)/Dockerfile.fedora-install -t nvim-fedora:install .
 
 build-install-ubuntu:
 	docker build -f $(env-path)/Dockerfile.fedora-install -t nvim-ubuntu:install-test .
@@ -27,10 +27,11 @@ build-ubuntu:
 test-install-fedora: build-install-fedora
 	docker run --rm \
 	  -v "$$HOME/.config/nvim:/home/tester/.config/nvim:ro" \
+	  -v "$$HOME/.local/share/src/nerd-fonts:/home/tester/.local/share/src/nerd-fonts" \
 	  --tmpfs /home/tester/.local/share/nvim \
 	  --tmpfs /home/tester/.local/state/nvim \
 	  --tmpfs /home/tester/.cache/nvim \
-	  nvim-fedora:install-test
+	  nvim-fedora:install
 
 test-install-ubuntu: build-install-ubuntu
 	docker run --rm \
