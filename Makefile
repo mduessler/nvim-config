@@ -41,20 +41,10 @@ test-install-ubuntu: build-install-ubuntu
 	  nvim-ubuntu:install-test
 
 tests-fedora: build-fedora
-	docker run --rm \
-	  -v "$$HOME/.config/nvim:/home/tester/.config/nvim:ro" \
-	  --tmpfs /home/tester/.local/share/nvim \
-	  --tmpfs /home/tester/.local/state/nvim \
-	  --tmpfs /home/tester/.cache/nvim \
-	  nvim-fedora:test
+	docker run --rm nvim-fedora:test
 
 tests-ubuntu: build-ubuntu
-	docker run --rm \
-	  -v "$$HOME/.config/nvim:/home/tester/.config/nvim:ro" \
-	  --tmpfs /home/tester/.local/share/nvim \
-	  --tmpfs /home/tester/.local/state/nvim \
-	  --tmpfs /home/tester/.cache/nvim \
-	  nvim-ubuntu:test
+	docker run --rm nvim-ubuntu:test
 
 test-fedora: test-install-fedora tests-fedora
 
