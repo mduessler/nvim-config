@@ -1,0 +1,34 @@
+FROM fedora:42
+ENV DISPLAY=:99
+ENV TERM=xterm
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+RUN dnf update -y && dnf install -y \
+    git \
+    hadolint \
+    python \
+    python-pip \
+    && dnf clean all
+
+ENV BATS_CORE_GIT_DIR="${HOME}/.local/share/src/bats_core"
+RUN git clone https://github.com/bats-core/bats-core.git "${BATS_CORE_GIT_DIR}" || exit 1
+WORKDIR "${BATS_CORE_GIT_DIR}"
+RUN ./install.sh /usr/local
+
+ENV HOME=/home/tester
+
+RUN mkdir -p /home/tester && groupadd tester
+RUN useradd -m -g tester tester
+
+RUN echo 'tester ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/tester \
+    && echo 'Defaults:tester !requiretty' >> /etc/sudoers.d/tester \
+    && chmod 0440 /etc/sudoers.d/tester
+ENV NVIM_CONFIG=$HOME/.config/nvim
+
+WORKDIR $NVIM_CONFIG
+
+RUN chown -R tester:tester ${HOME}
+USER tester
+
+RUN python -m pip install --no-cache-dir pre-commit==4.2.0
