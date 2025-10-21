@@ -13,9 +13,5 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v5
-      - name: Prepare structure
-        run: |
-          ln -s ${GITHUB_WORKSPACE} ${NVIM_CONFIG}
       - name: Run pre-commit
-        run: |
-          cd ${GITHUB_WORKSPACE} && pre-commit run --all-files
+        run: pre-commit run --all-files
