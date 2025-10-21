@@ -20,4 +20,5 @@ jobs:
           git checkout ${{ github.head_ref }}
       - name: Run pre-commit
         run: |
+          cd ${NVIM_CONFIG}
           pre-commit run --all-files
