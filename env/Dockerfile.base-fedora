@@ -1,0 +1,84 @@
+FROM fedora:42
+
+ENV DISPLAY=:99
+ENV TERM=xterm
+
+SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
+
+# Create test USER_TEST tester
+ARG USER_TEST=tester
+
+RUN mkdir -p "/home/${USER_TEST}" && groupadd "${USER_TEST}" \
+    && USER_TESTadd -m -g "${USER_TEST}" "${USER_TEST}" \
+    && echo "${USER_TEST} ALL=(ALL) NOPASSWD:ALL" > "/etc/sudoers.d/${USER_TEST}" \
+    && echo "Defaults:${USER_TEST} !requiretty" >> "/etc/sudoers.d/${USER_TEST}" \
+    && chmod 0440 "/etc/sudoers.d/${USER_TEST}"
+
+ENV HOME=/home/${USER_TEST}
+ENV XDG_CONFIG_HOME="${HOME}/.config"
+ENV XDG_CACHE_HOME="${HOME}/.cache"
+ENV XDG_DATA_HOME="${HOME}/.local/share"
+ENV XDG_STATE_HOME="${HOME}/.local/state"
+
+# Install dependencies.
+RUN dnf update -y && dnf install -y \
+    clang \
+    gcc \
+    gcc-c++ \
+    glibc-gconv-extra \
+    git \
+    cmake \
+    curl \
+    gettext \
+    golang \
+    java-latest-openjdk-devel \
+    libstdc++-static \
+    lua \
+    luarocks \
+    make \
+    maven \
+    ninja-build \
+    nodejs \
+    openssl-devel \
+    pkg-config \
+    pre-commit \
+    python \
+    python-pip \
+    && dnf clean all
+
+# Install rust
+ENV CARGO_HOME=${HOME}/.local/share/cargo
+ENV RUSTUP_HOME=${HOME}/.local/share/rustup
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y || exit 1
+ENV PATH="${CARGO_HOME}/bin:${PATH}"
+
+# Install bats
+ENV BATS_CORE_GIT_DIR="${HOME}/.local/share/src/bats_core"
+RUN git clone https://github.com/bats-core/bats-core.git "${BATS_CORE_GIT_DIR}" || exit 1
+WORKDIR "${BATS_CORE_GIT_DIR}"
+RUN ./install.sh /usr/local
+
+# Install lua and rust requirements
+RUN cargo install selene \
+    && luarocks install lpeglabel \
+    && luarocks install luaunit
+
+ARG MAJOR_REQ
+ARG MINOR_REQ
+ARG PATCH_REQ
+
+ENV MAJOR_REQ=${MAJOR_REQ}
+ENV MINOR_REQ=${MINOR_REQ}
+ENV PATCH_REQ=${PATCH_REQ}
+
+# Install neovim
+
+ENV NVIM_GIT_DIR="${HOME}/.local/share/src/neovim"
+RUN git clone https://github.com/neovim/neovim -b "v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ}" "${NVIM_GIT_DIR}" || exit 1
+WORKDIR "${NVIM_GIT_DIR}"
+RUN make CMAKE_BUILD_TYPE=Release && make install
+
+WORKDIR "${NVIM_CONFIG}"
+
+RUN chown -R tester:tester "${HOME}"
+USER tester
