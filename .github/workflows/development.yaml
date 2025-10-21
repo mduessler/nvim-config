@@ -17,19 +17,10 @@ jobs:
         run: env
       - name: Tes
         run: ls -la /__w/ && ls -la /__w/nvim-config
-      - name: Configure Git safe directory
-        run: git config --global --add safe.directory /__w/nvim-config/nvim-config
-      - name: Run container with repo as NVIM_CONFIG
+      - name: Map repo to NVIM_CONFIG
         run: |
-          docker run --rm \
-          -u 1001:1001 \
-          -v ${{ github.workspace }}:/home/tester/.config/nvim \
-          -w /home/tester/.config/nvim \
-          my-fedora-img \
-          bash -c "
-            echo 'NVIM_CONFIG='$NVIM_CONFIG
-            pwd
-            ls -la
-          "
+          mkdir -p $HOME/.config
+          ln -s $GITHUB_WORKSPACE $HOME/.config/nvim
+          ls -l $HOME/.config/nvim
       - name: Run pre-commit
         run: pre-commit run --all-files
