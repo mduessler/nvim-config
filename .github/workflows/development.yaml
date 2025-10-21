@@ -18,5 +18,4 @@ jobs:
           ln -s ${GITHUB_WORKSPACE} ${NVIM_CONFIG}
       - name: Run pre-commit
         run: |
-          ls -l ${NVIM_CONFIG};
-          cd ${NVIM_CONFIG} && pre-commit run --all-files
+          cd ${GITHUB_WORKSPACE} && pre-commit run --all-files
