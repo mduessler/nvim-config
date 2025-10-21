@@ -13,6 +13,7 @@ RUN dnf update -y && dnf install -y \
     npm \
     gcc \
     which \
+    lua-devel \
     && dnf clean all
 
 ENV HOME=/home/tester
@@ -39,7 +40,10 @@ ENV XDG_CACHE_HOME=${HOME}/.cache
 ENV CARGO_HOME=${HOME}/.local/share}/cargo
 ENV RUSTUP_HOME=${HOME}/.local/share}/rustup
 
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 ENV PATH=${HOME}/.local/share}/cargo/bin:${PATH}
+RUN cargo install selene && luarocks install lpeglabel && luarocks install luaunit || exit 1
+
 
 RUN chown -R tester:tester ${HOME}
 USER tester
