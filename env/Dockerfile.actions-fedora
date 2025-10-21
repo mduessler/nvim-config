@@ -29,6 +29,7 @@ WORKDIR "${BATS_CORE_GIT_DIR}"
 RUN ./install.sh /usr/local
 
 ENV NVIM_CONFIG=$HOME/.config/nvim
+ENV PATH=$HOME/.local/bin:$PATH
 
 WORKDIR $NVIM_CONFIG
 
