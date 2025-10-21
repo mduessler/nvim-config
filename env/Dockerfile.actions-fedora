@@ -4,6 +4,10 @@ ENV TERM=xterm
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
+ARG USERNAME=tester
+ARG USER_UID=1001
+ARG USER_GID=1001
+
 RUN dnf update -y && dnf install -y \
     git \
     hadolint \
@@ -14,14 +18,14 @@ RUN dnf update -y && dnf install -y \
     gcc \
     && dnf clean all
 
-ENV HOME=/home/tester
+ENV HOME=/home/${USERNAME}
 
-RUN mkdir -p /home/tester && groupadd tester
-RUN useradd -m -g tester tester
+RUN mkdir -p /home/${USERNAME} && groupadd ${USERNAME}
 
-RUN echo 'tester ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/tester \
-    && echo 'Defaults:tester !requiretty' >> /etc/sudoers.d/tester \
-    && chmod 0440 /etc/sudoers.d/tester
+RUN groupadd --gid ${USER_GID} ${USERNAME} \
+    && useradd -m --uid ${USER_UID} --gid ${USER_GID} ${USERNAME} \
+    && echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/${USERNAME} \
+    && chmod 0440 /etc/sudoers.d/${USERNAME}
 
 ENV BATS_CORE_GIT_DIR="${HOME}/.local/share/src/bats_core"
 RUN git clone https://github.com/bats-core/bats-core.git "${BATS_CORE_GIT_DIR}" || exit 1
@@ -30,9 +34,9 @@ RUN ./install.sh /usr/local
 
 ENV NVIM_CONFIG=$HOME/.config/nvim
 
-WORKDIR $NVIM_CONFIG
+WORKDIR ${NVIM_CONFIG}
 
-RUN chown -R tester:tester ${HOME}
-USER tester
+RUN chown -R ${USERNAME}:${USERNAME} ${HOME}
+USER ${USERNAME}
 
 RUN python -m pip install --no-cache-dir pre-commit==4.2.0
