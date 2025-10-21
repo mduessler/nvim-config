@@ -34,5 +34,7 @@ ENV NVIM_CONFIG=$HOME/.config/nvim
 
 WORKDIR $NVIM_CONFIG
 
+ENV XDG_CACHE_HOME=${HOME}/.cache
+
 RUN chown -R tester:tester ${HOME}
 USER tester
