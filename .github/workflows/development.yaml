@@ -10,8 +10,6 @@ jobs:
     container:
       image: ghcr.io/mduessler/nvim:fedora
       options: --pull=always
-      env:
-        HOME: /home/tester
     steps:
       - name: Prepare linting
         run: |
@@ -19,6 +17,8 @@ jobs:
           cd ${NVIM_CONFIG}
           git checkout ${{ github.head_ref }}
       - name: Run pre-commit
+        env:
+          HOME: /home/tester
+        working-directory: ${{ env.NVIM_CONFIG }}
         run: |
-          cd ${NVIM_CONFIG}
           pre-commit run --all-files
