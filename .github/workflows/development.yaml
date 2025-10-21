@@ -10,10 +10,11 @@ jobs:
     container:
       image: ghcr.io/mduessler/nvim:fedora
       options: --pull=always
-    env:
-      GITHUB_WORKSPACE: /home/tester/.config/nvim
     steps:
       - name: Checkout repo
         uses: actions/checkout@v5
+      - name: Prepare structure
+        run: |
+          ln -s ${GITHUB_WORKSPACE} ${NVIM_CONFIG}
       - name: Run pre-commit
         run: pre-commit run --all-files
