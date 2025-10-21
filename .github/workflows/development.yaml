@@ -20,6 +20,7 @@ jobs:
         env:
           HOME: /home/tester
         run: |
+          cd ${NVIM_CONFIG}
           pre-commit run --all-files
   unit-test:
     runs-on: ubuntu-latest
