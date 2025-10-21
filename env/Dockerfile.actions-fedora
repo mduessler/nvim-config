@@ -12,6 +12,7 @@ RUN dnf update -y && dnf install -y \
     node \
     npm \
     gcc \
+    which \
     && dnf clean all
 
 ENV HOME=/home/tester
