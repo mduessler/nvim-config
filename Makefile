@@ -56,3 +56,10 @@ clean:
 	docker image rm nvim-fedora:test
 	docker image rm nvim-ubuntu:test
 	docker image rm nvim-fedora:install-test
+
+build-actions-image:
+	@read -p "Enter your GitHub username: " GITHUB_USERNAME;
+	@read -p "Enter your GitHub PAT: " GITHUB_TOKEN; \
+	echo "$$GITHUB_TOKEN" | docker login ghcr.io -u "$$GITHUB_USERNAME" --password-stdin
+	docker build -f $(env-path)/Dockerfile.actions-fedora -t ghcr.io/mduessler/nvim:fedora .
+	docker push ghcr.io/mduessler/nvim:fedora
