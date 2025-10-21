@@ -13,11 +13,6 @@ RUN dnf update -y && dnf install -y \
     npm \
     && dnf clean all
 
-ENV HOME=/home/tester
-
-RUN mkdir -p /home/tester && groupadd tester
-RUN useradd -m -g tester tester
-
 RUN echo 'tester ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/tester \
     && echo 'Defaults:tester !requiretty' >> /etc/sudoers.d/tester \
     && chmod 0440 /etc/sudoers.d/tester
@@ -30,8 +25,5 @@ RUN ./install.sh /usr/local
 ENV NVIM_CONFIG=$HOME/.config/nvim
 
 WORKDIR $NVIM_CONFIG
-
-RUN chown -R tester:tester ${HOME}
-USER tester
 
 RUN python -m pip install --no-cache-dir pre-commit==4.2.0
