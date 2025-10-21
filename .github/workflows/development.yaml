@@ -16,5 +16,6 @@ jobs:
       - name: Run pre-commit
         run: |
           ls -la
+          git -v
+          pre-commit install
           pre-commit run --all-files
-          cat /github/home/.cache/pre-commit/pre-commit.log
