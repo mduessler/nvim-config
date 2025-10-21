@@ -38,6 +38,15 @@ dependencies:
 
 ## Tests
 
+There exists two types of tests. Both tests will be executed on Fedora and
+Ubuntu.
+
+1. **Environment tests** -- Running the installation script in an isolated
+   environment to verify the installation of all required dependencies and
+   requirements.
+2. **Unit tests**. -- Running tests in an environment with all dependencies
+   and requirements installed.
+
 ### Naming
 
 All functions must be tested in ascending order of return value.
