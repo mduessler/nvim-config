@@ -13,9 +13,10 @@ jobs:
     steps:
       - name: Prepare linting
         run: |
-          whoami
           git clone https://github.com/mduessler/nvim-config ${NVIM_CONFIG}
           cd ${NVIM_CONFIG}
           git checkout ${{ github.head_ref }}
       - name: Run pre-commit
-        run: pre-commit run --all-files
+        run: |
+          cd ${NVIM_CONFIG}
+          pre-commit run --all-files
