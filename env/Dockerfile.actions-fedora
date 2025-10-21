@@ -9,6 +9,8 @@ RUN dnf update -y && dnf install -y \
     hadolint \
     python \
     python-pip \
+    node \
+    npm \
     && dnf clean all
 
 ENV HOME=/home/tester
