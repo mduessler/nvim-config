@@ -78,6 +78,8 @@ RUN git clone https://github.com/neovim/neovim -b "v${MAJOR_REQ}.${MINOR_REQ}.${
 WORKDIR "${NVIM_GIT_DIR}"
 RUN make CMAKE_BUILD_TYPE=Release && make install
 
+ENV NVIM_CONFIG=$HOME/.config/nvim
+
 WORKDIR "${NVIM_CONFIG}"
 
 RUN chown -R tester:tester "${HOME}"
