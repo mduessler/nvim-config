@@ -20,6 +20,7 @@ jobs:
       - name: Map repo to NVIM_CONFIG
         run: |
           mkdir -p $HOME/.config/nvim
+          whoami
           ln -s $GITHUB_WORKSPACE $HOME/.config/nvim
           ls -l $HOME/.config/nvim
       - name: Run pre-commit
