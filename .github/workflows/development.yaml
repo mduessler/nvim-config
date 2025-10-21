@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/mduessler/nvim:fedora
-      options: --pull
+      options: --pull=always
     steps:
       - name: Checkout repo
         uses: actions/checkout@v5
