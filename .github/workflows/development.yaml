@@ -19,6 +19,6 @@ jobs:
       - name: Run pre-commit
         env:
           HOME: /home/tester
-        working-directory: ${{ env.NVIM_CONFIG }}
         run: |
+          cd ${NVIM_CONFIG}
           pre-commit run --all-files
