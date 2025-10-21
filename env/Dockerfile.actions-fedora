@@ -35,6 +35,10 @@ ENV NVIM_CONFIG=$HOME/.config/nvim
 WORKDIR $NVIM_CONFIG
 
 ENV XDG_CACHE_HOME=${HOME}/.cache
+ENV CARGO_HOME=${HOME}/.local/share}/cargo
+ENV RUSTUP_HOME=${HOME}/.local/share}/rustup
+
+ENV PATH=${HOME}/.local/share}/cargo/bin:${PATH}
 
 RUN chown -R tester:tester ${HOME}
 USER tester
