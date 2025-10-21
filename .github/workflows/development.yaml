@@ -20,6 +20,5 @@ jobs:
         env:
           HOME: /home/tester
         run: |
-          echo ${PATH}
           cd ${NVIM_CONFIG}
           pre-commit run --all-files
