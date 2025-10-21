@@ -10,6 +10,7 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v5
+      - uses: hadolint/hadolint-action@v3.1.0
       - name: Install python
         uses: actions/setup-python@v6
         with:
