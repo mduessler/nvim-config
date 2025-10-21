@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v5
+      - name: Print all environment variables
+        run: env
       - name: Configure Git safe directory
         run: git config --global --add safe.directory /__w/nvim-config/nvim-config
       - name: Run pre-commit
