@@ -21,3 +21,19 @@ jobs:
           HOME: /home/tester
         run: |
           pre-commit run --all-files
+  unit-test:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/mduessler/nvim:fedora
+      options: --pull=always
+    steps:
+      - name: Prepare unit tests
+        run: |
+          git clone https://github.com/mduessler/nvim-config ${NVIM_CONFIG}
+          cd ${NVIM_CONFIG}
+          git checkout ${{ github.head_ref }}
+      - name: Execute tests
+        run: |
+          cd ${NVIM_CONFIG}
+          git status
+          env/entrypoint
