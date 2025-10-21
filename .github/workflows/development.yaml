@@ -7,18 +7,11 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/mduessler/nvim:fedora
+      options: --pull
     steps:
       - name: Checkout repo
         uses: actions/checkout@v5
-      - name: Install hadolint
-        run: |
-          curl -sL https://github.com/hadolint/hadolint/releases/latest/download/hadolint-Linux-x86_64 -o /usr/local/bin/hadolint
-          chmod +x /usr/local/bin/hadolint
-      - name: Install python
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.13"
-      - name: Install pre-commit
-        run: pip install pre-commit
       - name: Run pre-commit
         run: pre-commit run --all-files
