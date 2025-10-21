@@ -13,15 +13,7 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v5
-      - name: Debug Git
-        run: |
-          pwd
-          ls -la
-          git status
-          git rev-parse --show-toplevel
+      - name: Configure Git safe directory
+        run: git config --global --add safe.directory /__w/nvim-config/nvim-config
       - name: Run pre-commit
-        run: |
-          ls -la
-          git -v
-          pre-commit install
-          pre-commit run --all-files
+        run: pre-commit run --all-files
