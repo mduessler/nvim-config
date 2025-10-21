@@ -11,6 +11,7 @@ RUN dnf update -y && dnf install -y \
     python-pip \
     node \
     npm \
+    gcc \
     && dnf clean all
 
 ENV HOME=/root
