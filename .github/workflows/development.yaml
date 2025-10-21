@@ -14,7 +14,7 @@ jobs:
       - name: Prepare linting
         run: |
           whoami
-          git clone https://github.com/mduessler/nvim-config.github ${NVIM_CONFIG}
+          git clone https://github.com/mduessler/nvim-config ${NVIM_CONFIG}
           cd ${NVIM_CONFIG}
           git checkout ${{ github.head_ref }}
       - name: Run pre-commit
