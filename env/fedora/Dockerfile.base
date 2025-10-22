@@ -1,4 +1,4 @@
-FROM fedora:42
+FROM fedora:42 as builder
 
 ENV DISPLAY=:99
 ENV TERM=xterm
@@ -6,6 +6,13 @@ ENV TERM=xterm
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
 # Create test USER_TEST tester
+FROM fedora:42 as development
+
+ENV DISPLAY=:99
+ENV TERM=xterm
+
+SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
+
 ARG USER_TEST=tester
 
 RUN mkdir -p "/home/${USER_TEST}" && groupadd "${USER_TEST}" \
