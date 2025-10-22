@@ -9,7 +9,7 @@ SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 ARG USER_TEST=tester
 
 RUN mkdir -p "/home/${USER_TEST}" && groupadd "${USER_TEST}" \
-    && USER_TESTadd -m -g "${USER_TEST}" "${USER_TEST}" \
+    && useradd -m -g "${USER_TEST}" "${USER_TEST}" \
     && echo "${USER_TEST} ALL=(ALL) NOPASSWD:ALL" > "/etc/sudoers.d/${USER_TEST}" \
     && echo "Defaults:${USER_TEST} !requiretty" >> "/etc/sudoers.d/${USER_TEST}" \
     && chmod 0440 "/etc/sudoers.d/${USER_TEST}"
@@ -74,9 +74,11 @@ ENV PATCH_REQ="${PATCH_REQ}"
 # Install neovim
 
 ENV NVIM_GIT_DIR="${HOME}/.local/share/src/neovim"
-RUN git clone https://github.com/neovim/neovim -b "v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ}" "${NVIM_GIT_DIR}" || exit 1
+RUN git clone https://github.com/neovim/neovim "${NVIM_GIT_DIR}"
 WORKDIR "${NVIM_GIT_DIR}"
-RUN make CMAKE_BUILD_TYPE=Release && make install
+RUN git checkout "v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ}" \
+    && make CMAKE_BUILD_TYPE=Release \
+    && make install
 
 ENV NVIM_CONFIG="$HOME/.config/nvim"
 
