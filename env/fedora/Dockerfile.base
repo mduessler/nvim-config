@@ -1,4 +1,4 @@
-FROM fedora:42 as builder
+FROM fedora:42
 
 ENV DISPLAY=:99
 ENV TERM=xterm
@@ -6,13 +6,6 @@ ENV TERM=xterm
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
 # Create test USER_TEST tester
-FROM fedora:42 as development
-
-ENV DISPLAY=:99
-ENV TERM=xterm
-
-SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
-
 ARG USER_TEST=tester
 
 RUN mkdir -p "/home/${USER_TEST}" && groupadd "${USER_TEST}" \
@@ -53,11 +46,24 @@ RUN dnf update -y && dnf install -y \
     python-pip \
     && dnf clean all
 
+#
+# Install rust dependencies and requirements
+#
+
 # Install rust
 ENV CARGO_HOME="${HOME}/.local/share/cargo"
 ENV RUSTUP_HOME="${HOME}/.local/share/rustup"
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y || exit 1
 ENV PATH="${CARGO_HOME}/bin:${PATH}"
+# Install selene, clean build cache, remove toolchain and strip installed binaries,
+RUN cargo install selene \
+    && rm -rf \
+    "${CARGO_HOME}/registry" "${CARGO_HOME}/git" \
+    "${CARGO_HOME}/registry/index" "${CARGO_HOME}/registry/cache" \
+    "${CARGO_HOME}/git/checkouts" \
+    && rustup component remove rust-docs rust-src || true \
+    && rustup self clean \
+    && find "${CARGO_HOME}/bin" -type f -exec strip {} \; || true
 
 # Install bats
 ENV BATS_CORE_GIT_DIR="${HOME}/.local/share/src/bats_core"
@@ -66,8 +72,7 @@ WORKDIR "${BATS_CORE_GIT_DIR}"
 RUN ./install.sh /usr/local
 
 # Install lua and rust requirements
-RUN cargo install selene \
-    && luarocks install lpeglabel \
+RUN luarocks install lpeglabel \
     && luarocks install luaunit
 
 ARG MAJOR_REQ
@@ -86,6 +91,8 @@ WORKDIR "${NVIM_GIT_DIR}"
 RUN git checkout "v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ}" \
     && make CMAKE_BUILD_TYPE=Release \
     && make install
+
+RUN rm -rf ${BATS_CORE_GIT_DIR} && rm -rf ${NVIM_GIT_DIR}
 
 ENV NVIM_CONFIG="$HOME/.config/nvim"
 
