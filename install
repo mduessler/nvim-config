@@ -58,7 +58,7 @@ main() {
     fi
 
     info "Installing language-servers, formaters and linters ... "
-    PATH="${CARGO_HOME:-$HOME/.cargo}/bin:$PATH" nvim --headless "+InitNVIM"
+    PATH="${CARGO_HOME:-$HOME/.cargo}/bin:$PATH" timeout 10m nvim --headless "+InitNVIM"
     echo "\n"
 
     if ${INSTALL_NERD_FONTS}; then
