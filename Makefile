@@ -39,6 +39,7 @@ fedora-unit-tests-remote:
 	@read -p "Enter your GitHub PAT: " GITHUB_TOKEN; \
 	echo "$$GITHUB_TOKEN" | docker login ghcr.io -u "$$GITHUB_USERNAME" --password-stdin
 	docker build -f $(env-fedora-remote) \
+		--pull=false \
 		-t ghcr.io/mduessler/nvim:fedora .
 	docker push ghcr.io/mduessler/nvim:fedora
 
