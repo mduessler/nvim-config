@@ -50,7 +50,7 @@ vim.api.nvim_create_user_command("InitNVIM", function()
 		vim.wait(5000)
 
 		print("Installing Treesitter languages.")
-		vim.cmd("TSUpdateSync")
+		vim.cmd("TSUpdate")
 		vim.cmd("qa!")
 	end
 end, { desc = "Initalize plugins, lsps and Treesitter" })
