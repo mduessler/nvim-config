@@ -1,4 +1,4 @@
-FROM fedora:42
+FROM fedora-nvim:base
 ENV DISPLAY=:99
 ENV TERM=xterm
 
