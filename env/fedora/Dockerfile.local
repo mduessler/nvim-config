@@ -14,7 +14,7 @@ COPY ./lazy-lock.json ./lazy-lock.json
 # RUN chown -R tester:tester "${HOME}"
 USER tester
 
-RUN nvim --headless "+InitNVIM"
+RUN timeout 10m nvim --headless "+InitNVIM" || return 0
 
 COPY ./lua/core ./lua/core
 COPY ./installs .
