@@ -106,6 +106,8 @@ RUN timeout 10m nvim --headless || true
 # Image which is used by local and remote.
 FROM fedora:42 AS base
 
+SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
+
 # Copy Rust + Cargo + Selene from builder
 COPY --from=builder /usr/local/cargo/bin/selene /usr/local/bin/selene
 COPY --from=builder /usr/local/cargo /usr/local/cargo
