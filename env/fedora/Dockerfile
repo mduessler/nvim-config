@@ -54,6 +54,7 @@ ENV PATH="/usr/local/cargo/bin:${PATH}"
 RUN cargo install selene
 
 # Clean rust overhead
+# Clean build cache, remove toolchain and strip installed binaries
 WORKDIR ${CARGO_HOME}
 RUN rm -rf "./registry" "./git" \
     && rustup component remove rust-docs rust-src || true \
