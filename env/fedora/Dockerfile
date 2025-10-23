@@ -106,6 +106,25 @@ RUN timeout 10m nvim --headless || true
 # Image which is used by local and remote.
 FROM fedora:42 AS base
 
+# Copy Rust + Cargo + Selene from builder
+COPY --from=builder /usr/local/cargo/bin/selene /usr/local/bin/selene
+COPY --from=builder /usr/local/cargo /usr/local/cargo
+COPY --from=builder /usr/local/rustup /usr/local/rustup
+ENV PATH=/usr/local/cargo/bin:$PATH
+
+# Copy nvim
+COPY --from=builder /usr/local/bin/nvim /usr/local/bin/nvim
+COPY --from=builder /usr/local/share/nvim /usr/local/share/nvim
+
+# Copy bats
+COPY --from=builder /usr/local/bin/bats /usr/local/bin/bats
+COPY --from=builder /usr/local/libexec/bats-core /usr/local/libexec/bats-core
+COPY --from=builder /usr/local/lib/bats-core/ /usr/local/lib/bats-core/
+
+# Copy from lua
+COPY --from=builder /usr/share/lua/5.4/luaunit.lua /usr/share/lua/5.4/luaunit.lua
+COPY --from=builder /usr/lib64/lua/5.4/lpeglabel.so /usr/lib64/lua/5.4/lpeglabel.so
+
 # Image to use during local unit tests.
 #
 FROM base AS local
