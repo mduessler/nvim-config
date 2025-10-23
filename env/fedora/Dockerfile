@@ -108,6 +108,16 @@ FROM fedora:42 AS base
 
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
+# Create test user
+ARG USER_TEST=tester
+
+RUN mkdir -p "/home/${USER_TEST}" && groupadd "${USER_TEST}" \
+    && useradd -m -g "${USER_TEST}" "${USER_TEST}" \
+    && echo "${USER_TEST} ALL=(ALL) NOPASSWD:ALL" > "/etc/sudoers.d/${USER_TEST}" \
+    && echo "Defaults:${USER_TEST} !requiretty" >> "/etc/sudoers.d/${USER_TEST}" \
+    && chmod 0440 "/etc/sudoers.d/${USER_TEST}"
+
+
 # Copy Rust + Cargo + Selene from builder
 COPY --from=builder /usr/local/cargo/bin/selene /usr/local/bin/selene
 COPY --from=builder /usr/local/cargo /usr/local/cargo
