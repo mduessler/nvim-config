@@ -93,6 +93,9 @@ RUN find "/usr/local/libexec/bats-core" -type f -exec strip {} \; || true \
 RUN luarocks install lpeglabel && \
     luarocks install luaunit
 
+# Install pre-commit for linting
+RUN python -m pip install --no-cache-dir pre-commit==4.2.0
+
 # Install nvim plugins and set them up.
 WORKDIR ${NVIM_CONFIG}
 COPY ./init.lua .
