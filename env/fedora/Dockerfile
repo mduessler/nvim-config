@@ -162,7 +162,6 @@ SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
 WORKDIR "${NVIM_CONFIG}"
 COPY . .
-RUN nvim --headless -c "echo 'Neovim works!'" -c "qa"
 
 ENTRYPOINT ["./env/entrypoint"]
 
