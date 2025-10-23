@@ -68,18 +68,18 @@ RUN rm -rf "./registry" "./git" \
 
 # Install neovim
 WORKDIR ${GIT_DIR}
-ENV NVIM_GIT_GIT="${GIT_DIR}/neovim"
-RUN git clone https://github.com/neovim/neovim ${NVIM_GIT_GIT}
-WORKDIR ${NVIM_GIT_GIT}
+ENV NVIM_GIT_DIR="${GIT_DIR}/neovim"
+RUN git clone https://github.com/neovim/neovim ${NVIM_GIT_DIR}
+WORKDIR ${NVIM_GIT_DIR}
 RUN git checkout "v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ}" \
     && make CMAKE_BUILD_TYPE=Release \
     && make install
 
 # Install bat
 WORKDIR ${GIT_DIR}
-ENV BATS_GIT_GIT="${GIT_DIR}/bats-core"
-RUN git clone https://github.com/bats-core/bats-core ${BATS_GIT_GIT}
-WORKDIR ${BATS_GIT_GIT}
+ENV BATS_GIT_DIR="${GIT_DIR}/bats-core"
+RUN git clone https://github.com/bats-core/bats-core ${BATS_GIT_DIR}
+WORKDIR ${BATS_GIT_DIR}
 RUN ./install.sh /usr/local
 
 # Strip bats.
