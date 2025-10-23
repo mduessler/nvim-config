@@ -64,7 +64,6 @@ RUN cargo install selene
 WORKDIR ${CARGO_HOME}
 RUN rm -rf "./registry" "./git" \
     && rustup component remove rust-docs rust-src || true \
-    && rustup self clean \
     && find "./bin" -type f -exec strip {} \; || true
 
 # Install neovim
@@ -143,6 +142,8 @@ COPY --from=builder /usr/local/lib/bats-core/ /usr/local/lib/bats-core/
 COPY --from=builder /usr/share/lua/5.4/luaunit.lua /usr/share/lua/5.4/luaunit.lua
 COPY --from=builder /usr/lib64/lua/5.4/lpeglabel.so /usr/lib64/lua/5.4/lpeglabel.so
 
+# Copy nvim downloads
+COPY --from=builder /root/.local/share/nvim ${XDG_DATA_HOME}/nvim
 # Image to use during local unit tests.
 #
 FROM base AS local
@@ -151,6 +152,10 @@ SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 ARG MAJOR_REQ
 ARG MINOR_REQ
 ARG PATCH_REQ
+
+WORKDIR "${NVIM_CONFIG}"
+COPY . .
+ENTRYPOINT ["./env/entrypoint"]
 
 # Image to use during remote linting and unit tests.
 #
