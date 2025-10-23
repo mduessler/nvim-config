@@ -28,6 +28,7 @@ RUN dnf install -y --setopt=install_weak_deps=False \
     libvterm \
     lua \
     lua-devel \
+    luarocks \
     make \
     ncurses-libs \
     ninja-build \
@@ -45,8 +46,8 @@ RUN dnf install -y --setopt=install_weak_deps=False \
     && dnf autoremove -y
 
 ENV HOME=/root
-ENV GIT_DIR=${HOME}/.local/share/src
-RUN mkdir -p ${GIT_DIR}
+ENV LOCAL_GIT_DIR=${HOME}/.local/share/src
+RUN mkdir -p ${LOCAL_GIT_DIR}
 ENV NVIM_CONFIG=${HOME}/.config/nvim
 RUN mkdir -p ${NVIM_CONFIG}
 
@@ -67,17 +68,18 @@ RUN rm -rf "./registry" "./git" \
     && find "./bin" -type f -exec strip {} \; || true
 
 # Install neovim
-WORKDIR ${GIT_DIR}
-ENV NVIM_GIT_DIR="${GIT_DIR}/neovim"
+WORKDIR ${LOCAL_GIT_DIR}
+ENV NVIM_GIT_DIR="${LOCAL_GIT_DIR}/neovim"
 RUN git clone https://github.com/neovim/neovim ${NVIM_GIT_DIR}
 WORKDIR ${NVIM_GIT_DIR}
+
 RUN git checkout "v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ}" \
     && make CMAKE_BUILD_TYPE=Release \
     && make install
 
 # Install bat
-WORKDIR ${GIT_DIR}
-ENV BATS_GIT_DIR="${GIT_DIR}/bats-core"
+WORKDIR ${LOCAL_GIT_DIR}
+ENV BATS_GIT_DIR="${LOCAL_GIT_DIR}/bats-core"
 RUN git clone https://github.com/bats-core/bats-core ${BATS_GIT_DIR}
 WORKDIR ${BATS_GIT_DIR}
 RUN ./install.sh /usr/local
@@ -123,11 +125,8 @@ ENV XDG_DATA_HOME="${HOME}/.local/share"
 ENV XDG_STATE_HOME="${HOME}/.local/state"
 ENV NVIM_CONFIG="${HOME}/.config/nvim"
 
-# Copy Rust + Cargo + Selene from builder
+# Selene from builder
 COPY --from=builder /usr/local/cargo/bin/selene /usr/local/bin/selene
-COPY --from=builder /usr/local/cargo /usr/local/cargo
-COPY --from=builder /usr/local/rustup /usr/local/rustup
-ENV PATH=/usr/local/cargo/bin:$PATH
 
 # Copy nvim
 COPY --from=builder /usr/local/bin/nvim /usr/local/bin/nvim
@@ -155,6 +154,8 @@ ARG PATCH_REQ
 
 WORKDIR "${NVIM_CONFIG}"
 COPY . .
+RUN nvim --headless -c "echo 'Neovim works!'" -c "qa"
+
 ENTRYPOINT ["./env/entrypoint"]
 
 # Image to use during remote linting and unit tests.
