@@ -53,6 +53,13 @@ ENV PATH="/usr/local/cargo/bin:${PATH}"
 # Install rust requirements
 RUN cargo install selene
 
+# Clean rust overhead
+WORKDIR ${CARGO_HOME}
+RUN rm -rf "./registry" "./git" \
+    && rustup component remove rust-docs rust-src || true \
+    && rustup self clean \
+    && find ".//bin" -type f -exec strip {} \; || true
+
 # Image to use during local unit tests.
 #
 FROM fedora:42 AS local
