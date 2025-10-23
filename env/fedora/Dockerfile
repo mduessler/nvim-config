@@ -115,12 +115,20 @@ SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 # Create test user
 ARG USER_TEST=tester
 
+ARG MAJOR_REQ
+ARG MINOR_REQ
+ARG PATCH_REQ
+
 RUN mkdir -p "/home/${USER_TEST}" && groupadd "${USER_TEST}" \
     && useradd -m -g "${USER_TEST}" "${USER_TEST}" \
     && echo "${USER_TEST} ALL=(ALL) NOPASSWD:ALL" > "/etc/sudoers.d/${USER_TEST}" \
     && echo "Defaults:${USER_TEST} !requiretty" >> "/etc/sudoers.d/${USER_TEST}" \
     && chmod 0440 "/etc/sudoers.d/${USER_TEST}"
 
+
+ENV MAJOR_REQ=${MAJOR_REQ}
+ENV MINOR_REQ=${MINOR_REQ}
+ENV PATCH_REQ=${PATCH_REQ}
 ENV HOME="/home/${USER_TEST}"
 ENV XDG_CONFIG_HOME="${HOME}/.config"
 ENV XDG_CACHE_HOME="${HOME}/.cache"
@@ -128,17 +136,6 @@ ENV XDG_DATA_HOME="${HOME}/.local/share"
 ENV XDG_STATE_HOME="${HOME}/.local/state"
 ENV NVIM_CONFIG="${HOME}/.config/nvim"
 
-
-# Copy git dependency and needed libs.
-COPY --from=builder /usr/bin/git /usr/bin/git
-COPY --from=builder /usr/libexec/git-core/git-remote-http /usr/libexec/git-core/git-remote-http
-COPY --from=builder /usr/libexec/git-core/git-remote-https /usr/libexec/git-core/git-remote-https
-
-# Copy curl dependency
-COPY --from=builder /usr/bin/curl /usr/bin/curl
-
-# Copy certificates installed with ca-certificates
-COPY --from=builder /etc/pki/ca-trust /etc/pki/ca-trust
 
 # Selene from builder
 COPY --from=builder /usr/local/cargo/bin/selene /usr/local/bin/selene
@@ -163,10 +160,6 @@ COPY --from=builder /root/.local/share/nvim ${XDG_DATA_HOME}/nvim
 FROM base AS local
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
-ARG MAJOR_REQ
-ARG MINOR_REQ
-ARG PATCH_REQ
-
 WORKDIR "${NVIM_CONFIG}"
 COPY . .
 RUN nvim --headless -c "echo 'Neovim works!'" -c "qa"
@@ -177,7 +170,3 @@ ENTRYPOINT ["./env/entrypoint"]
 #
 FROM base AS remote
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
-
-ARG MAJOR_REQ
-ARG MINOR_REQ
-ARG PATCH_REQ
