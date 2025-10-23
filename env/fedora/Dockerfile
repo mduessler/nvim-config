@@ -103,9 +103,12 @@ COPY ./lazy-lock.json ./lazy-lock.json
 
 RUN timeout 10m nvim --headless || true
 
+# Image which is used by local and remote.
+FROM fedora:42 AS base
+
 # Image to use during local unit tests.
 #
-FROM fedora:42 AS local
+FROM base AS local
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
 ARG MAJOR_REQ
@@ -114,7 +117,7 @@ ARG PATCH_REQ
 
 # Image to use during remote linting and unit tests.
 #
-FROM fedora:42 AS remote
+FROM base AS remote
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
 ARG MAJOR_REQ
