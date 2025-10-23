@@ -92,7 +92,6 @@ RUN luarocks install lpeglabel && \
     luarocks install luaunit
 
 # Install nvim plugins and set them up.
-
 WORKDIR ${NVIM_CONFIG}
 COPY ./init.lua .
 COPY ./lua/lsp ./lua/lsp
