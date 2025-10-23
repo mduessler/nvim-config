@@ -85,6 +85,10 @@ RUN git clone https://github.com/bats-core/bats-core ${BATS_GIT_GIT}
 WORKDIR ${BATS_GIT_GIT}
 RUN ./install.sh /usr/local
 
+# Install lua libraries
+RUN luarocks install lpeglabel && \
+    luarocks install luaunit
+
 # Image to use during local unit tests.
 #
 FROM fedora:42 AS local
