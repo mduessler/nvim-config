@@ -5,6 +5,10 @@
 FROM fedora:42 AS builder
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
+ARG MAJOR_REQ
+ARG MINOR_REQ
+ARG PATCH_REQ
+
 # Installing all necessary dependencies.
 RUN dnf install -y --setopt=install_weak_deps=False \
     bash \
@@ -66,7 +70,15 @@ RUN rm -rf "./registry" "./git" \
 FROM fedora:42 AS local
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
+ARG MAJOR_REQ
+ARG MINOR_REQ
+ARG PATCH_REQ
+
 # Image to use during remote linting and unit tests.
 #
 FROM fedora:42 AS remote
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
+
+ARG MAJOR_REQ
+ARG MINOR_REQ
+ARG PATCH_REQ
