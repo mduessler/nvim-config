@@ -44,10 +44,6 @@ RUN dnf install -y --setopt=install_weak_deps=False \
     && rm -rf /var/cache/dnf /var/lib/dnf /var/log/dnf* /var/log/yum.* \
     && dnf autoremove -y
 
-# Strip executeables
-RUN for dir in ${PATH//:/ }; do find "${dir}" -type f -executable -exec strip --strip-unneeded {} \;; done
-
-# Create global env variables
 ENV HOME=/root
 ENV GIT_DIR=${HOME}/.local/share/src
 RUN mkdir -p ${GIT_DIR}
@@ -86,6 +82,11 @@ ENV BATS_GIT_GIT="${GIT_DIR}/bats-core"
 RUN git clone https://github.com/bats-core/bats-core ${BATS_GIT_GIT}
 WORKDIR ${BATS_GIT_GIT}
 RUN ./install.sh /usr/local
+
+# Strip bats.
+RUN find "/usr/local/libexec/bats-core" -type f -exec strip {} \; || true \
+    && find "/usr/local/lib/bats-core/" -type f -exec strip {} \; || true \
+    && strip --strip-unneeded /usr/local/bats || true
 
 # Install lua libraries
 RUN luarocks install lpeglabel && \
