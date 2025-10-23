@@ -40,6 +40,12 @@ RUN dnf install -y --setopt=install_weak_deps=False \
     && rm -rf /var/cache/dnf /var/lib/dnf /var/log/dnf* /var/log/yum.* \
     && dnf autoremove -y
 
+# Install rust dependency
+ENV CARGO_HOME="/usr/local/cargo"
+ENV RUSTUP_HOME="/usr/local/rustup"
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y || exit 1
+ENV PATH="/usr/local/cargo/bin:${PATH}"
+
 # Image to use during local unit tests.
 #
 FROM fedora:42 AS local
