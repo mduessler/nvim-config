@@ -51,6 +51,8 @@ RUN for dir in ${PATH//:/ }; do find "${dir}" -type f -executable -exec strip --
 ENV HOME=/root
 ENV GIT_DIR=${HOME}/.local/share/src
 RUN mkdir -p ${GIT_DIR}
+ENV NVIM_CONFIG=${HOME}/.config/nvim
+RUN mkdir -p ${NVIM_CONFIG}
 
 # Install rust dependency
 ENV CARGO_HOME="/usr/local/cargo"
@@ -88,6 +90,18 @@ RUN ./install.sh /usr/local
 # Install lua libraries
 RUN luarocks install lpeglabel && \
     luarocks install luaunit
+
+# Install nvim plugins and set them up.
+
+WORKDIR ${NVIM_CONFIG}
+COPY ./init.lua .
+COPY ./lua/lsp ./lua/lsp
+COPY ./lua/utils ./lua/utils
+COPY ./lua/config ./lua/config
+COPY ./lua/plugins ./lua/plugins
+COPY ./lazy-lock.json ./lazy-lock.json
+
+RUN timeout 10m nvim --headless || true
 
 # Image to use during local unit tests.
 #
