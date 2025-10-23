@@ -170,3 +170,14 @@ ENTRYPOINT ["./env/entrypoint"]
 #
 FROM base AS remote
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
+
+# Copy git dependency and needed libs.
+COPY --from=builder /usr/bin/git /usr/bin/git
+COPY --from=builder /usr/libexec/git-core/git-remote-http /usr/libexec/git-core/git-remote-http
+COPY --from=builder /usr/libexec/git-core/git-remote-https /usr/libexec/git-core/git-remote-https
+
+# Copy curl dependency
+COPY --from=builder /usr/bin/curl /usr/bin/curl
+
+# Copy certificates installed with ca-certificates
+COPY --from=builder /etc/pki/ca-trust /etc/pki/ca-trust
