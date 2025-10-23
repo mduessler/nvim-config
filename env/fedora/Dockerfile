@@ -8,6 +8,7 @@ SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 ARG MAJOR_REQ
 ARG MINOR_REQ
 ARG PATCH_REQ
+ARG PYTHON_VERSION
 
 # Installing all necessary dependencies.
 RUN dnf install -y --setopt=install_weak_deps=False \
@@ -38,7 +39,7 @@ RUN dnf install -y --setopt=install_weak_deps=False \
     openssl-devel \
     openssl-libs \
     pkg-config \
-    python3 \
+    python${PYTHON_VERSION} \
     python3-pip \
     unibilium \
     zlib-devel \
@@ -95,7 +96,7 @@ RUN luarocks install lpeglabel && \
     luarocks install luaunit
 
 # Install pre-commit for linting
-RUN python -m pip install --no-cache-dir pre-commit==4.2.0
+RUN python3 -m pip install --no-cache-dir pre-commit==4.2.0
 
 # Install nvim plugins and set them up.
 WORKDIR ${NVIM_CONFIG}
@@ -119,6 +120,7 @@ ARG USER_TEST=tester
 ARG MAJOR_REQ
 ARG MINOR_REQ
 ARG PATCH_REQ
+ARG PYTHON_VERSION
 
 RUN mkdir -p "/home/${USER_TEST}" && groupadd "${USER_TEST}" \
     && useradd -m -g "${USER_TEST}" "${USER_TEST}" \
@@ -130,6 +132,7 @@ RUN mkdir -p "/home/${USER_TEST}" && groupadd "${USER_TEST}" \
 ENV MAJOR_REQ=${MAJOR_REQ}
 ENV MINOR_REQ=${MINOR_REQ}
 ENV PATCH_REQ=${PATCH_REQ}
+ENV PYTHON_VERSION=${PYTHON_VERSION}
 ENV HOME="/home/${USER_TEST}"
 ENV XDG_CONFIG_HOME="${HOME}/.config"
 ENV XDG_CACHE_HOME="${HOME}/.cache"
@@ -186,8 +189,15 @@ COPY --from=builder /etc/pki/ca-trust /etc/pki/ca-trust
 # Copy hadolint for pre-commit
 COPY --from=builder /usr/bin/hadolint /usr/bin/hadolint
 
-# Copy pre-commit
-COPY --from=builder /usr/bin/pre-commit /usr/bin/pre-commit
+# Copy python and dependencies
+COPY --from=builder /usr/bin/python3 /usr/bin/python3
+COPY --from=builder /lib64/libpython${PYTHON_VERSION}.so.1.0 /lib64/libpython${PYTHON_VERSION}.so.1.0
+COPY --from=builder /lib64/libc.so.6 /lib64/libc.so.6
+COPY --from=builder /lib64/libm.so.6 /lib64/libm.so.6
+COPY --from=builder /lib64/ld-linux-x86-64.so.2 /lib64/ld-linux-x86-64.so.2
+
+# Copy pre-commit and dependencies
+COPY --from=builder /usr/local/bin/pre-commit /usr/local/bin/pre-commit
 
 WORKDIR ${NVIM_CONFIG}
 RUN pre-commit run --all-files
