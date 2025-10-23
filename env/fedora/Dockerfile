@@ -69,6 +69,15 @@ RUN rm -rf "./registry" "./git" \
     && rustup self clean \
     && find "./bin" -type f -exec strip {} \; || true
 
+# Install neovim
+WORKDIR ${GIT_DIR}
+ENV NVIM_GIT_GIT="${GIT_DIR}/neovim"
+RUN git clone https://github.com/neovim/neovim ${NVIM_GIT_GIT}
+WORKDIR ${NVIM_GIT_GIT}
+RUN git checkout "v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ}" \
+    && make CMAKE_BUILD_TYPE=Release \
+    && make install
+
 # Image to use during local unit tests.
 #
 FROM fedora:42 AS local
