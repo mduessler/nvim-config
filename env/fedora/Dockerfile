@@ -22,6 +22,7 @@ RUN dnf install -y --setopt=install_weak_deps=False \
     gettext \
     glibc \
     glibc-gconv-extra \
+    hadolint \
     libgcc \
     libstdc++ \
     libtermkey \
@@ -181,3 +182,6 @@ COPY --from=builder /usr/bin/curl /usr/bin/curl
 
 # Copy certificates installed with ca-certificates
 COPY --from=builder /etc/pki/ca-trust /etc/pki/ca-trust
+
+# Copy hadolint for pre-commit
+COPY --from=builder /usr/bin/hadolint /usr/bin/hadolint
