@@ -185,3 +185,6 @@ COPY --from=builder /etc/pki/ca-trust /etc/pki/ca-trust
 
 # Copy hadolint for pre-commit
 COPY --from=builder /usr/bin/hadolint /usr/bin/hadolint
+
+# Copy pre-commit
+COPY --from=builder /usr/bin/pre-commit /usr/bin/pre-commit
