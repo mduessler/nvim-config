@@ -47,12 +47,16 @@ RUN dnf install -y --setopt=install_weak_deps=False \
 # Strip executeables
 RUN for dir in ${PATH//:/ }; do find "${dir}" -type f -executable -exec strip --strip-unneeded {} \;; done
 
+# Create global env variables
+ENV HOME=/root
+ENV GIT_DIR=${HOME}/.local/share/src
+RUN mkdir -p ${GIT_DIR}
 
 # Install rust dependency
 ENV CARGO_HOME="/usr/local/cargo"
 ENV RUSTUP_HOME="/usr/local/rustup"
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y || exit 1
-ENV PATH="/usr/local/cargo/bin:${PATH}"
+ENV PATH="${CARGO_HOME}/bin:${PATH}"
 
 # Install rust requirements
 RUN cargo install selene
@@ -63,7 +67,7 @@ WORKDIR ${CARGO_HOME}
 RUN rm -rf "./registry" "./git" \
     && rustup component remove rust-docs rust-src || true \
     && rustup self clean \
-    && find ".//bin" -type f -exec strip {} \; || true
+    && find "./bin" -type f -exec strip {} \; || true
 
 # Image to use during local unit tests.
 #
