@@ -188,3 +188,6 @@ COPY --from=builder /usr/bin/hadolint /usr/bin/hadolint
 
 # Copy pre-commit
 COPY --from=builder /usr/bin/pre-commit /usr/bin/pre-commit
+
+WORKDIR ${NVIM_CONFIG}
+RUN pre-commit run --all-files
