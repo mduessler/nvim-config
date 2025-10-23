@@ -126,12 +126,16 @@ ENV XDG_STATE_HOME="${HOME}/.local/state"
 ENV NVIM_CONFIG="${HOME}/.config/nvim"
 
 
-# Copy dependencies
+# Copy git dependency and needed libs.
 COPY --from=builder /usr/bin/git /usr/bin/git
+COPY --from=builder /usr/libexec/git-core/git-remote-https /usr/libexec/git-core/git-remote-https
+
+# Copy curl dependency
 COPY --from=builder /usr/bin/curl /usr/bin/curl
 
 # Copy certificates installed with ca-certificates
 COPY --from=builder /etc/pki/ca-trust /etc/pki/ca-trust
+
 # Selene from builder
 COPY --from=builder /usr/local/cargo/bin/selene /usr/local/bin/selene
 
