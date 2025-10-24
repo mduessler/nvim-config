@@ -48,10 +48,7 @@ repos:
         files: |
           (?x)^(
             "env/fedora/Dockerfile" |
-            "env/fedora/Dockerfile.base" |
             "env/fedora/Dockerfile.install" |
-            "env/fedora/Dockerfile.local" |
-            "env/fedora/Dockerfile.remote" |
             env/Dockerfile.dev-ubuntu |
             env/Dockerfile.ubuntu-install |
           )
