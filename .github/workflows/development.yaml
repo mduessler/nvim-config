@@ -25,6 +25,7 @@ jobs:
         run: |
           export PATH="/usr/local/bin:/usr/bin:${PATH}"
           python3 -c "import sys;print(sys.path)"
+          ls -l /usr/lib64/python3.13/site-packages/ | grep pre
           sudo dnf install which -y
           cd ${NVIM_CONFIG}
           echo "which python3:"
