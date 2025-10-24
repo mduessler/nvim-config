@@ -206,6 +206,11 @@ SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
 ARG USER_TEST=tester
 
+RUN dnf install -y git \
+    && dnf clean all \
+    && rm -rf /var/cache/dnf /var/lib/dnf /var/log/dnf* /var/log/yum.* \
+    && dnf autoremove -y
+
 RUN mkdir -p "/home/${USER_TEST}" && groupadd "${USER_TEST}" \
     && useradd -m -g "${USER_TEST}" "${USER_TEST}" \
     && echo "${USER_TEST} ALL=(ALL) NOPASSWD:ALL" > "/etc/sudoers.d/${USER_TEST}" \
@@ -221,11 +226,6 @@ USER tester
 # Image to test the install script local.
 #
 FROM install AS install-local
-
-RUN dnf install -y git \
-    && dnf clean all \
-    && rm -rf /var/cache/dnf /var/lib/dnf /var/log/dnf* /var/log/yum.* \
-    && dnf autoremove -y
 
 RUN mkdir -p "${NVIM_CONFIG}"
 WORKDIR ${NVIM_CONFIG}
