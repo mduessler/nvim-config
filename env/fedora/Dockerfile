@@ -66,8 +66,8 @@ RUN cargo install selene
 # Clean build cache, remove toolchain and strip installed binaries
 WORKDIR ${CARGO_HOME}
 RUN rm -rf "./registry" "./git" \
-    && rustup component remove rust-docs rust-src || true \
-    && find "./bin" -type f -exec strip {} \; || true
+    && (rustup component remove rust-docs rust-src || true) \
+    && (find "./bin" -type f -exec strip {} \; || true)
 
 # Install neovim
 WORKDIR ${LOCAL_GIT_DIR}
