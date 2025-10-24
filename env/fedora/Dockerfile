@@ -187,12 +187,14 @@ RUN dnf install -y --setopt=install_weak_deps=False \
     && rm -rf /var/cache/dnf /var/lib/dnf /var/log/dnf* /var/log/yum.* \
     && dnf autoremove -y
 
+RUN dnf install which -y && dnf clean all
+RUN which python && sleep 5
 # Copy hadolint for pre-commit
 COPY --from=builder /usr/bin/hadolint /usr/bin/hadolint
 
 # Copy python pre-commit libraries
-COPY --from=builder /usr/local/lib/python3.*/site-packages/* /usr/lib/python3.*/site-packages/
-COPY --from=builder /usr/local/lib64/python3.*/site-packages/* /usr/lib64/python3.*/site-packages/
+COPY --from=builder /usr/local/lib/python3.*/site-packages/ /usr/local/lib/
+COPY --from=builder /usr/local/lib64/python3.*/site-packages/ /usr/local/lib64/
 
 # Copy pre-commit and dependencies
 COPY --from=builder /usr/local/bin/pre-commit /usr/local/bin/pre-commit
