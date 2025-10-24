@@ -27,8 +27,8 @@ fedora-unit-tests-local:
 		--build-arg MINOR_REQ=$(minor-req) \
 		--build-arg PATCH_REQ=$(patch-req) \
 		--build-arg PYTHON_VERSION=$(python_version) \
-		-t fedora-nvim:test .
-	docker run --rm  fedora-nvim:test
+		-t fedora-nvim:unit-test .
+	docker run --rm fedora-nvim:unit-test
 
 fedora-unit-tests-remote:
 	@read -p "Enter your GitHub username: " GITHUB_USERNAME;
@@ -41,8 +41,8 @@ fedora-unit-tests-remote:
 		--build-arg MINOR_REQ=$(minor-req) \
 		--build-arg PATCH_REQ=$(patch-req) \
 		--build-arg PYTHON_VERSION=$(python_version) \
-		-t ghcr.io/mduessler/nvim:fedora .
-	docker push ghcr.io/mduessler/nvim:fedora
+		-t ghcr.io/mduessler/fedora-nvim:unit-test .
+	docker push ghcr.io/mduessler/fedora-nvim:unit-test
 
 fedora-install-tests:
 	docker build -f $(env-fedora-install)\

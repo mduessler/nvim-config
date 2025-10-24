@@ -8,7 +8,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/mduessler/nvim:fedora
+      image: ghcr.io/mduessler/fedora-nvim:unit-test
       options: --pull=always
     steps:
       - name: Prepare linting
@@ -25,7 +25,7 @@ jobs:
   unit-test:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/mduessler/nvim:fedora
+      image: ghcr.io/mduessler/fedora-nvim:unit-test
       options: --pull=always
     steps:
       - name: Prepare unit tests
