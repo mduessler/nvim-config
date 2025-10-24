@@ -196,7 +196,7 @@ COPY --from=builder /usr/local/lib64/python3.*/site-packages/ /usr/local/lib64/
 
 # Copy pre-commit and dependencies
 COPY --from=builder /usr/local/bin/pre-commit /usr/local/bin/pre-commit
-COPY --from=builder /usr/local/sbin/pre-commit /usr/local/bin/pre-commit
+COPY --from=builder /usr/local/sbin/pre-commit /usr/local/sbin/pre-commit
 
 WORKDIR ${NVIM_CONFIG}
 
