@@ -129,6 +129,7 @@ RUN mkdir -p "/home/${USER_TEST}" && groupadd "${USER_TEST}" \
     && chmod 0440 "/etc/sudoers.d/${USER_TEST}"
 
 
+ENV USER_TEST=${USER_TEST}
 ENV MAJOR_REQ=${MAJOR_REQ}
 ENV MINOR_REQ=${MINOR_REQ}
 ENV PATCH_REQ=${PATCH_REQ}
@@ -172,32 +173,31 @@ ENTRYPOINT ["./env/entrypoint"]
 
 # Image to use during remote linting and unit tests.
 #
+
 FROM base AS remote
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
-# Copy git dependency and needed libs.
-COPY --from=builder /usr/bin/git /usr/bin/git
-COPY --from=builder /usr/libexec/git-core/git-remote-http /usr/libexec/git-core/git-remote-http
-COPY --from=builder /usr/libexec/git-core/git-remote-https /usr/libexec/git-core/git-remote-https
-
-# Copy curl dependency
-COPY --from=builder /usr/bin/curl /usr/bin/curl
-
-# Copy certificates installed with ca-certificates
-COPY --from=builder /etc/pki/ca-trust /etc/pki/ca-trust
+# Install dependencies to execute pre-commit and run tests
+RUN dnf install -y --setopt=install_weak_deps=False \
+    ca-certificates \
+    curl \
+    gcc \
+    git \
+    libatomic \
+    openssl-libs \
+    python"${PYTHON_VERSION}" \
+    && dnf clean all \
+    && rm -rf /var/cache/dnf /var/lib/dnf /var/log/dnf* /var/log/yum.* \
+    && dnf autoremove -y
 
 # Copy hadolint for pre-commit
 COPY --from=builder /usr/bin/hadolint /usr/bin/hadolint
 
-# Copy python and dependencies
-COPY --from=builder /usr/bin/python3 /usr/bin/python3
-COPY --from=builder /lib64/libpython${PYTHON_VERSION}.so.1.0 /lib64/libpython${PYTHON_VERSION}.so.1.0
-COPY --from=builder /lib64/libc.so.6 /lib64/libc.so.6
-COPY --from=builder /lib64/libm.so.6 /lib64/libm.so.6
-COPY --from=builder /lib64/ld-linux-x86-64.so.2 /lib64/ld-linux-x86-64.so.2
+# Copy python pre-commit libraries
+COPY --from=builder /usr/local/lib/python${PYTHON_VERSION}/site-packages/ /usr/local/lib/python${PYTHON_VERSION}/site-packages/
+COPY --from=builder /usr/local/lib64/python${PYTHON_VERSION}/site-packages/ /usr/local/lib64/python${PYTHON_VERSION}/site-packages/
 
 # Copy pre-commit and dependencies
 COPY --from=builder /usr/local/bin/pre-commit /usr/local/bin/pre-commit
 
 WORKDIR ${NVIM_CONFIG}
-RUN pre-commit run --all-files
