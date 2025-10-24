@@ -24,6 +24,13 @@ jobs:
           HOME: /home/tester
         run: |
           cd ${NVIM_CONFIG}
+          echo "which python3:"
+          which python3 || true
+          echo "which python:"
+          which python || true
+          ls -l /usr/local/bin || true
+          ls -l /usr/sbin || true
+          echo ${PATH}
           pre-commit run --all-files
   unit-test:
     runs-on: ubuntu-latest
