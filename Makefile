@@ -8,9 +8,6 @@ env-path="./env"
 env-install="DockerfileInstall"
 env-lua="DockerfileLua"
 env-fedora="./env/fedora/Dockerfile"
-env-fedora-base="./env/fedora/Dockerfile.base"
-env-fedora-local="./env/fedora/Dockerfile.local"
-env-fedora-remote="./env/fedora/Dockerfile.remote"
 env-fedora-install="./env/fedora/Dockerfile.install"
 
 .SILENT:
