@@ -8,7 +8,6 @@ env-path="./env"
 env-install="DockerfileInstall"
 env-lua="DockerfileLua"
 env-fedora="./env/fedora/Dockerfile"
-env-fedora-install="./env/fedora/Dockerfile.install"
 
 .SILENT:
 .ONESHELL:
@@ -29,6 +28,17 @@ fedora-unit-tests-local:
 		--build-arg PYTHON_VERSION=$(python_version) \
 		-t fedora-nvim:unit-test .
 	docker run --rm fedora-nvim:unit-test
+
+fedora-install-test-local:
+	docker build -f $(env-fedora)\
+		--target=install-local \
+		-t nvim-fedora:install-test .
+	@regex="^On branch (.*)"; \
+	if [[ $$(git status 2>/dev/null | head -1) =~ $${regex} ]]; then \
+		docker run --rm \
+			-e BRANCH_TO_TEST="$${BASH_REMATCH[1]}" \
+			nvim-fedora:install
+	fi
 
 fedora-unit-tests-remote:
 	@read -p "Enter your GitHub username: " GITHUB_USERNAME;
