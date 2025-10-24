@@ -218,11 +218,14 @@ ENV NVIM_CONFIG=$HOME/.config/nvim
 RUN chown -R tester:tester ${HOME}
 USER tester
 
-WORKDIR ${HOME}
-
 # Image to test the install script local.
 #
 FROM fedora:42 AS install-local
+
+RUN mkdir -p "${NVIM_CONFIG}"
+WORKDIR ${NVIM_CONFIG}
+
+COPY ./ .
 
 # Image to test the install script remote.
 #
