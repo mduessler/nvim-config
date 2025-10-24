@@ -214,3 +214,6 @@ RUN mkdir -p "/home/${USER_TEST}" && groupadd "${USER_TEST}" \
 
 ENV HOME=/home/${USER_TEST}
 ENV NVIM_CONFIG=$HOME/.config/nvim
+
+RUN chown -R tester:tester ${HOME}
+USER tester
