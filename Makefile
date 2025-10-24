@@ -22,7 +22,6 @@ install-dev:
 
 fedora-unit-tests-local:
 	docker build -f $(env-fedora) \
-		--progress plain \
 		--target=local \
 		--build-arg MAJOR_REQ=$(major-req) \
 		--build-arg MINOR_REQ=$(minor-req) \
@@ -37,7 +36,6 @@ fedora-unit-tests-remote:
 	echo "$$GITHUB_TOKEN" | docker login ghcr.io -u "$$GITHUB_USERNAME" --password-stdin
 	docker build -f $(env-fedora) \
 		--pull=false \
-		--progress plain \
 		--target=remote \
 		--build-arg MAJOR_REQ=$(major-req) \
 		--build-arg MINOR_REQ=$(minor-req) \
