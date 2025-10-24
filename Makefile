@@ -37,7 +37,7 @@ fedora-install-test-local:
 	if [[ $$(git status 2>/dev/null | head -1) =~ $${regex} ]]; then \
 		docker run --rm \
 			-e BRANCH_TO_TEST="$${BASH_REMATCH[1]}" \
-			nvim-fedora:install
+			nvim-fedora:install-test
 	fi
 
 fedora-unit-tests-remote:
@@ -53,16 +53,6 @@ fedora-unit-tests-remote:
 		--build-arg PYTHON_VERSION=$(python_version) \
 		-t ghcr.io/mduessler/fedora-nvim:unit-test .
 	docker push ghcr.io/mduessler/fedora-nvim:unit-test
-
-fedora-install-tests:
-	docker build -f $(env-fedora-install)\
-		-t nvim-fedora:install .
-	@regex="^On branch (.*)"; \
-	if [[ $$(git status 2>/dev/null | head -1) =~ $${regex} ]]; then \
-		docker run --rm \
-			-e BRANCH_TO_TEST="$${BASH_REMATCH[1]}" \
-			nvim-fedora:install
-	fi
 
 build-install-ubuntu:
 	docker build -f $(env-path)/Dockerfile.ubuntu-install -t nvim-ubuntu:install .
