@@ -39,6 +39,7 @@ repos:
     hooks:
       - id: hadolint
         args:
+          - env/fedora/Dockerfile
           - "--ignore=DL3059"
           - "--ignore=SC2034"
           - "--ignore=DL3008"
