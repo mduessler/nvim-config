@@ -227,6 +227,8 @@ WORKDIR ${NVIM_CONFIG}
 
 COPY ./ .
 
+ENTRYPOINT ["./env/entrypoint-install"]
+
 # Image to test the install script remote.
 #
 FROM fedora:42 AS install-remote
