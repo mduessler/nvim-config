@@ -220,7 +220,7 @@ USER tester
 
 # Image to test the install script local.
 #
-FROM fedora:42 AS install-local
+FROM install AS install-local
 
 RUN mkdir -p "${NVIM_CONFIG}"
 WORKDIR ${NVIM_CONFIG}
@@ -231,4 +231,4 @@ ENTRYPOINT ["./env/entrypoint-install"]
 
 # Image to test the install script remote.
 #
-FROM fedora:42 AS install-remote
+FROM install AS install-remote
