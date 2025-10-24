@@ -199,7 +199,7 @@ COPY --from=builder /usr/local/bin/pre-commit /usr/local/bin/pre-commit
 
 WORKDIR ${NVIM_CONFIG}
 
-# Image to test the install script.
+# Base image to test the install script.
 #
 FROM fedora:42 AS install
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
@@ -219,3 +219,11 @@ RUN chown -R tester:tester ${HOME}
 USER tester
 
 WORKDIR ${HOME}
+
+# Image to test the install script local.
+#
+FROM fedora:42 AS install-local
+
+# Image to test the install script remote.
+#
+FROM fedora:42 AS install-remote
