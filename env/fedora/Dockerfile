@@ -198,3 +198,8 @@ COPY --from=builder /usr/local/lib64/python3.*/site-packages/ /usr/local/lib64/
 COPY --from=builder /usr/local/bin/pre-commit /usr/local/bin/pre-commit
 
 WORKDIR ${NVIM_CONFIG}
+
+# Image to test the install script.
+#
+FROM base AS install
+SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
