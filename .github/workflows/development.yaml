@@ -36,7 +36,6 @@ jobs:
       - name: Execute tests
         run: |
           cd ${NVIM_CONFIG}
-          git status
           env/entrypoint
   install-test:
     runs-on: ubuntu-latest
