@@ -19,6 +19,7 @@ jobs:
       - name: Run pre-commit
         env:
           HOME: /home/tester
+          PYTHONPATH: /usr/local/lib/python3.*/site-packages:/usr/local/lib64/python3.*/site-packages
         run: |
           cd ${NVIM_CONFIG}
           pre-commit run --all-files
