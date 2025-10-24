@@ -58,6 +58,8 @@ fedora-tests-remote:
 	docker push ghcr.io/mduessler/fedora-nvim:unit-test
 	docker push ghcr.io/mduessler/fedora-nvim:install-test
 
+test-fedora: fedora-install-test-local fedora-unit-tests-local
+
 build-install-ubuntu:
 	docker build -f $(env-path)/Dockerfile.ubuntu-install -t nvim-ubuntu:install .
 
