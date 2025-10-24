@@ -49,6 +49,8 @@ jobs:
           cd ${NVIM_CONFIG}
           git checkout ${{ github.head_ref }}
       - name: Execute tests
+        env:
+          HOME: /home/tester
         run: |
           cd ${NVIM_CONFIG}
           ./install
