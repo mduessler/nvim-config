@@ -24,6 +24,7 @@ jobs:
           HOME: /home/tester
         run: |
           export PATH="/usr/local/bin:/usr/bin:${PATH}"
+          echo "${PYTHONPATH}"
           sudo dnf install which -y
           cd ${NVIM_CONFIG}
           echo "which python3:"
