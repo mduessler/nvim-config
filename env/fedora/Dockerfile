@@ -222,6 +222,11 @@ USER tester
 #
 FROM install AS install-local
 
+RUN dnf install -y git \
+    && dnf clean all \
+    && rm -rf /var/cache/dnf /var/lib/dnf /var/log/dnf* /var/log/yum.* \
+    && dnf autoremove -y
+
 RUN mkdir -p "${NVIM_CONFIG}"
 WORKDIR ${NVIM_CONFIG}
 
