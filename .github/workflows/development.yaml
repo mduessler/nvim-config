@@ -21,6 +21,7 @@ jobs:
           HOME: /home/tester
         run: |
           cd ${NVIM_CONFIG}
+          ls -la /usr/local/lib/ | grep python
           python3 -m pre-commit run --all-files
   unit-test:
     runs-on: ubuntu-latest
