@@ -39,7 +39,6 @@ repos:
     hooks:
       - id: hadolint
         args:
-          - env/fedora/Dockerfile
           - "--ignore=DL3059"
           - "--ignore=SC2034"
           - "--ignore=DL3008"
@@ -48,8 +47,8 @@ repos:
           - "--ignore=DL3041"
         files: |
           (?x)^(
-            "env/fedora/Dockerfile" |
-            "env/fedora/Dockerfile.install" |
+            env/fedora/Dockerfile |
+            env/fedora/Dockerfile.install |
             env/Dockerfile.dev-ubuntu |
             env/Dockerfile.ubuntu-install |
           )
