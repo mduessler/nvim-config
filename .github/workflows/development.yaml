@@ -25,6 +25,7 @@ jobs:
           PYTHONHOME: /usr/local
         run: |
           export PATH="${PYTHONHOME}/bin:${PATH}"
+          echo ${PATH}
           python3 -c "import sys;print(sys.path)"
           python3 -c "import sys; print(sys.prefix); print(sys.path)"
           sudo dnf install which -y
