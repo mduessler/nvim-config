@@ -32,15 +32,15 @@ fedora-unit-tests-local:
 fedora-install-test-local:
 	docker build -f $(env-fedora)\
 		--target=install-local \
-		-t nvim-fedora:install-test .
+		-t fedora-nvim:install-test .
 	@regex="^On branch (.*)"; \
 	if [[ $$(git status 2>/dev/null | head -1) =~ $${regex} ]]; then \
 		docker run --rm \
 			-e BRANCH_TO_TEST="$${BASH_REMATCH[1]}" \
-			nvim-fedora:install-test
+			fedora-nvim:install-test
 	fi
 
-fedora-unit-tests-remote:
+fedora-tests-remote:
 	@read -p "Enter your GitHub username: " GITHUB_USERNAME;
 	@read -p "Enter your GitHub PAT: " GITHUB_TOKEN; \
 	echo "$$GITHUB_TOKEN" | docker login ghcr.io -u "$$GITHUB_USERNAME" --password-stdin
@@ -52,7 +52,11 @@ fedora-unit-tests-remote:
 		--build-arg PATCH_REQ=$(patch-req) \
 		--build-arg PYTHON_VERSION=$(python_version) \
 		-t ghcr.io/mduessler/fedora-nvim:unit-test .
+	docker build -f $(env-fedora)\
+		--target=install \
+		-t ghcr.io/mduessler/fedora-nvim:install-test .
 	docker push ghcr.io/mduessler/fedora-nvim:unit-test
+	docker push ghcr.io/mduessler/fedora-nvim:install-test
 
 build-install-ubuntu:
 	docker build -f $(env-path)/Dockerfile.ubuntu-install -t nvim-ubuntu:install .
