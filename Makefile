@@ -2,10 +2,12 @@
 major-req=0
 minor-req=11
 patch-req=4
+python_version=3.13
 
 env-path="./env"
 env-install="DockerfileInstall"
 env-lua="DockerfileLua"
+env-fedora="./env/fedora/Dockerfile"
 env-fedora-base="./env/fedora/Dockerfile.base"
 env-fedora-local="./env/fedora/Dockerfile.local"
 env-fedora-remote="./env/fedora/Dockerfile.remote"
@@ -21,25 +23,29 @@ install:
 install-dev:
 	./install dev
 
-build-fedora-base-environment:
-	docker build -f $(env-fedora-base) \
+fedora-unit-tests-local:
+	docker build -f $(env-fedora) \
+		--progress plain \
+		--target=local \
 		--build-arg MAJOR_REQ=$(major-req) \
 		--build-arg MINOR_REQ=$(minor-req) \
 		--build-arg PATCH_REQ=$(patch-req) \
-		-t fedora-nvim:base .
-
-fedora-unit-tests-local: build-fedora-base-environment
-	docker build -f $(env-fedora-local) \
-		--pull=false \
-		-t nvim-fedora:test .
-	docker run nvim-fedora:test
+		--build-arg PYTHON_VERSION=$(python_version) \
+		-t fedora-nvim:test .
+	docker run --rm  fedora-nvim:test
 
 fedora-unit-tests-remote:
 	@read -p "Enter your GitHub username: " GITHUB_USERNAME;
 	@read -p "Enter your GitHub PAT: " GITHUB_TOKEN; \
 	echo "$$GITHUB_TOKEN" | docker login ghcr.io -u "$$GITHUB_USERNAME" --password-stdin
-	docker build -f $(env-fedora-remote) \
+	docker build -f $(env-fedora) \
 		--pull=false \
+		--progress plain \
+		--target=remote \
+		--build-arg MAJOR_REQ=$(major-req) \
+		--build-arg MINOR_REQ=$(minor-req) \
+		--build-arg PATCH_REQ=$(patch-req) \
+		--build-arg PYTHON_VERSION=$(python_version) \
 		-t ghcr.io/mduessler/nvim:fedora .
 	docker push ghcr.io/mduessler/nvim:fedora
 
