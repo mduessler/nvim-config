@@ -23,6 +23,7 @@ jobs:
         env:
           HOME: /home/tester
         run: |
+          sudo dnf install which -y
           cd ${NVIM_CONFIG}
           echo "which python3:"
           which python3 || true
