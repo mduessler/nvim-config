@@ -8,7 +8,6 @@ SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 ARG MAJOR_REQ
 ARG MINOR_REQ
 ARG PATCH_REQ
-ARG PYTHON_VERSION
 
 # Installing all necessary dependencies.
 RUN dnf install -y --setopt=install_weak_deps=False \
@@ -39,7 +38,7 @@ RUN dnf install -y --setopt=install_weak_deps=False \
     openssl-devel \
     openssl-libs \
     pkg-config \
-    python${PYTHON_VERSION} \
+    python \
     python3-pip \
     unibilium \
     zlib-devel \
@@ -120,7 +119,6 @@ ARG USER_TEST=tester
 ARG MAJOR_REQ
 ARG MINOR_REQ
 ARG PATCH_REQ
-ARG PYTHON_VERSION
 
 RUN mkdir -p "/home/${USER_TEST}" && groupadd "${USER_TEST}" \
     && useradd -m -g "${USER_TEST}" "${USER_TEST}" \
@@ -133,7 +131,6 @@ ENV USER_TEST=${USER_TEST}
 ENV MAJOR_REQ=${MAJOR_REQ}
 ENV MINOR_REQ=${MINOR_REQ}
 ENV PATCH_REQ=${PATCH_REQ}
-ENV PYTHON_VERSION=${PYTHON_VERSION}
 ENV HOME="/home/${USER_TEST}"
 ENV XDG_CONFIG_HOME="${HOME}/.config"
 ENV XDG_CACHE_HOME="${HOME}/.cache"
@@ -185,7 +182,7 @@ RUN dnf install -y --setopt=install_weak_deps=False \
     git \
     libatomic \
     openssl-libs \
-    python"${PYTHON_VERSION}" \
+    python \
     && dnf clean all \
     && rm -rf /var/cache/dnf /var/lib/dnf /var/log/dnf* /var/log/yum.* \
     && dnf autoremove -y
@@ -194,8 +191,8 @@ RUN dnf install -y --setopt=install_weak_deps=False \
 COPY --from=builder /usr/bin/hadolint /usr/bin/hadolint
 
 # Copy python pre-commit libraries
-COPY --from=builder /usr/local/lib/python${PYTHON_VERSION}/site-packages/ /usr/local/lib/python${PYTHON_VERSION}/site-packages/
-COPY --from=builder /usr/local/lib64/python${PYTHON_VERSION}/site-packages/ /usr/local/lib64/python${PYTHON_VERSION}/site-packages/
+COPY --from=builder /usr/local/lib/python3.*/site-packages/ /usr/local/lib/
+COPY --from=builder /usr/local/lib64/python3.*/site-packages/ /usr/local/lib64/
 
 # Copy pre-commit and dependencies
 COPY --from=builder /usr/local/bin/pre-commit /usr/local/bin/pre-commit
