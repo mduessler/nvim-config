@@ -191,8 +191,8 @@ RUN dnf install -y --setopt=install_weak_deps=False \
 COPY --from=builder /usr/bin/hadolint /usr/bin/hadolint
 
 # Copy python pre-commit libraries
-COPY --from=builder /usr/local/lib/python3.*/site-packages/ /usr/local/lib/
-COPY --from=builder /usr/local/lib64/python3.*/site-packages/ /usr/local/lib64/
+COPY --from=builder /usr/local/lib/python3.*/site-packages/ /usr/lib/
+COPY --from=builder /usr/local/lib64/python3.*/site-packages/ /usr/lib64/
 
 # Copy pre-commit and dependencies
 COPY --from=builder /usr/local/bin/pre-commit /usr/local/bin/pre-commit
