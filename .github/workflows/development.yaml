@@ -22,7 +22,7 @@ jobs:
       - name: Run pre-commit
         env:
           HOME: /home/tester
-          PATH: /usr/local/bin:${PATH}
+          PATH: /usr/local/bin
         run: |
           sudo dnf install which -y
           cd ${NVIM_CONFIG}
