@@ -217,3 +217,5 @@ ENV NVIM_CONFIG=$HOME/.config/nvim
 
 RUN chown -R tester:tester ${HOME}
 USER tester
+
+WORKDIR ${NVIM_CONFIG}
