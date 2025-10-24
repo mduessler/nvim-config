@@ -21,7 +21,7 @@ jobs:
           HOME: /home/tester
         run: |
           cd ${NVIM_CONFIG}
-          python -m pre-commit run --all-files
+          python3 -m pre-commit run --all-files
   unit-test:
     runs-on: ubuntu-latest
     container:
