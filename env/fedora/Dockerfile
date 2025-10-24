@@ -201,7 +201,7 @@ WORKDIR ${NVIM_CONFIG}
 
 # Image to test the install script.
 #
-FROM base AS install
+FROM fedora:42 AS install
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
 ARG USER_TEST=tester
