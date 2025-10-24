@@ -232,4 +232,8 @@ WORKDIR ${NVIM_CONFIG}
 
 COPY ./ .
 
+USER root
+RUN chown -R tester:tester "${HOME}"
+USER tester
+
 ENTRYPOINT ["./env/entrypoint-install"]
