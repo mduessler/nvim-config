@@ -8,7 +8,7 @@ the development environments.
 
 The following development process must be taken into account during
 development. Each issue is developed on its own branch. There exist four types
-of issues. The *feature*, *refactor*, *fix* and *hotfix*. The steps of the
+of issues. The *feature*, *maintenance*, *fix* and *hotfix*. The steps of the
 default development process consist of the following steps. First create an
 issue. After it, create a new branch from the current dev branch. Once a
 problem has been fixed, a pull request must be submitted. Only once this has
@@ -21,7 +21,7 @@ is then created from the main branch.
 - **feature** -- represents new function of the configuration. After the issue
   is finished and the pull request succeeds the branch of the issue is merged
   with the *dev* branch.
-- **refactor** -- represents the revision of code. After the process is finished
+- **maintenance** -- represents the revision of code. After the process is finished
   and the pull request succeeds the branch is merged with the *dev* branch.
 - **fix** -- represents the correction of errors. After the error is fixed and
   the pull request succeeds the fix will be merged with *dev*.
