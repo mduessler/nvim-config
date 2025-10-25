@@ -8,7 +8,7 @@ env-ubuntu="./env/ubuntu/Dockerfile"
 
 .SILENT:
 .ONESHELL:
-.PHONY: install install-dev build-install build-lua
+.PHONY: install
 
 install:
 	./install
