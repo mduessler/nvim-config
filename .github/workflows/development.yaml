@@ -75,3 +75,21 @@ jobs:
         run: |
           cd ${NVIM_CONFIG}
           ./install
+  install-test-ubuntu:
+    runs-on: ubuntu-latest
+    needs: lint
+    container:
+      image: ghcr.io/mduessler/ubuntu-nvim:install-test
+      options: --pull=always
+    steps:
+      - name: Prepares the ubuntu environment to run the installation scripts.
+        run: |
+          git clone https://github.com/mduessler/nvim-config ${NVIM_CONFIG}
+          cd ${NVIM_CONFIG}
+          git checkout ${{ github.head_ref }}
+      - name: Run the installation script in a ubuntu environment.
+        env:
+          HOME: /home/tester
+        run: |
+          cd ${NVIM_CONFIG}
+          ./install
