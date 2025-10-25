@@ -24,6 +24,7 @@ jobs:
           HOME: /home/tester
         working-directory: "${HOME}/.config/nvim"
         run: |
+          pwd
           pre-commit run --all-files
   unit-test:
     runs-on: ubuntu-latest
