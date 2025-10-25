@@ -41,6 +41,22 @@ jobs:
         run: |
           cd ${NVIM_CONFIG}
           env/entrypoint
+  unit-test-ubuntu:
+    runs-on: ubuntu-latest
+    needs: lint
+    container:
+      image: ghcr.io/mduessler/ubuntu-nvim:unit-test
+      options: --pull=always
+    steps:
+      - name: Prepares the ubuntu environment to run the unit tests.
+        run: |
+          git clone https://github.com/mduessler/nvim-config ${NVIM_CONFIG}
+          cd ${NVIM_CONFIG}
+          git checkout ${{ github.head_ref }}
+      - name: Run the unit tests in a ubuntu environment.
+        run: |
+          cd ${NVIM_CONFIG}
+          env/entrypoint
   install-test-fedora:
     runs-on: ubuntu-latest
     needs: lint
