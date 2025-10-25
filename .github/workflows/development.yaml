@@ -23,7 +23,6 @@ jobs:
         env:
           HOME: /home/tester
         run: |
-          export PATH="/usr/local/bin:/usr/bin:${PATH}"
           cd ${NVIM_CONFIG}
           pre-commit run --all-files
   unit-test:
