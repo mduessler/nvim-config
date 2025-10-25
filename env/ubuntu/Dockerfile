@@ -145,3 +145,8 @@ WORKDIR "${NVIM_CONFIG}"
 COPY . .
 
 ENTRYPOINT ["./env/entrypoint"]
+
+# Image to use during remote linting and unit tests.
+#
+FROM base AS remote
+SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
