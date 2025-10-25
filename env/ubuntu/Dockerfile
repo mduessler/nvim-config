@@ -115,3 +115,23 @@ RUN mkdir -p "/home/${USER_TEST}" && groupadd "${USER_TEST}" \
     && echo "${USER_TEST} ALL=(ALL) NOPASSWD:ALL" > "/etc/sudoers.d/${USER_TEST}" \
     && echo "Defaults:${USER_TEST} !requiretty" >> "/etc/sudoers.d/${USER_TEST}" \
     && chmod 0440 "/etc/sudoers.d/${USER_TEST}"
+
+# Copy dependencies from builder
+# Selene from builder
+COPY --from=builder /usr/local/cargo/bin/selene /usr/local/bin/selene
+
+# Copy nvim
+COPY --from=builder /usr/local/bin/nvim /usr/local/bin/nvim
+COPY --from=builder /usr/local/share/nvim /usr/local/share/nvim
+
+# Copy bats
+COPY --from=builder /usr/local/bin/bats /usr/local/bin/bats
+COPY --from=builder /usr/local/libexec/bats-core /usr/local/libexec/bats-core
+COPY --from=builder /usr/local/lib/bats-core/ /usr/local/lib/bats-core/
+
+# Copy from lua
+COPY --from=builder /usr/share/lua/5.4/luaunit.lua /usr/share/lua/5.4/luaunit.lua
+COPY --from=builder /usr/lib64/lua/5.4/lpeglabel.so /usr/lib64/lua/5.4/lpeglabel.so
+
+# Copy nvim downloads
+COPY --from=builder /root/.local/share/nvim ${XDG_DATA_HOME}/nvim
