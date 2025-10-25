@@ -186,7 +186,7 @@ RUN dnf install -y --setopt=install_weak_deps=False \
     && dnf autoremove -y
 
 RUN dnf install which -y && dnf clean all
-RUN which python && sleep 5
+
 # Copy hadolint for pre-commit
 COPY --from=builder /usr/bin/hadolint /usr/bin/hadolint
 
