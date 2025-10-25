@@ -211,7 +211,7 @@ RUN regex="^Python ([0-9]\.[0-9]+)." \
 COPY --from=builder /usr/local/bin/pre-commit /usr/local/bin/pre-commit
 COPY --from=builder /usr/local/sbin/pre-commit /usr/local/sbin/pre-commit
 
-WORKDIR ${NVIM_CONFIG}
+WORKDIR ${HOME}
 
 # Base image to test the install script.
 #
