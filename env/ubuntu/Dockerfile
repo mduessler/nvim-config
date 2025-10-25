@@ -140,3 +140,8 @@ COPY --from=builder /root/.local/share/nvim ${XDG_DATA_HOME}/nvim
 #
 FROM base AS local
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
+
+WORKDIR "${NVIM_CONFIG}"
+COPY . .
+
+ENTRYPOINT ["./env/entrypoint"]
