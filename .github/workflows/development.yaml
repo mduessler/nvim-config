@@ -15,7 +15,7 @@ jobs:
       options: --pull=always
       credentials:
         username: ${{ github.actor }}
-        password: ${{ secrets.PACKAGES_PAT }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Prepares linting of the source config.
         run: |
@@ -36,7 +36,7 @@ jobs:
       options: --pull=always
       credentials:
         username: ${{ github.actor }}
-        password: ${{ secrets.PACKAGES_PAT }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Prepares the fedora environment to run the unit tests.
         run: |
@@ -55,7 +55,7 @@ jobs:
       options: --pull=always
       credentials:
         username: ${{ github.actor }}
-        password: ${{ secrets.PACKAGES_PAT }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Prepares the ubuntu environment to run the unit tests.
         run: |
@@ -74,7 +74,7 @@ jobs:
       options: --pull=always
       credentials:
         username: ${{ github.actor }}
-        password: ${{ secrets.PACKAGES_PAT }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Prepares the fedora environment to run the installation scripts.
         run: |
@@ -95,7 +95,7 @@ jobs:
       options: --pull=always
       credentials:
         username: ${{ github.actor }}
-        password: ${{ secrets.PACKAGES_PAT }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Prepares the ubuntu environment to run the installation scripts.
         run: |
