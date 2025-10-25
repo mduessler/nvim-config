@@ -8,6 +8,7 @@ env-path="./env"
 env-install="DockerfileInstall"
 env-lua="DockerfileLua"
 env-fedora="./env/fedora/Dockerfile"
+env-ubuntu="./env/ubuntu/Dockerfile"
 
 .SILENT:
 .ONESHELL:
@@ -57,6 +58,16 @@ fedora-tests-remote:
 		-t ghcr.io/mduessler/fedora-nvim:install-test .
 	docker push ghcr.io/mduessler/fedora-nvim:unit-test
 	docker push ghcr.io/mduessler/fedora-nvim:install-test
+
+ubuntu-unit-tests-local:
+	docker build -f $(env-ubuntu) \
+		--target=local \
+		--build-arg MAJOR_REQ=$(major-req) \
+		--build-arg MINOR_REQ=$(minor-req) \
+		--build-arg PATCH_REQ=$(patch-req) \
+		-t ubuntu-nvim:unit-test .
+	docker run --rm ubuntu-nvim:unit-test
+
 
 test-fedora: fedora-install-test-local fedora-unit-tests-local
 
