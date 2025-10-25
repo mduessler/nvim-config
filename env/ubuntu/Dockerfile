@@ -166,3 +166,7 @@ WORKDIR ${HOME}
 #
 FROM fedora:42 AS install
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \
+    && rm -rf /var/lib/apt/lists/*
