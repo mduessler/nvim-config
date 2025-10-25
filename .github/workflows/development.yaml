@@ -13,6 +13,9 @@ jobs:
     container:
       image: ghcr.io/mduessler/fedora-nvim:unit-test
       options: --pull=always
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.PACKAGES_PAT }}
     steps:
       - name: Prepares linting of the source config.
         run: |
