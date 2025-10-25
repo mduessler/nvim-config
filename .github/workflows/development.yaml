@@ -26,7 +26,6 @@ jobs:
           export PATH="${PYTHONHOME}/bin:${PATH}"
           echo ${PATH}
           python3 -c "import sys;print(sys.path)"
-          python3 -c "import sys; print(sys.prefix); print(sys.path)"
           sudo dnf install which -y
           cd ${NVIM_CONFIG}
           echo "which python3:"
@@ -35,6 +34,7 @@ jobs:
           which python || true
           ls -l /usr/local/bin || true
           ls -l /usr/sbin || true
+          ls -l /usr/lib/python3.13/site-packages || true
           echo ${PATH}
           python -m pre-commit run --all-files
   unit-test:
