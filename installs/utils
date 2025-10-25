@@ -89,7 +89,7 @@ clone_repo() {
     local tmpfile pid
 
     tmpfile=$(mktemp)
-    git clone --progress "$repo_url" "$dest_dir" >"$tmpfile" 2>&1 &
+    git clone --depth=1 --progress "$repo_url" "$dest_dir" >"$tmpfile" 2>&1 &
     pid=$!
     echo "$pid $tmpfile"
     return 0
