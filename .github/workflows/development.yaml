@@ -23,7 +23,7 @@ jobs:
         env:
           HOME: /home/tester
         run: |
-          export PATH="${PYTHONHOME}/bin:${PATH}"
+          export PATH="usr/local/bin:usr/bin:${PATH}"
           echo ${PATH}
           python3 -c "import sys;print(sys.path)"
           sudo dnf install which -y
