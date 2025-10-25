@@ -161,3 +161,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR ${HOME}
+
+# Base image to test the install script.
+#
+FROM fedora:42 AS install
+SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
