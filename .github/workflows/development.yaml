@@ -48,12 +48,12 @@ jobs:
       image: ghcr.io/mduessler/fedora-nvim:install-test
       options: --pull=always
     steps:
-      - name: Prepare install tests
+      - name: Prepares the fedora environment to run the installation scripts.
         run: |
           git clone https://github.com/mduessler/nvim-config ${NVIM_CONFIG}
           cd ${NVIM_CONFIG}
           git checkout ${{ github.head_ref }}
-      - name: Execute tests
+      - name: Test the installation script in a fedora environment.
         env:
           HOME: /home/tester
         run: |
