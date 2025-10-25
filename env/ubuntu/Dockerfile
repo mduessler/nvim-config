@@ -199,3 +199,18 @@ ENV NVIM_CONFIG=$HOME/.config/nvim
 
 RUN chown -R tester:tester ${HOME}
 USER tester
+
+# Image to test the install script local.
+#
+FROM install AS install-local
+
+RUN mkdir -p "${NVIM_CONFIG}"
+WORKDIR ${NVIM_CONFIG}
+
+COPY ./ .
+
+USER root
+RUN chown -R tester:tester "${HOME}"
+USER tester
+
+ENTRYPOINT ["./env/entrypoint-install"]
