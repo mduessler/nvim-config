@@ -78,7 +78,7 @@ RUN git checkout "v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ}" \
     && make CMAKE_BUILD_TYPE=Release \
     && make install
 
-# Install bat
+# Install bats
 WORKDIR ${LOCAL_GIT_DIR}
 ENV BATS_GIT_DIR="${LOCAL_GIT_DIR}/bats-core"
 RUN git clone https://github.com/bats-core/bats-core ${BATS_GIT_DIR}
