@@ -88,7 +88,7 @@ RUN (find "/usr/local/libexec/bats-core" -type f -exec strip {} \; || true) \
     && (strip --strip-unneeded /usr/local/bats || true)
 
 # Install lua libraries
-RUN luarocks --lua-version=5.4 install luaunit && luarocks --lua-version=5.4 install lpeglabel
+RUN luarocks install luaunit && luarocks install lpeglabel
 
 # Install nvim plugins and set them up.
 WORKDIR ${NVIM_CONFIG}
@@ -111,6 +111,8 @@ ARG USER_TEST=tester
 ARG MAJOR_REQ
 ARG MINOR_REQ
 ARG PATCH_REQ
+
+RUN apt-get update && apt-get install -y --no-install-recommends sudo && rm -rf /var/lib/apt/lists/*
 
 # Create test user
 RUN mkdir -p "/home/${USER_TEST}" && groupadd "${USER_TEST}" \
@@ -144,8 +146,8 @@ COPY --from=builder /usr/local/libexec/bats-core /usr/local/libexec/bats-core
 COPY --from=builder /usr/local/lib/bats-core/ /usr/local/lib/bats-core/
 
 # Copy from lua
-COPY --from=builder /usr/share/lua/5.4/luaunit.lua /usr/share/lua/5.4/luaunit.lua
-COPY --from=builder /usr/lib64/lua/5.4/lpeglabel.so /usr/lib64/lua/5.4/lpeglabel.so
+COPY --from=builder /usr/local/share/lua/5.1/luaunit.lua /usr/local/share/lua/5.1/luaunit.lua
+COPY --from=builder /usr/local/lib/luarocks/rocks-5.1/lpeglabel /usr/local/lib/luarocks/rocks-5.1/lpeglabel
 
 # Copy nvim downloads
 COPY --from=builder /root/.local/share/nvim ${XDG_DATA_HOME}/nvim
