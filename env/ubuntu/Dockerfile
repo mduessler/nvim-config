@@ -86,3 +86,14 @@ RUN ./install.sh /usr/local
 RUN (find "/usr/local/libexec/bats-core" -type f -exec strip {} \; || true) \
     && (find "/usr/local/lib/bats-core/" -type f -exec strip {} \; || true) \
     && (strip --strip-unneeded /usr/local/bats || true)
+
+# Install nvim plugins and set them up.
+WORKDIR ${NVIM_CONFIG}
+COPY ./init.lua .
+COPY ./lua/lsp ./lua/lsp
+COPY ./lua/utils ./lua/utils
+COPY ./lua/config ./lua/config
+COPY ./lua/plugins ./lua/plugins
+COPY ./lazy-lock.json ./lazy-lock.json
+
+RUN timeout 15m nvim --headless || true
