@@ -24,20 +24,7 @@ jobs:
           HOME: /home/tester
         run: |
           export PATH="/usr/local/bin:/usr/bin:${PATH}"
-          echo ${PATH}
-          python3 -c "import sys;print(sys.path)"
-          sudo dnf install which -y
           cd ${NVIM_CONFIG}
-          echo "which python3:"
-          which python3 || true
-          echo "which python:"
-          which python || true
-          ls -l /usr/local/bin || true
-          ls -l /usr/sbin || true
-          ls -l /usr/lib/python3.13/site-packages || true
-          ls -l /usr/local/lib/python3.13/site-packages || true
-          ls -l /usr/lib/python3.13/site-packages || true
-          echo ${PATH}
           pre-commit run --all-files
   unit-test:
     runs-on: ubuntu-latest
