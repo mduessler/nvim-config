@@ -187,8 +187,10 @@ ARG USER_TEST=tester
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
+    sudo \
     && rm -rf /var/lib/apt/lists/*
 
+# Create test user
 RUN mkdir -p "/home/${USER_TEST}" && groupadd "${USER_TEST}" \
     && useradd -m -g "${USER_TEST}" "${USER_TEST}" \
     && echo "${USER_TEST} ALL=(ALL) NOPASSWD:ALL" > "/etc/sudoers.d/${USER_TEST}" \
