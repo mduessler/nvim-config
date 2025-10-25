@@ -36,6 +36,7 @@ jobs:
           ls -l /usr/sbin || true
           ls -l /usr/lib/python3.13/site-packages || true
           ls -l /usr/local/lib/python3.13/site-packages || true
+          ls -l /usr/lib/python3.13/site-packages || true
           echo ${PATH}
           pre-commit run --all-files
   unit-test:
