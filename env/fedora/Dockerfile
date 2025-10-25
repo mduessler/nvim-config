@@ -106,7 +106,7 @@ COPY ./lua/config ./lua/config
 COPY ./lua/plugins ./lua/plugins
 COPY ./lazy-lock.json ./lazy-lock.json
 
-RUN timeout 10m nvim --headless || true
+RUN timeout 15m nvim --headless || true
 
 # Image which is used by local and remote.
 FROM fedora:42 AS base
