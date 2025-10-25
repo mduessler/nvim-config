@@ -92,6 +92,7 @@ ubuntu-tests-remote: remote-login
 	docker push ghcr.io/mduessler/ubuntu-nvim:unit-test
 	docker push ghcr.io/mduessler/ubuntu-nvim:install-test
 
+build-remote-environments: fedora-tests-remote ubuntu-tests-remote
 
 test-fedora: fedora-install-test-local fedora-unit-tests-local
 
