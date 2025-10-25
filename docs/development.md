@@ -4,6 +4,30 @@ This document holds all information needed for the Development process. Read it
 carefully before you execute the command to install the dependencies to execute
 the development environments.
 
+## Process
+
+The following development process must be taken into account during
+development. Each issue is developed on its own branch. There exist four types
+of issues. The *feature*, *refactor*, *fix* and *hotfix*. The steps of the
+default development process consist of the following steps. First create an
+issue. After it, create a new branch from the current dev branch. Once a
+problem has been fixed, a pull request must be submitted. Only once this has
+been confirmed may the problem be transferred to the dev branch. Except the
+issue was a *hotfix*. This issue has to be merged directly with the main branch.
+Whenever a new version of Neovim is created, it must be tested on the current
+dev branch and merged with the main branch. A new version of the Neovim config
+is then created from the main branch.
+
+- **feature** -- represents new function of the configuration. After the issue
+  is finished and the pull request succeeds the branch of the issue is merged
+  with the *dev* branch.
+- **refactor** -- represents the revision of code. After the process is finished
+  and the pull request succeeds the branch is merged with the *dev* branch.
+- **fix** -- represents the correction of errors. After the error is fixed and
+  the pull request succeeds the fix will be merged with *dev*.
+- **hotfix** -- represents an error that must be corrected urgently. After the
+  pull request succeeds it will be merged with the *main* branch.
+
 ## Install
 
 To install the dependencies required to run the development environments,
