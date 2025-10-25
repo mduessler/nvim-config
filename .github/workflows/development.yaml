@@ -12,7 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/mduessler/fedora-nvim:unit-test
-      options: --pull=always
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.PACKAGES_PAT }}
@@ -33,7 +32,6 @@ jobs:
     needs: lint
     container:
       image: ghcr.io/mduessler/fedora-nvim:unit-test
-      options: --pull=always
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.PACKAGES_PAT }}
@@ -52,7 +50,6 @@ jobs:
     needs: lint
     container:
       image: ghcr.io/mduessler/ubuntu-nvim:unit-test
-      options: --pull=always
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.PACKAGES_PAT }}
@@ -71,7 +68,6 @@ jobs:
     needs: lint
     container:
       image: ghcr.io/mduessler/fedora-nvim:install-test
-      options: --pull=always
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.PACKAGES_PAT }}
@@ -92,7 +88,6 @@ jobs:
     needs: lint
     container:
       image: ghcr.io/mduessler/ubuntu-nvim:install-test
-      options: --pull=always
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.PACKAGES_PAT }}
