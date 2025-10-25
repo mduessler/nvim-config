@@ -43,7 +43,7 @@ RUN dnf install -y --setopt=install_weak_deps=False \
     unibilium \
     zlib-devel \
     && dnf clean all \
-    && rm -rf /var/cache/dnf /var/lib/dnf /var/log/dnf* /var/log/yum.* \
+    && rm -rf /var/cache/dnf /var/lib/dnf /usr/share/doc/* /usr/share/man/* /usr/share/locale/* \
     && dnf autoremove -y
 
 ENV HOME=/root
@@ -183,7 +183,7 @@ RUN dnf install -y --setopt=install_weak_deps=False \
     openssl-libs \
     python \
     && dnf clean all \
-    && rm -rf /var/cache/dnf /var/lib/dnf /var/log/dnf* /var/log/yum.* \
+    && rm -rf /var/cache/dnf /var/lib/dnf /usr/share/doc/* /usr/share/man/* /usr/share/locale/* \
     && dnf autoremove -y
 
 # Copy hadolint for pre-commit
@@ -222,7 +222,7 @@ ARG USER_TEST=tester
 
 RUN dnf install -y git \
     && dnf clean all \
-    && rm -rf /var/cache/dnf /var/lib/dnf /var/log/dnf* /var/log/yum.* \
+    && rm -rf /var/cache/dnf /var/lib/dnf /usr/share/doc/* /usr/share/man/* /usr/share/locale/* \
     && dnf autoremove -y
 
 RUN mkdir -p "/home/${USER_TEST}" && groupadd "${USER_TEST}" \
