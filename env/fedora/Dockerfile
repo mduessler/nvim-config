@@ -179,6 +179,7 @@ RUN dnf install -y --setopt=install_weak_deps=False \
     gcc \
     git \
     libatomic \
+    lua \
     openssl-libs \
     python \
     && dnf clean all \
