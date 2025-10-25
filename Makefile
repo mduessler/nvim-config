@@ -19,6 +19,11 @@ install:
 install-dev:
 	./install dev
 
+remote-login:
+	@read -p "Enter your GitHub username: " GITHUB_USERNAME;
+	@read -p "Enter your GitHub PAT: " GITHUB_TOKEN; \
+	echo "$$GITHUB_TOKEN" | docker login ghcr.io -u "$$GITHUB_USERNAME" --password-stdin
+
 fedora-unit-tests-local:
 	docker build -f $(env-fedora) \
 		--target=local \
@@ -39,10 +44,7 @@ fedora-install-test-local:
 			fedora-nvim:install-test
 	fi
 
-fedora-tests-remote:
-	@read -p "Enter your GitHub username: " GITHUB_USERNAME;
-	@read -p "Enter your GitHub PAT: " GITHUB_TOKEN; \
-	echo "$$GITHUB_TOKEN" | docker login ghcr.io -u "$$GITHUB_USERNAME" --password-stdin
+fedora-tests-remote: remote-login
 	docker build -f $(env-fedora) \
 		--pull=false \
 		--target=remote \
@@ -75,6 +77,20 @@ ubuntu-install-test-local:
 			-e BRANCH_TO_TEST="$${BASH_REMATCH[1]}" \
 			ubuntu-nvim:install-test
 	fi
+
+ubuntu-tests-remote: remote-login
+	docker build -f $(env-ubuntu) \
+		--pull=false \
+		--target=remote \
+		--build-arg MAJOR_REQ=$(major-req) \
+		--build-arg MINOR_REQ=$(minor-req) \
+		--build-arg PATCH_REQ=$(patch-req) \
+		-t ghcr.io/mduessler/ubuntu-nvim:unit-test .
+	docker build -f $(env-ubuntu)\
+		--target=install \
+		-t ghcr.io/mduessler/ubuntu-nvim:install-test .
+	docker push ghcr.io/mduessler/ubuntu-nvim:unit-test
+	docker push ghcr.io/mduessler/ubuntu-nvim:install-test
 
 
 test-fedora: fedora-install-test-local fedora-unit-tests-local
