@@ -35,8 +35,9 @@ jobs:
           ls -l /usr/local/bin || true
           ls -l /usr/sbin || true
           ls -l /usr/lib/python3.13/site-packages || true
+          ls -l /usr/local/lib/python3.13/site-packages || true
           echo ${PATH}
-          python -m pre-commit run --all-files
+          pre-commit run --all-files
   unit-test:
     runs-on: ubuntu-latest
     container:
