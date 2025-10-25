@@ -18,14 +18,14 @@ Whenever a new version of Neovim is created, it must be tested on the current
 dev branch and merged with the main branch. A new version of the Neovim config
 is then created from the main branch.
 
-- **feature** -- represents new function of the configuration. After the issue
+- **Feature** -- represents new function of the configuration. After the issue
   is finished and the pull request succeeds the branch of the issue is merged
   with the *dev* branch.
-- **maintenance** -- represents the revision of code. After the process is finished
+- **Maintenance** -- represents the revision of code. After the process is finished
   and the pull request succeeds the branch is merged with the *dev* branch.
-- **fix** -- represents the correction of errors. After the error is fixed and
+- **Fix** -- represents the correction of errors. After the error is fixed and
   the pull request succeeds the fix will be merged with *dev*.
-- **hotfix** -- represents an error that must be corrected urgently. After the
+- **Hotfix** -- represents an error that must be corrected urgently. After the
   pull request succeeds it will be merged with the *main* branch.
 
 ## Install
