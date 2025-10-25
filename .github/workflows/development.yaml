@@ -14,12 +14,12 @@ jobs:
       image: ghcr.io/mduessler/fedora-nvim:unit-test
       options: --pull=always
     steps:
-      - name: Prepare linting
+      - name: Prepares linting of the source config.
         run: |
           git clone https://github.com/mduessler/nvim-config ${NVIM_CONFIG}
           cd ${NVIM_CONFIG}
           git checkout ${{ github.head_ref }}
-      - name: Run pre-commit
+      - name: Run the linting pre-commit
         env:
           HOME: /home/tester
         run: |
