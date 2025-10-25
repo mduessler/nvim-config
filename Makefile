@@ -65,6 +65,17 @@ ubuntu-unit-tests-local:
 		-t ubuntu-nvim:unit-test .
 	docker run --rm ubuntu-nvim:unit-test
 
+ubuntu-install-test-local:
+	docker build -f $(env-ubuntu) \
+		--target=install-local \
+		-t ubuntu-nvim:install-test .
+	@regex="^On branch (.*)"; \
+	if [[ $$(git status 2>/dev/null | head -1) =~ $${regex} ]]; then \
+		docker run --rm \
+			-e BRANCH_TO_TEST="$${BASH_REMATCH[1]}" \
+			ubuntu-nvim:install-test
+	fi
+
 
 test-fedora: fedora-install-test-local fedora-unit-tests-local
 
