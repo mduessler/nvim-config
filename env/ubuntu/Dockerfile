@@ -159,3 +159,5 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     lua5.4 \
     && rm -rf /var/lib/apt/lists/*
+
+WORKDIR ${HOME}
