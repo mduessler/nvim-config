@@ -3,9 +3,6 @@ major-req=0
 minor-req=11
 patch-req=4
 
-env-path="./env"
-env-install="DockerfileInstall"
-env-lua="DockerfileLua"
 env-fedora="./env/fedora/Dockerfile"
 env-ubuntu="./env/ubuntu/Dockerfile"
 
