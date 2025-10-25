@@ -135,3 +135,8 @@ COPY --from=builder /usr/lib64/lua/5.4/lpeglabel.so /usr/lib64/lua/5.4/lpeglabel
 
 # Copy nvim downloads
 COPY --from=builder /root/.local/share/nvim ${XDG_DATA_HOME}/nvim
+
+# Image to use during local unit tests.
+#
+FROM base AS local
+SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
