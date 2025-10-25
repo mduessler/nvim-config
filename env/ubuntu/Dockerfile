@@ -48,3 +48,19 @@ ENV LOCAL_GIT_DIR=${HOME}/.local/share/src
 RUN mkdir -p ${LOCAL_GIT_DIR}
 ENV NVIM_CONFIG=${HOME}/.config/nvim
 RUN mkdir -p ${NVIM_CONFIG}
+
+# Install rust dependency
+ENV CARGO_HOME="/usr/local/cargo"
+ENV RUSTUP_HOME="/usr/local/rustup"
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y || exit 1
+ENV PATH="${CARGO_HOME}/bin:${PATH}"
+
+# Install rust requirements
+RUN cargo install selene
+
+# Clean rust overhead
+# Clean build cache, remove toolchain and strip installed binaries
+WORKDIR ${CARGO_HOME}
+RUN rm -rf "./registry" "./git" \
+    && (rustup component remove rust-docs rust-src || true) \
+    && (find "./bin" -type f -exec strip {} \; || true)
