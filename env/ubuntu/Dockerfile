@@ -102,3 +102,9 @@ RUN timeout 15m nvim --headless || true
 FROM fedora:42 AS base
 
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
+
+ARG USER_TEST=tester
+
+ARG MAJOR_REQ
+ARG MINOR_REQ
+ARG PATCH_REQ
