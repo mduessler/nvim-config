@@ -26,8 +26,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libstdc++6 \
     libtermkey-dev \
     libvterm-dev \
-    lua5.3 \
-    liblua5.3-dev \
+    lua5.4 \
+    liblua5.4-dev \
     luarocks \
     make \
     libncurses5-dev \
