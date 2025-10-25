@@ -102,7 +102,7 @@ COPY ./lazy-lock.json ./lazy-lock.json
 RUN timeout 15m nvim --headless || true
 
 # Image which is used by local and remote.
-FROM fedora:42 AS base
+FROM ubuntu:24.04 AS base
 
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
@@ -178,7 +178,7 @@ WORKDIR ${HOME}
 
 # Base image to test the install script.
 #
-FROM fedora:42 AS install
+FROM ubuntu:24.04 AS install
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
 ARG USER_TEST=tester
