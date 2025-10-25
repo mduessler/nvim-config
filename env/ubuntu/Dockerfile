@@ -41,3 +41,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libunibilium-dev \
     zlib1g-dev \
     && rm -rf /var/lib/apt/lists/*
+
+ENV HOME=/root
+ENV LOCAL_GIT_DIR=${HOME}/.local/share/src
+RUN mkdir -p ${LOCAL_GIT_DIR}
+ENV NVIM_CONFIG=${HOME}/.config/nvim
+RUN mkdir -p ${NVIM_CONFIG}
