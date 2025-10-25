@@ -167,6 +167,14 @@ WORKDIR ${HOME}
 FROM fedora:42 AS install
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
+ARG USER_TEST=tester
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     && rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p "/home/${USER_TEST}" && groupadd "${USER_TEST}" \
+    && useradd -m -g "${USER_TEST}" "${USER_TEST}" \
+    && echo "${USER_TEST} ALL=(ALL) NOPASSWD:ALL" > "/etc/sudoers.d/${USER_TEST}" \
+    && echo "Defaults:${USER_TEST} !requiretty" >> "/etc/sudoers.d/${USER_TEST}" \
+    && chmod 0440 "/etc/sudoers.d/${USER_TEST}"
