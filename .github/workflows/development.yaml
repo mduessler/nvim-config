@@ -22,7 +22,6 @@ jobs:
       - name: Run pre-commit
         env:
           HOME: /home/tester
-          PYTHONHOME: /usr/local
         run: |
           export PATH="${PYTHONHOME}/bin:${PATH}"
           echo ${PATH}
