@@ -22,9 +22,8 @@ jobs:
       - name: Run pre-commit
         env:
           HOME: /home/tester
-        working-directory: "${HOME}/.config/nvim"
         run: |
-          pwd
+          cd ${NVIM_CONFIG}
           pre-commit run --all-files
   unit-test:
     runs-on: ubuntu-latest
