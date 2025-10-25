@@ -186,8 +186,6 @@ RUN dnf install -y --setopt=install_weak_deps=False \
     && rm -rf /var/cache/dnf /var/lib/dnf /var/log/dnf* /var/log/yum.* \
     && dnf autoremove -y
 
-RUN dnf install which -y && dnf clean all
-
 # Copy hadolint for pre-commit
 COPY --from=builder /usr/bin/hadolint /usr/bin/hadolint
 
