@@ -1,0 +1,105 @@
+name: Development
+on:
+  pull_request:
+    branches:
+      - main
+      - dev
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/mduessler/fedora-nvim:unit-test
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.PACKAGES_PAT }}
+    steps:
+      - name: Prepares linting of the source config.
+        run: |
+          git clone https://github.com/mduessler/nvim-config ${NVIM_CONFIG}
+          cd ${NVIM_CONFIG}
+          git checkout ${{ github.head_ref }}
+      - name: Run the linting pre-commit
+        env:
+          HOME: /home/tester
+        run: |
+          cd ${NVIM_CONFIG}
+          pre-commit run --all-files
+  unit-test-fedora:
+    runs-on: ubuntu-latest
+    needs: lint
+    container:
+      image: ghcr.io/mduessler/fedora-nvim:unit-test
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.PACKAGES_PAT }}
+    steps:
+      - name: Prepares the fedora environment to run the unit tests.
+        run: |
+          git clone https://github.com/mduessler/nvim-config ${NVIM_CONFIG}
+          cd ${NVIM_CONFIG}
+          git checkout ${{ github.head_ref }}
+      - name: Run the unit tests in a fedora environment.
+        run: |
+          cd ${NVIM_CONFIG}
+          env/entrypoint
+  unit-test-ubuntu:
+    runs-on: ubuntu-latest
+    needs: lint
+    container:
+      image: ghcr.io/mduessler/ubuntu-nvim:unit-test
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.PACKAGES_PAT }}
+    steps:
+      - name: Prepares the ubuntu environment to run the unit tests.
+        run: |
+          git clone https://github.com/mduessler/nvim-config ${NVIM_CONFIG}
+          cd ${NVIM_CONFIG}
+          git checkout ${{ github.head_ref }}
+      - name: Run the unit tests in a ubuntu environment.
+        run: |
+          cd ${NVIM_CONFIG}
+          env/entrypoint
+  install-test-fedora:
+    runs-on: ubuntu-latest
+    needs: lint
+    container:
+      image: ghcr.io/mduessler/fedora-nvim:install-test
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.PACKAGES_PAT }}
+    steps:
+      - name: Prepares the fedora environment to run the installation scripts.
+        run: |
+          git clone https://github.com/mduessler/nvim-config ${NVIM_CONFIG}
+          cd ${NVIM_CONFIG}
+          git checkout ${{ github.head_ref }}
+      - name: Run the installation script in a fedora environment.
+        env:
+          HOME: /home/tester
+        run: |
+          cd ${NVIM_CONFIG}
+          ./install
+  install-test-ubuntu:
+    runs-on: ubuntu-latest
+    needs: lint
+    container:
+      image: ghcr.io/mduessler/ubuntu-nvim:install-test
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.PACKAGES_PAT }}
+    steps:
+      - name: Prepares the ubuntu environment to run the installation scripts.
+        run: |
+          git clone https://github.com/mduessler/nvim-config ${NVIM_CONFIG}
+          cd ${NVIM_CONFIG}
+          git checkout ${{ github.head_ref }}
+      - name: Run the installation script in a ubuntu environment.
+        env:
+          HOME: /home/tester
+        run: |
+          cd ${NVIM_CONFIG}
+          ./install

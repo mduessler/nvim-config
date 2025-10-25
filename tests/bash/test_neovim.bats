@@ -14,11 +14,14 @@ setup() {
     mkdir -p "${HOME}/.local/share/src/neovim"
     dir_is_git_repo() { return 0; }
     pull_git_dir() { return 0; }
+    cd() { return 0; }
+    git() { return 0; }
     make() { return 0; }
     sudo() { return 0; }
 
     run install_nvim
 
+    echo ${status}
     [ ${status} -eq 0 ]
     [[ ${output} == *"Installed NVIM v${NVIM_MAJOR_REQ}.${NVIM_MINOR_REQ}.${NVIM_PATCH_REQ}."* ]]
 }
