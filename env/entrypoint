@@ -89,11 +89,10 @@ function main() {
     done
     # 24 - 16
     width=$((width + 6))
-    local string="-"
-    char="-"
+    local string=""
+    char="="
     string=$(printf '%.0s'"${char}" $(seq 1 $(((width + 18) / 2))))
 
-    char="="
     end_string=$(printf '%.0s'"${char}" $(seq 1 $(((width + 24) / 2))))
 
     printf "%s Starting Tests %s\n" "${string}" "${string}"
