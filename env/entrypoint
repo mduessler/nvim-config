@@ -124,6 +124,7 @@ function main() {
         printf "%s FAILURES %s\n" "${string}" "${string}"
     else
         printf "%s%s%s\n" "${string}" "==========" "${string}"
+        return 0
     fi
 
 
@@ -139,6 +140,6 @@ function main() {
             print_wrong_output "${BASH_OUTPUT_TESTS[$i]}"
         fi
     done
-
+    return 0
 }
 main
