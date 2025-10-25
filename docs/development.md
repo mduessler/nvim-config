@@ -44,8 +44,25 @@ Ubuntu.
 1. **Environment tests** -- Running the installation script in an isolated
    environment to verify the installation of all required dependencies and
    requirements.
+   - `make fedora-install-tests-local` -- Runs install script in a fedora
+     environment.
+   - `make ubuntu-install-tests-local` -- Runs install script in a ubuntu
+     environment.
 2. **Unit tests**. -- Running tests in an environment with all dependencies
    and requirements installed.
+   - `make fedora-unit-tests-local` -- Runs unit tests in a fedora
+     environment.
+   - `make ubuntu-unit-tests-local` -- Runs unit tests in a ubuntu
+     environment.
+3. **Remote tests** -- *Environment test* and *unit tests* are also executed
+   with github actions during a pull request to main or dev.
+   - `make fedora-build-remote` -- Builds and uploads the fedora environment
+     for the github action tests. This image is also used to perform linting
+     with pre-commit.
+   - `make ubuntu-build-remote` -- Builds and uploads the ubuntu environment
+     for the github action test
+   - `make build-remote` -- Builds and uploads the fedora and ubuntu
+     environment for the github action test
 
 ### Naming
 
