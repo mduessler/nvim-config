@@ -186,6 +186,7 @@ SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 ARG USER_TEST=tester
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
     git \
     sudo \
     && rm -rf /var/lib/apt/lists/*
