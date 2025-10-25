@@ -36,7 +36,7 @@ jobs:
           ls -l /usr/local/bin || true
           ls -l /usr/sbin || true
           echo ${PATH}
-          pre-commit run --all-files
+          python -m pre-commit run --all-files
   unit-test:
     runs-on: ubuntu-latest
     container:
