@@ -137,6 +137,7 @@ ENV XDG_DATA_HOME="${HOME}/.local/share"
 ENV XDG_STATE_HOME="${HOME}/.local/state"
 ENV NVIM_CONFIG="${HOME}/.config/nvim"
 
+# Copy dependencies from builder
 # Selene from builder
 COPY --from=builder /usr/local/cargo/bin/selene /usr/local/bin/selene
 
