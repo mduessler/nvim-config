@@ -78,7 +78,7 @@ ubuntu-install-test-local:
 			ubuntu-nvim:install-test
 	fi
 
-ubuntu-tests-remote: remote-login
+ubuntu-build-remote: remote-login
 	docker build -f $(env-ubuntu) \
 		--pull=false \
 		--target=remote \
@@ -92,7 +92,7 @@ ubuntu-tests-remote: remote-login
 	docker push ghcr.io/mduessler/ubuntu-nvim:unit-test
 	docker push ghcr.io/mduessler/ubuntu-nvim:install-test
 
-build-remote-environments: fedora-build-remote ubuntu-tests-remote
+build-remote-environments: fedora-build-remote ubuntu-build-remote
 
 test-fedora: fedora-install-test-local fedora-unit-tests-local
 
