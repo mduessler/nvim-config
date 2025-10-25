@@ -193,8 +193,22 @@ RUN which python && sleep 5
 COPY --from=builder /usr/bin/hadolint /usr/bin/hadolint
 
 # Copy python pre-commit libraries
-COPY --from=builder /usr/local/lib/python3.*/site-packages/ /usr/local/lib/
-COPY --from=builder /usr/local/lib64/python3.*/site-packages/ /usr/local/lib64/
+# Move the python site-package libraries from /usr/local/lib to /usr/lib
+COPY --from=builder /usr/local/lib/python3.*/site-packages/ /tmp/site-packages/
+RUN regex="^Python ([0-9]\.[0-9]+)." \
+    && if [[ $(python --version) =~ ${regex} ]]; then \
+        mkdir -p "/usr/lib/python${BASH_REMATCH[1]}"; \
+        cp -r /tmp/site-packages "/usr/lib/python${BASH_REMATCH[1]}"; \
+        rm -rf /tmp/site-packages; \
+    fi
+
+COPY --from=builder /usr/local/lib64/python3.*/site-packages/ /tmp/site-packages/
+RUN regex="^Python ([0-9]\.[0-9]+)." \
+    && if [[ $(python --version) =~ ${regex} ]]; then \
+        mkdir -p "/usr/lib64/python${BASH_REMATCH[1]}"; \
+        cp -r /tmp/site-packages "/usr/lib64/python${BASH_REMATCH[1]}"; \
+        rm -rf /tmp/site-packages; \
+    fi
 
 # Copy pre-commit and dependencies
 COPY --from=builder /usr/local/bin/pre-commit /usr/local/bin/pre-commit
