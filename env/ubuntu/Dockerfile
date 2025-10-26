@@ -95,3 +95,9 @@ COPY ./lua/plugins ./lua/plugins
 COPY ./lazy-lock.json ./lazy-lock.json
 
 RUN timeout 15m nvim --headless || true
+
+# Image that serves as the basis for creating environment images for remote
+# and local unit tests.
+FROM ubuntu:24.04 AS base
+
+SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
