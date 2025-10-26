@@ -153,6 +153,11 @@ COPY --from=builder /root/.local/share/nvim ${XDG_DATA_HOME}/nvim
 # Image from which the environment for local unit test is build.
 FROM base AS local
 
+WORKDIR "${NVIM_CONFIG}"
+COPY . .
+
+ENTRYPOINT ["./env/entrypoint"]
+
 # Image from which the environment for remote unit test and linting is build.
 FROM base AS remote
 
