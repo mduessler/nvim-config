@@ -88,6 +88,9 @@ RUN (find "/usr/local/libexec/bats-core" -type f -exec strip {} \; || true) \
 RUN luarocks install lpeglabel && \
     luarocks install luaunit
 
+# Install pre-commit for linting
+RUN python3 -m pip install --no-cache-dir pre-commit==4.2.0
+
 # Image that serves as the basis for creating environment images for remote
 # and local unit tests.
 FROM fedora:42 AS base
