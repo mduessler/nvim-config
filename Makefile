@@ -1,3 +1,8 @@
+# NVIM v0.11.4 <==> NVIM v${MAJRO_REQ}.${MINOR_REQ}.${PATCH_REQ}
+major-req=0
+minor-req=11
+patch-req=4
+
 env-path="./env"
 env-install="DockerfileInstall"
 env-lua="DockerfileLua"
@@ -28,6 +33,8 @@ test-install-ubuntu: build-install-ubuntu
 
 tests-ubuntu: build-ubuntu
 	docker run --rm nvim-ubuntu:test
+
+test-fedora: test-install-fedora tests-fedora
 
 test-ubuntu: test-install-ubuntu test-lua-ubuntu
 
