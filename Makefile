@@ -34,11 +34,7 @@ test-install-ubuntu: build-install-ubuntu
 tests-ubuntu: build-ubuntu
 	docker run --rm nvim-ubuntu:test
 
-test-fedora: test-install-fedora tests-fedora
-
 test-ubuntu: test-install-ubuntu test-lua-ubuntu
-
-test: test-fedora test-ubuntu
 
 clean:
 	docker image rm nvim-fedora:test
