@@ -24,6 +24,15 @@ remote-login:
 	[ -z $${GITHUB_TOKEN} ] && read -p "Enter your GitHub PAT: " GITHUB_TOKEN
 	echo "$${GITHUB_TOKEN}" | docker login ghcr.io -u "$${GITHUB_USERNAME}" --password-stdin
 
+fedora-unit-tests-local:
+	docker build -f $(env-fedora) \
+		--target=local \
+		--build-arg MAJOR_REQ=$(major-req) \
+		--build-arg MINOR_REQ=$(minor-req) \
+		--build-arg PATCH_REQ=$(patch-req) \
+		-t fedora-nvim:unit-test .
+	docker run --rm fedora-nvim:unit-test
+
 build-install-ubuntu:
 	docker build -f $(env-path)/Dockerfile.ubuntu-install -t nvim-ubuntu:install .
 
