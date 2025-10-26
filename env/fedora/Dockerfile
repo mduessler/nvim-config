@@ -44,6 +44,9 @@ RUN dnf install -y --setopt=install_weak_deps=False \
     && rm -rf /var/cache/dnf /var/lib/dnf /usr/share/doc/* /usr/share/man/* /usr/share/locale/* \
     && dnf autoremove -y
 
+# Creating directory structure
+RUN mkdir -p /root/.local/share/src /root/.config/nvim
+
 # Image that serves as the basis for creating environment images for remote
 # and local unit tests.
 FROM fedora:42 AS base
