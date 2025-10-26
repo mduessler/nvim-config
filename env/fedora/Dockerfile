@@ -222,6 +222,9 @@ RUN mkdir -p "/home/${USER_TEST}" && groupadd "${USER_TEST}" \
 ENV HOME=/home/${USER_TEST}
 ENV NVIM_CONFIG=$HOME/.config/nvim
 
+RUN chown -R tester:tester ${HOME}
+USER tester
+
 # Image from which the environment for local testing of the installation script
 # is built.
 FROM install AS install-local
