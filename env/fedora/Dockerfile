@@ -8,6 +8,7 @@ SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 ARG MAJOR_REQ
 ARG MINOR_REQ
 ARG PATCH_REQ
+ARG PYTHON_VERSION
 
 # Installing all necessary dependencies.
 RUN dnf install -y --setopt=install_weak_deps=False \
@@ -39,7 +40,7 @@ RUN dnf install -y --setopt=install_weak_deps=False \
     openssl-libs \
     pkg-config \
     pre-commit \
-    python \
+    python${PYTHON_VERSION} \
     python3-pip \
     unibilium \
     zlib-devel \
@@ -170,13 +171,14 @@ ENTRYPOINT ["./env/entrypoint"]
 FROM base AS remote
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
-# Copy git
-COPY --from=builder /usr/bin/git /usr/bin/
-COPY --from=builder /usr/libexec/git-core /usr/libexec
-COPY --from=builder /usr/share/git-core /usr/share
+ARG PYTHON_VERSION
 
-# Dependencies for git-curl.
-COPY --from=builder /usr/bin/git /usr/bin/git
+# Copy Git and its core helpers
+COPY --from=builder /usr/bin/git /usr/bin/
+COPY --from=builder /usr/libexec/git-core/ /usr/libexec/git-core/
+COPY --from=builder /usr/share/git-core/ /usr/share/git-core/
+
+# Dependencies for HTTPS support
 COPY --from=builder /usr/lib64/libcurl.so.4 /usr/lib64/
 COPY --from=builder /usr/lib64/libssl.so.3 /usr/lib64/
 COPY --from=builder /usr/lib64/libcrypto.so.3 /usr/lib64/
@@ -195,14 +197,17 @@ COPY --from=builder /usr/lib64/libresolv.so.2 /usr/lib64/
 COPY --from=builder /usr/lib64/libselinux.so.1 /usr/lib64/
 COPY --from=builder /lib64/ld-linux-x86-64.so.2 /lib64/
 
-# Copy ca-certificates
+# Also copy CA certificates so HTTPS validation works
 COPY --from=builder /etc/pki /etc/pki
 RUN update-ca-trust
 
-# Copy python
-COPY --from=builder /usr/bin/python /usr/bin
-COPY --from=builder /usr/lib/python3.* /usr/lib
-COPY --from=builder /usr/lib64/python3.* /usr/lib64
+# Use the ARG in COPY commands
+COPY --from=builder /usr/lib/python${PYTHON_VERSION} /usr/lib/python${PYTHON_VERSION}
+COPY --from=builder /usr/lib64/python${PYTHON_VERSION} /usr/lib64/python${PYTHON_VERSION}
+COPY --from=builder /lib64/libpython${PYTHON_VERSION}.so.1.0 /lib64/
+COPY --from=builder /lib64/libc.so.6 /lib64/
+COPY --from=builder /lib64/libm.so.6 /lib64/
+COPY --from=builder /usr/bin/python3 /usr/bin/
 
 # Copy lua
 COPY --from=builder /usr/bin/lua /usr/bin
@@ -213,13 +218,12 @@ COPY --from=builder /usr/lib64/libssl.so /usr/lib64
 COPY --from=builder /usr/lib64/libcrypto.so /usr/lib64
 COPY --from=builder /usr/lib64/libssl*.so /usr/lib64
 
-
 # Copy hadolint for pre-commit
 COPY --from=builder /usr/bin/hadolint /usr/bin/hadolint
 
 # Copy pre-commit and dependencies
-COPY --from=builder /usr/bin/pre-commit /usr/bin
-COPY --from=builder /usr/sbin/pre-commit /usr/sbin
+COPY --from=builder /usr/bin/pre-commit /usr/bin/
+COPY --from=builder /usr/sbin/pre-commit /usr/sbin/
 
 WORKDIR ${HOME}
 
