@@ -170,16 +170,34 @@ ENTRYPOINT ["./env/entrypoint"]
 FROM base AS remote
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
-# Install dependencies to execute pre-commit and run tests
-RUN dnf install -y --setopt=install_weak_deps=False \
-    ca-certificates \
-    && dnf clean all \
-    && rm -rf /var/cache/dnf /var/lib/dnf /usr/share/doc/* /usr/share/man/* /usr/share/locale/* \
-    && dnf autoremove -y
-
 # Copy git
 COPY --from=builder /usr/bin/git /usr/bin/
 COPY --from=builder /usr/libexec/git-core /usr/libexec
+COPY --from=builder /usr/share/git-core /usr/share
+
+# Dependencies for git-curl.
+COPY --from=builder /usr/bin/git /usr/bin/git
+COPY --from=builder /usr/lib64/libcurl.so.4 /usr/lib64/
+COPY --from=builder /usr/lib64/libssl.so.3 /usr/lib64/
+COPY --from=builder /usr/lib64/libcrypto.so.3 /usr/lib64/
+COPY --from=builder /usr/lib64/libz.so.1 /usr/lib64/
+COPY --from=builder /usr/lib64/libpcre2-8.so.0 /usr/lib64/
+COPY --from=builder /usr/lib64/libnghttp2.so.14 /usr/lib64/
+COPY --from=builder /usr/lib64/libidn2.so.0 /usr/lib64/
+COPY --from=builder /usr/lib64/libunistring.so.5 /usr/lib64/
+COPY --from=builder /usr/lib64/libkrb5.so.3 /usr/lib64/
+COPY --from=builder /usr/lib64/libk5crypto.so.3 /usr/lib64/
+COPY --from=builder /usr/lib64/libgssapi_krb5.so.2 /usr/lib64/
+COPY --from=builder /usr/lib64/libcom_err.so.2 /usr/lib64/
+COPY --from=builder /usr/lib64/libkrb5support.so.0 /usr/lib64/
+COPY --from=builder /usr/lib64/libkeyutils.so.1 /usr/lib64/
+COPY --from=builder /usr/lib64/libresolv.so.2 /usr/lib64/
+COPY --from=builder /usr/lib64/libselinux.so.1 /usr/lib64/
+COPY --from=builder /lib64/ld-linux-x86-64.so.2 /lib64/
+
+# Copy ca-certificates
+COPY --from=builder /etc/pki /etc/pki
+RUN update-ca-trust
 
 # Copy python
 COPY --from=builder /usr/bin/python /usr/bin
