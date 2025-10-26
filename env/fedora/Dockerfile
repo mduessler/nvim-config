@@ -84,6 +84,10 @@ RUN (find "/usr/local/libexec/bats-core" -type f -exec strip {} \; || true) \
     && (find "/usr/local/lib/bats-core/" -type f -exec strip {} \; || true) \
     && (strip --strip-unneeded /usr/local/bats || true)
 
+# Install lua libraries
+RUN luarocks install lpeglabel && \
+    luarocks install luaunit
+
 # Image that serves as the basis for creating environment images for remote
 # and local unit tests.
 FROM fedora:42 AS base
