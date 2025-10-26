@@ -68,3 +68,15 @@ WORKDIR ${NVIM_GIT_DIR}
 RUN git checkout "v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ}" \
     && make CMAKE_BUILD_TYPE=Release \
     && make install
+
+# Install bats
+WORKDIR /root/.local/share/src
+ENV BATS_GIT_DIR=/root/.local/share/src/bats-core
+RUN git clone https://github.com/bats-core/bats-core /root/.local/share/src/bats-core
+WORKDIR /root/.local/share/src/bats-core
+RUN ./install.sh /usr/local
+
+# Strip bats.
+RUN (find "/usr/local/libexec/bats-core" -type f -exec strip {} \; || true) \
+    && (find "/usr/local/lib/bats-core/" -type f -exec strip {} \; || true) \
+    && (strip --strip-unneeded /usr/local/bats || true)
