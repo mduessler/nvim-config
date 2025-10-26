@@ -219,6 +219,9 @@ RUN mkdir -p "/home/${USER_TEST}" && groupadd "${USER_TEST}" \
     && echo "Defaults:${USER_TEST} !requiretty" >> "/etc/sudoers.d/${USER_TEST}" \
     && chmod 0440 "/etc/sudoers.d/${USER_TEST}"   && dnf autoremove -y
 
+ENV HOME=/home/${USER_TEST}
+ENV NVIM_CONFIG=$HOME/.config/nvim
+
 # Image from which the environment for local testing of the installation script
 # is built.
 FROM install AS install-local
