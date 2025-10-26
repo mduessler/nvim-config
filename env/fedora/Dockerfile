@@ -166,6 +166,8 @@ SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 # Install dependencies to execute pre-commit and run tests
 RUN dnf install -y --setopt=install_weak_deps=False \
     ca-certificates \
+    curl \
+    git \
     libatomic \
     openssl-libs \
     python \
