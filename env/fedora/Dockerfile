@@ -206,6 +206,11 @@ FROM fedora:42 AS install
 
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
+RUN dnf install -y git \
+    && dnf clean all \
+    && rm -rf /var/cache/dnf /var/lib/dnf /var/log/dnf* /var/log/yum.* \
+    && dnf autoremove -y
+
 # Image from which the environment for local testing of the installation script
 # is built.
 FROM install AS install-local
