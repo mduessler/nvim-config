@@ -148,3 +148,9 @@ COPY --from=builder /root/.local/share/nvim ${XDG_DATA_HOME}/nvim
 
 # Image from which the environment for local unit test is build.
 FROM base AS local
+SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
+
+WORKDIR "${NVIM_CONFIG}"
+COPY . .
+
+ENTRYPOINT ["./env/entrypoint"]
