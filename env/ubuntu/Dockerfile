@@ -58,3 +58,13 @@ WORKDIR ${CARGO_HOME}
 RUN rm -rf "./registry" "./git" \
     && (rustup component remove rust-docs rust-src || true) \
     && (find "./bin" -type f -exec strip {} \; || true)
+
+# Install neovim
+WORKDIR /root/.local/share/src
+ENV NVIM_GIT_DIR=/root/.local/share/src/neovim
+RUN git clone https://github.com/neovim/neovim ${NVIM_GIT_DIR}
+WORKDIR ${NVIM_GIT_DIR}
+
+RUN git checkout "v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ}" \
+    && make CMAKE_BUILD_TYPE=Release \
+    && make install
