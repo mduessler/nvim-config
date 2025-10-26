@@ -92,7 +92,7 @@ RUN luarocks install lpeglabel && \
 RUN python3 -m pip install --no-cache-dir pre-commit==4.2.0
 
 # Install nvim plugins and set them up.
-WORKDIR ${NVIM_CONFIG}
+WORKDIR /root/.config/nvim
 COPY ./init.lua .
 COPY ./lua/lsp ./lua/lsp
 COPY ./lua/utils ./lua/utils
