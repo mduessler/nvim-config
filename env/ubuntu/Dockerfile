@@ -126,3 +126,22 @@ ENV XDG_CACHE_HOME="${HOME}/.cache"
 ENV XDG_DATA_HOME="${HOME}/.local/share"
 ENV XDG_STATE_HOME="${HOME}/.local/state"
 ENV NVIM_CONFIG="${HOME}/.config/nvim"
+
+# Copy selene
+COPY --from=builder /usr/local/cargo/bin/selene /usr/local/bin/selene
+
+# Copy nvim
+COPY --from=builder /usr/local/bin/nvim /usr/local/bin/nvim
+COPY --from=builder /usr/local/share/nvim /usr/local/share/nvim
+
+# Copy bats
+COPY --from=builder /usr/local/bin/bats /usr/local/bin/bats
+COPY --from=builder /usr/local/libexec/bats-core /usr/local/libexec/bats-core
+COPY --from=builder /usr/local/lib/bats-core/ /usr/local/lib/bats-core/
+
+# Copy from lua
+COPY --from=builder /usr/local/share/lua/5.1/luaunit.lua /usr/local/share/lua/5.1/luaunit.lua
+COPY --from=builder /usr/local/lib/luarocks/rocks-5.1/lpeglabel /usr/local/lib/luarocks/rocks-5.1/lpeglabel
+
+# Copy nvim downloads
+COPY --from=builder /root/.local/share/nvim ${XDG_DATA_HOME}/nvim
