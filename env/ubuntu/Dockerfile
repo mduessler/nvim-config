@@ -154,3 +154,18 @@ WORKDIR "${NVIM_CONFIG}"
 COPY . .
 
 ENTRYPOINT ["./env/entrypoint"]
+
+# Image from which the environment for remote unit test and linting is build.
+FROM base AS remote
+SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
+
+# Install dependencies to execute unit tests
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    bash \
+    ca-certificates \
+    curl \
+    git \
+    lua5.4 \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR ${HOME}
