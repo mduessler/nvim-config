@@ -38,13 +38,12 @@ RUN dnf install -y --setopt=install_weak_deps=False \
     openssl-devel \
     openssl-libs \
     pkg-config \
-    pre-commit \
     python \
     python3-pip \
     unibilium \
     zlib-devel \
     && dnf clean all \
-    && rm -rf /var/cache/dnf /var/lib/dnf /usr/share/doc/* /usr/share/man/* /usr/share/locale/* \
+    && rm -rf /var/cache/dnf /var/lib/dnf /var/log/dnf* /var/log/yum.* \
     && dnf autoremove -y
 
 ENV HOME=/root
@@ -94,6 +93,9 @@ RUN (find "/usr/local/libexec/bats-core" -type f -exec strip {} \; || true) \
 # Install lua libraries
 RUN luarocks install lpeglabel && \
     luarocks install luaunit
+
+# Install pre-commit for linting
+RUN python3 -m pip install --no-cache-dir pre-commit==4.2.0
 
 # Install nvim plugins and set them up.
 WORKDIR ${NVIM_CONFIG}
@@ -173,29 +175,18 @@ SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 # Install dependencies to execute pre-commit and run tests
 RUN dnf install -y --setopt=install_weak_deps=False \
     ca-certificates \
+    curl \
+    gcc \
+    git \
+    libatomic \
+    openssl-libs \
+    python \
     && dnf clean all \
-    && rm -rf /var/cache/dnf /var/lib/dnf /usr/share/doc/* /usr/share/man/* /usr/share/locale/* \
+    && rm -rf /var/cache/dnf /var/lib/dnf /var/log/dnf* /var/log/yum.* \
     && dnf autoremove -y
 
-# Copy git
-COPY --from=builder /usr/bin/git /usr/bin/
-COPY --from=builder /usr/libexec/git-core /usr/libexec
-
-# Copy python
-COPY --from=builder /usr/bin/python /usr/bin
-COPY --from=builder /usr/lib/python3.* /usr/lib
-COPY --from=builder /usr/lib64/python3.* /usr/lib64
-
-# Copy lua
-COPY --from=builder /usr/bin/lua /usr/bin
-COPY --from=builder /usr/lib64/lua /usr/lib64
-
-# Copy openssl libs
-COPY --from=builder /usr/lib64/libssl.so /usr/lib64
-COPY --from=builder /usr/lib64/libcrypto.so /usr/lib64
-COPY --from=builder /usr/lib64/libssl*.so /usr/lib64
-
-
+RUN dnf install which -y && dnf clean all
+RUN which python && sleep 5
 # Copy hadolint for pre-commit
 COPY --from=builder /usr/bin/hadolint /usr/bin/hadolint
 
@@ -221,7 +212,7 @@ RUN regex="^Python ([0-9]\.[0-9]+)." \
 COPY --from=builder /usr/local/bin/pre-commit /usr/local/bin/pre-commit
 COPY --from=builder /usr/local/sbin/pre-commit /usr/local/sbin/pre-commit
 
-WORKDIR ${HOME}
+WORKDIR ${NVIM_CONFIG}
 
 # Base image to test the install script.
 #
@@ -232,7 +223,7 @@ ARG USER_TEST=tester
 
 RUN dnf install -y git \
     && dnf clean all \
-    && rm -rf /var/cache/dnf /var/lib/dnf /usr/share/doc/* /usr/share/man/* /usr/share/locale/* \
+    && rm -rf /var/cache/dnf /var/lib/dnf /var/log/dnf* /var/log/yum.* \
     && dnf autoremove -y
 
 RUN mkdir -p "/home/${USER_TEST}" && groupadd "${USER_TEST}" \
