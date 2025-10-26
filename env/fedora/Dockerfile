@@ -107,6 +107,14 @@ RUN timeout 15m nvim --headless || true
 FROM fedora:42 AS base
 
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
+ARG USER_TEST=tester
+
+# Create test user
+RUN mkdir -p "/home/${USER_TEST}" && groupadd "${USER_TEST}" \
+    && useradd -m -g "${USER_TEST}" "${USER_TEST}" \
+    && echo "${USER_TEST} ALL=(ALL) NOPASSWD:ALL" > "/etc/sudoers.d/${USER_TEST}" \
+    && echo "Defaults:${USER_TEST} !requiretty" >> "/etc/sudoers.d/${USER_TEST}" \
+    && chmod 0440 "/etc/sudoers.d/${USER_TEST}"
 
 # Image from which the environment for local unit test is build.
 FROM base AS local
