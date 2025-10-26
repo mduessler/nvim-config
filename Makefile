@@ -92,8 +92,3 @@ ubuntu-build-remote: remote-login
 build-remote-environments: fedora-build-remote ubuntu-build-remote
 
 test-fedora: fedora-install-test-local fedora-unit-tests-local
-
-clean:
-	docker image rm nvim-fedora:test
-	docker image rm nvim-ubuntu:test
-	docker image rm nvim-fedora:install-test
