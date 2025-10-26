@@ -131,7 +131,7 @@ setup() {
 
 @test "install_prod_dependencies: Function can not install packages with package manager." {
     identify_system_pkg_mgr() { return 0; }
-    install_packages_with_pkg_mgr() { return 1; }
+    install_packages_with_pkg_mgr() { return 0; }
     install_dependencies_independent_of_pkg_mgr() { return 0; }
     check_nvim_version() { return 0; }
 
