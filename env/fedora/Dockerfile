@@ -161,6 +161,21 @@ ENTRYPOINT ["./env/entrypoint"]
 # Image from which the environment for remote unit test and linting is build.
 FROM base AS remote
 
+SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
+
+# Install dependencies to execute pre-commit and run tests
+RUN dnf install -y --setopt=install_weak_deps=False \
+    ca-certificates \
+    curl \
+    gcc \
+    git \
+    libatomic \
+    openssl-libs \
+    python \
+    && dnf clean all \
+    && rm -rf /var/cache/dnf /var/lib/dnf /var/log/dnf* /var/log/yum.* \
+    && dnf autoremove -y
+
 # Image that serves as the basis for creating environment images for remote
 # and local testing of the installation script.
 FROM fedora:42 AS install
