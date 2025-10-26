@@ -4,10 +4,7 @@ minor-req=11
 patch-req=4
 
 env-fedora="./env/fedora/Dockerfile"
-
-env-path="./env"
-env-install="DockerfileInstall"
-env-lua="DockerfileLua"
+env-ubuntu="./env/ubuntu/Dockerfile"
 
 .SILENT:
 .ONESHELL:
@@ -58,24 +55,43 @@ fedora-build-remote: remote-login
 	docker push ghcr.io/mduessler/fedora-nvim:unit-test
 	docker push ghcr.io/mduessler/fedora-nvim:install-test
 
-build-install-ubuntu:
-	docker build -f $(env-path)/Dockerfile.ubuntu-install -t nvim-ubuntu:install .
+ubuntu-unit-tests-local:
+	docker build -f $(env-ubuntu) \
+		--target=local \
+		--build-arg MAJOR_REQ=$(major-req) \
+		--build-arg MINOR_REQ=$(minor-req) \
+		--build-arg PATCH_REQ=$(patch-req) \
+		-t ubuntu-nvim:unit-test .
+	docker run --rm ubuntu-nvim:unit-test
 
-build-ubuntu:
-	docker build -f $(env-path)/Dockerfile.dev-ubuntu -t nvim-ubuntu:test .
-
-test-install-ubuntu: build-install-ubuntu
+ubuntu-install-test-local:
+	docker build -f $(env-ubuntu) \
+		--target=install-local \
+		-t ubuntu-nvim:install-test .
 	@regex="^On branch (.*)"; \
 	if [[ $$(git status 2>/dev/null | head -1) =~ $${regex} ]]; then \
 		docker run --rm \
 			-e BRANCH_TO_TEST="$${BASH_REMATCH[1]}" \
-			nvim-ubuntu:install
+			ubuntu-nvim:install-test
 	fi
 
-tests-ubuntu: build-ubuntu
-	docker run --rm nvim-ubuntu:test
+ubuntu-build-remote: remote-login
+	docker build -f $(env-ubuntu) \
+		--pull=false \
+		--target=remote \
+		--build-arg MAJOR_REQ=$(major-req) \
+		--build-arg MINOR_REQ=$(minor-req) \
+		--build-arg PATCH_REQ=$(patch-req) \
+		-t ghcr.io/mduessler/ubuntu-nvim:unit-test .
+	docker build -f $(env-ubuntu)\
+		--target=install \
+		-t ghcr.io/mduessler/ubuntu-nvim:install-test .
+	docker push ghcr.io/mduessler/ubuntu-nvim:unit-test
+	docker push ghcr.io/mduessler/ubuntu-nvim:install-test
 
-test-ubuntu: test-install-ubuntu test-lua-ubuntu
+build-remote-environments: fedora-build-remote ubuntu-build-remote
+
+test-fedora: fedora-install-test-local fedora-unit-tests-local
 
 clean:
 	docker image rm nvim-fedora:test
