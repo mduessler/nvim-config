@@ -44,6 +44,20 @@ fedora-install-test-local:
 			fedora-nvim:install-test
 	fi
 
+fedora-build-remote: remote-login
+	docker build -f $(env-fedora) \
+		--pull=false \
+		--target=remote \
+		--build-arg MAJOR_REQ=$(major-req) \
+		--build-arg MINOR_REQ=$(minor-req) \
+		--build-arg PATCH_REQ=$(patch-req) \
+		-t ghcr.io/mduessler/fedora-nvim:unit-test .
+	docker build -f $(env-fedora)\
+		--target=install \
+		-t ghcr.io/mduessler/fedora-nvim:install-test .
+	docker push ghcr.io/mduessler/fedora-nvim:unit-test
+	docker push ghcr.io/mduessler/fedora-nvim:install-test
+
 build-install-ubuntu:
 	docker build -f $(env-path)/Dockerfile.ubuntu-install -t nvim-ubuntu:install .
 
