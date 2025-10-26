@@ -211,6 +211,13 @@ ARG USER_TEST=tester
 RUN dnf install -y git \
     && dnf clean all \
     && rm -rf /var/cache/dnf /var/lib/dnf /var/log/dnf* /var/log/yum.* \
+    && dnf autoremove -y
+
+RUN mkdir -p "/home/${USER_TEST}" && groupadd "${USER_TEST}" \
+    && useradd -m -g "${USER_TEST}" "${USER_TEST}" \
+    && echo "${USER_TEST} ALL=(ALL) NOPASSWD:ALL" > "/etc/sudoers.d/${USER_TEST}" \
+    && echo "Defaults:${USER_TEST} !requiretty" >> "/etc/sudoers.d/${USER_TEST}" \
+    && chmod 0440 "/etc/sudoers.d/${USER_TEST}"   && dnf autoremove -y
 
 # Image from which the environment for local testing of the installation script
 # is built.
