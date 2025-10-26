@@ -3,6 +3,10 @@ FROM fedora:42 AS builder
 
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
+ARG MAJOR_REQ
+ARG MINOR_REQ
+ARG PATCH_REQ
+
 # Image that serves as the basis for creating environment images for remote
 # and local unit tests.
 FROM fedora:42 AS base
