@@ -198,6 +198,8 @@ RUN regex="^Python ([0-9]\.[0-9]+)." \
 COPY --from=builder /usr/local/bin/pre-commit /usr/local/bin/pre-commit
 COPY --from=builder /usr/local/sbin/pre-commit /usr/local/sbin/pre-commit
 
+WORKDIR ${NVIM_CONFIG}
+
 # Image that serves as the basis for creating environment images for remote
 # and local testing of the installation script.
 FROM fedora:42 AS install
