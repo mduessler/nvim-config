@@ -80,3 +80,7 @@ RUN ./install.sh /usr/local
 RUN (find "/usr/local/libexec/bats-core" -type f -exec strip {} \; || true) \
     && (find "/usr/local/lib/bats-core/" -type f -exec strip {} \; || true) \
     && (strip --strip-unneeded /usr/local/bats || true)
+
+# Install lua libraries
+RUN luarocks install lpeglabel && \
+    luarocks install luaunit
