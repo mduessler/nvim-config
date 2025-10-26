@@ -115,3 +115,14 @@ RUN mkdir -p "/home/${USER_TEST}" && groupadd "${USER_TEST}" \
     && echo "${USER_TEST} ALL=(ALL) NOPASSWD:ALL" > "/etc/sudoers.d/${USER_TEST}" \
     && echo "Defaults:${USER_TEST} !requiretty" >> "/etc/sudoers.d/${USER_TEST}" \
     && chmod 0440 "/etc/sudoers.d/${USER_TEST}"
+
+ENV USER_TEST=${USER_TEST}
+ENV MAJOR_REQ=${MAJOR_REQ}
+ENV MINOR_REQ=${MINOR_REQ}
+ENV PATCH_REQ=${PATCH_REQ}
+ENV HOME="/home/${USER_TEST}"
+ENV XDG_CONFIG_HOME="${HOME}/.config"
+ENV XDG_CACHE_HOME="${HOME}/.cache"
+ENV XDG_DATA_HOME="${HOME}/.local/share"
+ENV XDG_STATE_HOME="${HOME}/.local/state"
+ENV NVIM_CONFIG="${HOME}/.config/nvim"
