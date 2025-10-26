@@ -19,6 +19,11 @@ install:
 install-dev:
 	./install dev
 
+remote-login:
+	[ -z $${GITHUB_USERNAME} ] && read -p "Enter your GitHub username: " GITHUB_USERNAME
+	[ -z $${GITHUB_TOKEN} ] && read -p "Enter your GitHub PAT: " GITHUB_TOKEN
+	echo "$${GITHUB_TOKEN}" | docker login ghcr.io -u "$${GITHUB_USERNAME}" --password-stdin
+
 build-install-ubuntu:
 	docker build -f $(env-path)/Dockerfile.ubuntu-install -t nvim-ubuntu:install .
 
