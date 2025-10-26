@@ -11,7 +11,7 @@ env-lua="DockerfileLua"
 
 .SILENT:
 .ONESHELL:
-.PHONY: install install-dev build-install build-lua
+.PHONY: install
 
 install:
 	./install
