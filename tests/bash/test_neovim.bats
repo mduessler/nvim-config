@@ -14,6 +14,8 @@ setup() {
     mkdir -p "${HOME}/.local/share/src/neovim"
     dir_is_git_repo() { return 0; }
     pull_git_dir() { return 0; }
+    cd() { return 0; }
+    git() { return 0; }
     make() { return 0; }
     sudo() { return 0; }
 
