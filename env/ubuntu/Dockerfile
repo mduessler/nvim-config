@@ -145,3 +145,6 @@ COPY --from=builder /usr/local/lib/luarocks/rocks-5.1/lpeglabel /usr/local/lib/l
 
 # Copy nvim downloads
 COPY --from=builder /root/.local/share/nvim ${XDG_DATA_HOME}/nvim
+
+# Image from which the environment for local unit test is build.
+FROM base AS local
