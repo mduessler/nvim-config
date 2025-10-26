@@ -101,3 +101,8 @@ RUN timeout 15m nvim --headless || true
 FROM ubuntu:24.04 AS base
 
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
+
+ARG USER_TEST=tester
+ARG MAJOR_REQ
+ARG MINOR_REQ
+ARG PATCH_REQ
