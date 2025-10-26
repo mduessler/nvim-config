@@ -2,7 +2,6 @@
 major-req=0
 minor-req=11
 patch-req=4
-python-version=3.13
 
 env-fedora="./env/fedora/Dockerfile"
 env-ubuntu="./env/ubuntu/Dockerfile"
@@ -28,7 +27,6 @@ fedora-unit-tests-local:
 		--build-arg MAJOR_REQ=$(major-req) \
 		--build-arg MINOR_REQ=$(minor-req) \
 		--build-arg PATCH_REQ=$(patch-req) \
-		--build-arg PYTHON_VERSION=$(python-version) \
 		-t fedora-nvim:unit-test .
 	docker run --rm fedora-nvim:unit-test
 
@@ -50,7 +48,6 @@ fedora-build-remote: remote-login
 		--build-arg MAJOR_REQ=$(major-req) \
 		--build-arg MINOR_REQ=$(minor-req) \
 		--build-arg PATCH_REQ=$(patch-req) \
-		--build-arg PYTHON_VERSION=$(python-version) \
 		-t ghcr.io/mduessler/fedora-nvim:unit-test .
 	docker build -f $(env-fedora)\
 		--target=install \
