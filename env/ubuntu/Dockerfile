@@ -169,3 +169,29 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR ${HOME}
+
+# Image that serves as the basis for creating environment images for remote
+# and local testing of the installation script.
+FROM ubuntu:24.04 AS install
+SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
+
+ARG USER_TEST=tester
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    git \
+    sudo \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create test user
+RUN mkdir -p "/home/${USER_TEST}" && groupadd "${USER_TEST}" \
+    && useradd -m -g "${USER_TEST}" "${USER_TEST}" \
+    && echo "${USER_TEST} ALL=(ALL) NOPASSWD:ALL" > "/etc/sudoers.d/${USER_TEST}" \
+    && echo "Defaults:${USER_TEST} !requiretty" >> "/etc/sudoers.d/${USER_TEST}" \
+    && chmod 0440 "/etc/sudoers.d/${USER_TEST}"
+
+ENV HOME=/home/${USER_TEST}
+ENV NVIM_CONFIG=$HOME/.config/nvim
+
+RUN chown -R tester:tester ${HOME}
+USER tester
