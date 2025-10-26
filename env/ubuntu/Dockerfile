@@ -40,3 +40,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libunibilium-dev \
     zlib1g-dev \
     && rm -rf /var/lib/apt/lists/*
+
+# Creating directory structure
+RUN mkdir -p /root/.local/share/src /root/.config/nvim
