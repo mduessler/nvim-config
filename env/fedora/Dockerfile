@@ -168,6 +168,7 @@ RUN dnf install -y --setopt=install_weak_deps=False \
     ca-certificates \
     curl \
     git \
+    gcc \
     libatomic \
     openssl-libs \
     python \
