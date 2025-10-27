@@ -40,7 +40,13 @@ local M = {
 	pathes = pathes,
 	capacities = {},
 	states = {},
-	state_priorities = { [1] = "Discharging", [2] = "Charging", [3] = "Full", [4] = "Not charing", [5] = "Unkown" },
+	state_priorities = {
+		[1] = "Discharging",
+		[2] = "Charging",
+		[3] = "Full",
+		[4] = "Not charing",
+		[5] = "Unkown",
+	},
 	_running = {
 		capacity = false,
 		state = false,
