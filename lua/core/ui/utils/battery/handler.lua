@@ -44,7 +44,7 @@ local M = {
 		[1] = "Discharging",
 		[2] = "Charging",
 		[3] = "Full",
-		[4] = "Not charing",
+		[4] = "Not charging",
 		[5] = "Unkown",
 	},
 	_running = {
