@@ -29,7 +29,7 @@ jobs:
             README.md
       - name: Remove development section from README.md
         run: sed -i '/^## Development/,/^## Notes & Feedback/ {/^## Notes & Feedback/!d}' README.md
-      - name: Commit changes
+      - name: Release to main.
         run: |
           git add \
             installs \
@@ -42,3 +42,4 @@ jobs:
             LICENSE \
             README.md
           git commit -m "Created new main branch from dev."
+          git push orgin main
