@@ -34,7 +34,7 @@ local function run(M)
 			if code ~= 0 then
 				M.states[item.name] = nil
 			else
-				M.states[item.name] = table.concat(output):match("(%a+)")
+				M.states[item.name] = table.concat(output):match("^%s*([^,]-)%s*,?%s*$")
 			end
 
 			close_process(M._state_handle)
