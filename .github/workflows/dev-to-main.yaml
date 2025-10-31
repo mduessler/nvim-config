@@ -26,7 +26,7 @@ jobs:
             install \
             lazy-lock.json \
             LICENSE \
-            README.md \
+            README.md
       - name: Remove development section from README.md
         run: sed -i '/^## Development/,/^## Notes & Feedback/ {/^## Notes & Feedback/!d}' README.md
       - name: Commit changes
