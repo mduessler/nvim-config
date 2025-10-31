@@ -15,3 +15,15 @@ jobs:
           git clone https://github.com/mduessler/nvim-config ${NVIM_CONFIG}
           cd ${NVIM_CONFIG}
           git checkout main
+      - name: Select files from dev.
+        run: |
+          git checkout dev -- \
+            installs \
+            lua \
+            .gitignore \
+            dependencies \
+            init.lua \
+            install \
+            lazy-lock.json \
+            LICENSE \
+            README.md \
