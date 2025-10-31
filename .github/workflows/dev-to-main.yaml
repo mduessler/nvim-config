@@ -15,8 +15,8 @@ jobs:
           git clone https://github.com/mduessler/nvim-config ${NVIM_CONFIG}
           cd ${NVIM_CONFIG}
           git checkout main
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions-bot[${{ github.actor }}]"
+          git config user.email "github-actions-bot[${{ github.actor }}]@users.noreply.github.com"
       - name: Select files from dev.
         run: |
           git checkout dev -- \
