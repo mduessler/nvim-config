@@ -29,3 +29,16 @@ jobs:
             README.md \
       - name: Remove development section from README.md
         run: sed -i '/^## Development/,/^## Notes & Feedback/ {/^## Notes & Feedback/!d}' README.md
+      - name: Commit changes
+        run: |
+          git add \
+            installs \
+            lua \
+            .gitignore \
+            dependencies \
+            init.lua \
+            install \
+            lazy-lock.json \
+            LICENSE \
+            README.md
+          git commit -m "Created new main branch from dev."
