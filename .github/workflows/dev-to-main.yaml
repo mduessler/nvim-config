@@ -4,3 +4,8 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/mduessler/fedora-nvim:unit-test
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.PACKAGES_PAT }}
