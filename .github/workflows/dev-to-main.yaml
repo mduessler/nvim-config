@@ -9,3 +9,9 @@ jobs:
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.PACKAGES_PAT }}
+    steps:
+      - name: Prepare Release.
+        run: |
+          git clone https://github.com/mduessler/nvim-config ${NVIM_CONFIG}
+          cd ${NVIM_CONFIG}
+          git checkout main
