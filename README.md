@@ -17,10 +17,6 @@ developed with NVIM v0.11.4.
 - NVIM v0.11.4 or higher
 - [Nerd Fonts](https://github.com/ryanoasis/nerd-fonts) -- Need for UI
 
-## Build Dependency
-
-- [Make](https://www.gnu.org/software/make/) -- Need for installation
-
 ## Installation
 
 ### Before Installation
@@ -31,10 +27,10 @@ developed with NVIM v0.11.4.
 
 ### Actual Installation
 
-Make is required for installation. To install everything, except *Nerd Fonts*,
-simply run `make install`. You can also install it with Nerd Fonts, but this
-process takes a very long time because it clones the whole Nerd Fonts git repo.
-For this simply run `make install --nerd-fonts`.
+To install everything, except *Nerd Fonts*, simply run `./install`. You can
+also install it with Nerd Fonts, but this process takes a very long time
+because it clones the whole Nerd Fonts git repo. For this simply run
+`./install --nerd-fonts`.
 
 Currently, only an automatic installation for Fedora and Ubuntu is implemented.
 The installation script has been tested on Fedora 42 and Ubuntu 24.04. The
