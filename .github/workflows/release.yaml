@@ -1,6 +1,6 @@
-name: Create Main from dev.
+name: Release current main.
 on:
-  deployment
+  workflow_dispatch:
 jobs:
   release:
     runs-on: ubuntu-latest
