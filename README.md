@@ -14,7 +14,7 @@ developed with NVIM v0.11.4.
 
 ## Requirement
 
-- NVIM v0.11.4 or higher
+- NVIM v0.11.4
 - [Nerd Fonts](https://github.com/ryanoasis/nerd-fonts) -- Need for UI
 
 ## Installation
