@@ -19,6 +19,12 @@ developed with NVIM v0.11.4.
 
 ## Installation
 
+To clone everything, including the test files, simply clone the main branch.
+To install the editor for a specific NVIM version, download and install the
+tag, with `git clone <NVIM-VERSION> latest --single-branch` The latest tag
+always contains the most recent version. Cloned it with
+`git clone --branch latest --single-branch`.
+
 ### Before Installation
 
 1. You can set `$RUSTUP_HOME` and `$CARGO_HOME` to specify the installation
