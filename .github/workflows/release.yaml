@@ -16,6 +16,9 @@ jobs:
           cd ${NVIM_CONFIG}
           source ./dependencies
           export NVIM_VERSION="v.${NVIM_MAJOR_REQ}.${NVIM_MINOR_REQ}.${NVIM_PATCH_REQ}"
+          if git rev-parse "${NVIM_VERSION}" >/dev/null 2>&1; then
+            echo "Tag ${NVIM_VERSION} already exists. Stopping release." && exit 1
+          fi
           git checkout main
           git config user.name "github-release-bot[${{ github.actor }}]"
           git config user.email "github-release-bot@noreply.github.com"
