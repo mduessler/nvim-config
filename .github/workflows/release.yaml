@@ -50,4 +50,5 @@ jobs:
             README.md
           git commit -m "Release for nvim ${NVIM_VERSION}"
           git tag -a ${NVIM_VERSION} -m "Release for nvim ${NVIM_VERSION}"
+          git tag -f latest
           git push origin --tags
