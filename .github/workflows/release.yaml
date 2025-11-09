@@ -33,7 +33,7 @@ jobs:
             README.md
       - name: Remove development section from README.md
         run: sed -i '/^## Development/,/^## Notes & Feedback/ {/^## Notes & Feedback/!d}' README.md
-      - name: Release to main.
+      - name: Create release for nvim version.
         run: |
           git add \
             installs \
@@ -45,5 +45,6 @@ jobs:
             lazy-lock.json \
             LICENSE \
             README.md
-          git commit -m "Created new main branch from dev."
-          git push origin main
+          git commit -m "Release for nvim ${NVIM_VERSION}"
+          git tag -a ${NVIM_VERSION} -m "Release for nvim ${NVIM_VERSION}"
+          git push origin --tags
