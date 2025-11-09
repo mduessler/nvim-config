@@ -1,4 +1,4 @@
-name: Release current main.
+name: Release current main branch.
 on:
   workflow_dispatch:
 jobs:
