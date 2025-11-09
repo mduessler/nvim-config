@@ -14,12 +14,14 @@ jobs:
         run: |
           git clone https://github.com/mduessler/nvim-config ${NVIM_CONFIG}
           cd ${NVIM_CONFIG}
+          source ./dependencies
+          export NVIM_VERSION="v.${NVIM_MAJOR_REQ}.${NVIM_MINOR_REQ}.${NVIM_PATCH_REQ}"
           git checkout main
-          git config user.name "github-actions-bot[${{ github.actor }}]"
-          git config user.email "github-actions-bot[${{ github.actor }}]@users.noreply.github.com"
-      - name: Select files from dev.
+          git config user.name "github-release-bot[${{ github.actor }}]"
+          git config user.email "github-release-bot@noreply.github.com"
+      - name: Select files from main to release.
         run: |
-          git checkout dev -- \
+          git checkout -b "${NVIM_VERSION}" -- \
             installs \
             lua \
             .gitignore \
