@@ -4,6 +4,11 @@ This document holds all information needed for the Development process. Read it
 carefully before you execute the command to install the dependencies to execute
 the development environments.
 
+## Files to update before Release
+
+1. **READEME.md** - Change NVIM version.
+2. **dependencies** - Change NVIM version.
+
 ## Process
 
 The following development process must be taken into account during
