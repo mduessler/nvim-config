@@ -24,7 +24,9 @@ jobs:
           git config user.email "github-release-bot@noreply.github.com"
       - name: Select files from main to release.
         run: |
-          git checkout -b "${NVIM_VERSION}" -- \
+          git checkout --orphan "${NVIM_VERSION}"
+          git rm -rf .
+          git checkout main -- \
             installs \
             lua \
             .gitignore \
