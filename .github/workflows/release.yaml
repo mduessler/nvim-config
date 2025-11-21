@@ -18,6 +18,8 @@ jobs:
             echo "Tag v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ} already exists. Stopping release." && exit 1
           fi
           git checkout main
+          export USERNAME="${{ github.actor }}"
+          export TOKEN="${{ secrets.PACKAGES_PAT }}"
           git config user.name "github-release-bot[${{ github.actor }}]"
           git config user.email "github-release-bot@noreply.github.com"
       - name: Select files from main to release.
@@ -59,4 +61,7 @@ jobs:
           git commit -m "Release for nvim v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ}"
           git tag -a "v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ}" -m "Release for nvim v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ}"
           git tag -f latest
-          git push origin --tags
+          git push https://${USERNAME}:${TOKEN}@github.com/${{ github.repository }} HEAD --tags
+        env:
+          USERNAME: ${{ github.actor }}
+          TOKEN: ${{ secrets.PACKAGES_PAT }}
