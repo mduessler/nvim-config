@@ -24,6 +24,8 @@ jobs:
           git config user.email "github-release-bot@noreply.github.com"
       - name: Select files from main to release.
         run: |
+          cd "${NVIM_CONFIG}"
+          echo "${NVIM_CONFIG}"
           git checkout --orphan "${NVIM_VERSION}"
           git rm -rf .
           git checkout main -- \
