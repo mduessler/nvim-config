@@ -14,9 +14,8 @@ jobs:
         run: |
           git clone https://github.com/mduessler/nvim-config ${NVIM_CONFIG}
           cd ${NVIM_CONFIG}
-          export NVIM_VERSION="v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ}"
-          if git rev-parse "${NVIM_VERSION}" >/dev/null 2>&1; then
-            echo "Tag ${NVIM_VERSION} already exists. Stopping release." && exit 1
+          if git rev-parse "v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ}" >/dev/null 2>&1; then
+            echo "Tag v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ} already exists. Stopping release." && exit 1
           fi
           git checkout main
           git config user.name "github-release-bot[${{ github.actor }}]"
@@ -25,7 +24,7 @@ jobs:
         run: |
           cd "${NVIM_CONFIG}"
           echo "${NVIM_CONFIG}"
-          git checkout --orphan "${NVIM_VERSION}"
+          git checkout --orphan "v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ}"
           git rm -rf .
           git checkout main -- \
             installs \
@@ -51,7 +50,7 @@ jobs:
             lazy-lock.json \
             LICENSE \
             README.md
-          git commit -m "Release for nvim ${NVIM_VERSION}"
-          git tag -a ${NVIM_VERSION} -m "Release for nvim ${NVIM_VERSION}"
+          git commit -m "Release for nvim v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ}"
+          git tag -a "v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ}" -m "Release for nvim v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ}"
           git tag -f latest
           git push origin --tags
