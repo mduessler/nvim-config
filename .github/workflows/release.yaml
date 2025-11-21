@@ -64,4 +64,4 @@ jobs:
           git push https://${USERNAME}:${TOKEN}@github.com/${{ github.repository }} HEAD --tags
         env:
           USERNAME: ${{ github.actor }}
-          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TOKEN: ${{ secrets.PACKAGES_PAT }}
