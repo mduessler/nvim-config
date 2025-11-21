@@ -22,6 +22,7 @@ jobs:
           git config user.email "github-release-bot@noreply.github.com"
       - name: Select files from main to release.
         run: |
+          cd ${NVIM_CONFIG}
           git checkout --orphan "v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ}"
           git rm -rf .
           ls -l
@@ -39,9 +40,12 @@ jobs:
           ls -l
           git status
       - name: Remove development section from README.md
-        run: sed -i '/^## Development/,/^## Notes & Feedback/ {/^## Notes & Feedback/!d}' README.md
+        run: |
+          cd ${NVIM_CONFIG}
+          sed -i '/^## Development/,/^## Notes & Feedback/ {/^## Notes & Feedback/!d}' README.md
       - name: Create release for nvim version.
         run: |
+          cd ${NVIM_CONFIG}
           git add \
             installs \
             lua \
