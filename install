@@ -35,11 +35,16 @@ function set_arguments() {
 main() {
     set_arguments "${@}"
 
-    if ! git fetch origin "${CONFIG_VERSION}" > /dev/null 2>&1; then
+    if ${NVIM_DEV}; then
+        CONFIG_VERSION=main
+        info "Dev is enabled. So switching branch to main for development."
+    fi
+
+    if ! git fetch origin "${CONFIG_VERSION}" >/dev/null 2>&1; then
         info "Could not fetch given CONFIG_VERSION ${CONFIG_VERSION}."
         exit 1
     fi
-    if ! git checkout "${CONFIG_VERSION}" > /dev/null 2>&1; then
+    if ! git checkout "${CONFIG_VERSION}" >/dev/null 2>&1; then
         info "Could change to ${CONFIG_VERSION}."
         exit 1
     fi
