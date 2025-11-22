@@ -69,23 +69,28 @@ vim.api.nvim_create_autocmd("VimEnter", {
 
 		local config_directory = vim.fn.stdpath("config")
 		local config_version = ""
-		local local_update_time
-		local last_update_timestamp
+		local last_update_timestamp = 0
 
 		local function get_unix_time()
 			local handle = io.popen("git -C " .. config_directory .. " log -1 --format=%cd --date=unix")
 			if not handle then
-				return false
+				return nil
 			end
-			local_update_time = tonumber(handle:read("*a"):gsub("%s+", ""))
+			local output = handle:read("*a")
+			handle:close()
+			if not output then
+				return nil
+			end
+			output = output:gsub("%s+", "")
+			local local_update_time = tonumber(output)
 			if not local_update_time or local_update_time % 1 ~= 0 then
-				error("File does not contain a valid integer: " .. tostring(local_update_time))
-				return false
+				return nil, "Git output is not a valid integer: " .. tostring(output)
 			end
-			return true
+			return local_update_time
 		end
 
-		if not get_unix_time() then
+		local last_updated = get_unix_time()
+		if not last_updated then
 			return
 		end
 
@@ -107,12 +112,29 @@ vim.api.nvim_create_autocmd("VimEnter", {
 			return os.time({ year = year, month = month, day = day, hour = hour, min = min, sec = sec, isdst = false })
 		end
 
-		if is_git_tag() then
-			if config_version == "latest" then
-				print("Check if latest is updated.")
+		local function update_neded()
+			local response = request.get_json("https://api.github.com/repos/mduessler/nvim-config/tags")
+			local commit = nil
+			for _, tag in ipairs(response) do
+				if tag.name == "latest" then
+					commit = tag.commit.sha
+				end
+			end
+			if not commit then
+				error("Could not get sha of latest.")
+			end
+			local handle = io.popen("git -C " .. config_directory .. " rev-parse HEAD")
+			if not handle then
 				return
 			end
-			print("Check if a newer tag is in the repo. And download it.")
+			return commit == handle:read("*a"):gsub("%s+", "")
+		end
+
+		if is_git_tag() then
+			if update_neded() then
+				print("Update tag to latest.")
+			end
+			return
 		else
 			if config_version ~= "main" then
 				print("Skip this, only update main.")
@@ -120,7 +142,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
 			end
 			last_update_timestamp =
 				get_latest_commit_unixtime("https://api.github.com/repos/mduessler/nvim-config/branches/main")
-			if last_update_timestamp > local_update_time then
+			if last_update_timestamp > last_updated then
 				print("UPDATE!")
 			end
 		end
