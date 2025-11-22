@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+
+set -e
+
+NVIM_DEV=false
+INSTALL_NERD_FONTS=false
+
+[ -z "${SCRIPT_DIR}" ] && SCRIPT_DIR="$(pwd)/installs"
+[ -z "${DEPENDENCIES}" ] && DEPENDENCIES=$(pwd)/dependencies
+
+source "${DEPENDENCIES}"
+source "${SCRIPT_DIR}/utils"
+source "${SCRIPT_DIR}/prod"
+source "${SCRIPT_DIR}/nerd-fonts"
+source "${SCRIPT_DIR}/dev"
+
+function set_arguments() {
+    for arg in "$@"; do
+        case "$arg" in
+            dev)
+                NVIM_DEV=true
+                ;;
+            --nerd-fonts)
+                INSTALL_NERD_FONTS=true
+                ;;
+        esac
+    done
+    return 0
+}
+
+main() {
+    set_arguments "${@}"
+
+    if ${INSTALL_NERD_FONTS}; then
+        init_nerd_process
+        info "Cloning nerd-fonts in background."
+    else
+        info "Skipping nerd-fonts installation."
+        info "Please install nerd-fonts 'https://github.com/ryanoasis/nerd-fonts'."
+    fi
+
+    if ! install_prod; then
+        error "Can not install production."
+        if ${INSTALL_NERD_FONTS}; then
+            kill_nerd_fonts_process
+        fi
+        return 5
+    fi
+
+    if ${NVIM_DEV}; then
+        if ! install_dev; then
+            error "Can not install development dependencies."
+            if ${INSTALL_NERD_FONTS}; then
+                kill_nerd_fonts_process
+            fi
+            return 7
+        fi
+    fi
+
+    info "Installing language-servers, formaters and linters ... "
+    PATH="${CARGO_HOME:-$HOME/.cargo}/bin:$PATH" nvim --headless "+InitNVIM"
+    echo "\n"
+
+    if ${INSTALL_NERD_FONTS}; then
+        install_nerd_fonts
+    fi
+
+    info "You need to set a '${CARGO_HOME}/bin' in your path permanently to enable mason future updates."
+    success "Setup nvim successfully. Enjoy it :)"
+    return 0
+}
+
+main "$@"

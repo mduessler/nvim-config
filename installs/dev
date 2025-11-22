@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+
+set -e
+
+SCRIPT_DIR="${SCRIPT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
+DEPENDENCIES="${DEPENDENCIES:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../dependencies}"
+
+source "${SCRIPT_DIR}/utils" || exit 1
+source "${DEPENDENCIES}" || exit 1
+source "${SCRIPT_DIR}/shared" || exit 1
+
+install_dev() {
+    if ! install_dev_dependencies; then
+        error "Can not install development dependencies."
+        return 2
+    fi
+
+    if ! install_dev_requirements; then
+        error "Can not install development requirements."
+        return 3
+    fi
+    success "Installed development dependencies and requirements."
+    return 0
+}
+
+install_dev_dependencies() {
+    info "Installing development dependencies ..."
+
+    if [ -z "${PKG_MGR}" ]; then
+        if ! identify_system_pkg_mgr; then
+            error "Can not identify system package manager."
+            return 2
+        fi
+    fi
+
+    case "${PKG_MGR}" in
+        apt-get) install_apt_get_dependencies || { error "Can not install docker with ${PKG_MGR}" && return 1; } ;;
+        dnf) install_dnf_dependencies || { error "Can not install docker with ${PKG_MGR}" && return 1; } ;;
+        *)
+            error "Unsupported package manager: ${PKG_MGR}"
+            return 3
+            ;;
+    esac
+
+    success "Dependencies have been successfully installed."
+    return 0
+}
+
+install_apt_get_dependencies() {
+    sudo apt-get remove -y docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc
+    install_packages_with_pkg_mgr ca-certificates
+    sudo install -m 0755 -d /etc/apt/keyrings
+    sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+    sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+    # Add the repository to Apt sources:
+    echo \
+        "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" \
+        | sudo tee /etc/apt/sources.list.d/docker.list >/dev/null
+    sudo apt-get update
+    install_packages_with_pkg_mgr "${APT_DEV_DEPS[@]}"
+}
+
+install_dnf_dependencies() {
+    sudo dnf remove -y docker \
+        docker-client \
+        docker-client-latest \
+        docker-common \
+        docker-latest \
+        docker-latest-logrotate \
+        docker-logrotate \
+        docker-selinux \
+        docker-engine-selinux \
+        docker-engine || return 1
+    sudo dnf -y install dnf-plugins-core || return 1
+    sudo dnf-3 config-manager -y --add-repo https://download.docker.com/linux/fedora/docker-ce.repo || return 1
+    install_packages_with_pkg_mgr "${DNF_DEV_DEPS[@]}" || return 1
+
+    success "Installed docker for development environments."
+
+}
+
+install_dev_requirements() {
+    if ! install_lua_pkg "${LUA_DEV_REQ[@]}"; then
+        error "Can not install lua requirements."
+        return 1
+    fi
+    success "Installed development requirements successfully."
+    return 0
+}

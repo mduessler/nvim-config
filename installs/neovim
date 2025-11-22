@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+
+set -e
+
+SCRIPT_DIR="${SCRIPT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
+DEPENDENCIES="${DEPENDENCIES:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../dependencies}"
+
+source "${SCRIPT_DIR}/utils" || exit 1
+source "${DEPENDENCIES}" || exit 1
+
+install_nvim() {
+    info "Installing neovim."
+    local git_dest_dir="${XDG_DATA_HOME:-$HOME/.local/share}/src"
+    [ -d "${git_dest_dir}" ] || mkdir -p "${git_dest_dir}"
+
+    local nvim_dir=${git_dest_dir}/neovim
+
+    if [ -d "${nvim_dir}" ] && dir_is_git_repo "${nvim_dir}"; then
+        debug "Neovim git repo exists. Pulling ..."
+        pull_git_dir "${nvim_dir}" || return 2
+    elif [ ! -d "${nvim_dir}" ]; then
+        debug "Neovim git repo not exists. Cloning ..."
+        if ! git clone --depth=1 https://github.com/neovim/neovim "${nvim_dir}" -b "v${NVIM_MAJOR_REQ}.${NVIM_MINOR_REQ}.${NVIM_PATCH_REQ}"; then
+            error "Can not clone repo."
+            return 3
+        fi
+    else
+        error "Directory ${nvim_dir} already exists and is no git repo."
+        return 1
+    fi
+    debug "Change workdir to ${nvim_dir} and install neovim v${NVIM_MAJOR_REQ}.${NVIM_MINOR_REQ}.${NVIM_PATCH_REQ}"
+    cd "${nvim_dir}" && git checkout "v${NVIM_MAJOR_REQ}.${NVIM_MINOR_REQ}.${NVIM_PATCH_REQ}" || return 4
+    make CMAKE_BUILD_TYPE=Release || return 5
+    sudo make install || return 6
+    success "Installed $(nvim --version 2>/dev/null | head -n1)."
+    return 0
+}
+
+check_nvim_version() {
+    local regex="^NVIM .([0-9]+).([0-9]+).([0-9]+)"
+    nvim --version
+    status="$?"
+    if [ ${status} -ne 0 ]; then
+        warning "Can not execute neovim."
+        return 2
+    fi
+    if [[ $(nvim --version 2>/dev/null | head -1) =~ ${regex} ]]; then
+        local major=${BASH_REMATCH[1]}
+        local minor=${BASH_REMATCH[2]}
+        local patch=${BASH_REMATCH[3]}
+        info "Installed nvim version is v${major}.${minor}.${patch}."
+        if [ "${major}" = "$NVIM_MAJOR_REQ" ] && [ "${minor}" = "$NVIM_MINOR_REQ" ] && [ "${patch}" = "$NVIM_PATCH_REQ" ]; then
+            return 0
+        fi
+        warning "Neovim version is v${major}.${minor}.${patch}. But v${NVIM_MAJOR_REQ}.${NVIM_MINOR_REQ}.${NVIM_PATCH_REQ} is needed."
+        return 3
+    fi
+    warning "Invalid version format."
+    return 1
+}

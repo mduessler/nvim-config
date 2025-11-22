@@ -1,0 +1,107 @@
+#!/usr/bin/env bash
+
+set -e
+
+SCRIPT_DIR="${SCRIPT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
+
+source "${SCRIPT_DIR}/utils"
+
+identify_system_pkg_mgr() {
+    if [ -z "${PKG_MGR}" ]; then
+        info "Identifing package manger."
+        if check_command apt-get; then
+            PKG_MGR="apt-get"
+        elif check_command dnf; then
+            PKG_MGR="dnf"
+        else
+            warning "No valid package manager found."
+            return 1
+        fi
+    else
+        debug "Package manager was already defined as '${PKG_MGR}'"
+    fi
+    success "Identified '${PKG_MGR}' as package manager."
+    return 0
+}
+
+install_packages_with_pkg_mgr() {
+    if [ -z "${PKG_MGR}" ]; then
+        warning "Need to set 'PKG_MGR', or call 'identify_system_pkg_mgr'."
+        return 2
+    elif [ $# -eq 0 ]; then
+        warning "No package given. Please provide at least one packge."
+        return 3
+    fi
+
+    local packages="$*"
+    info "Installing: ${packages} ..."
+    debug "Updating repositories."
+    if ! sudo "${PKG_MGR}" update -y; then
+        warning "Can not update the package repositories."
+    fi
+
+    debug "Installing package(s)."
+    if ! sudo "${PKG_MGR}" install -y "$@"; then
+        error "Can not install package(s)."
+        return 1
+    fi
+
+    success "Installed packages: ${packages}."
+    return 0
+}
+
+install_lua_pkg() {
+    if ! check_command lua; then
+        warning "Lua is not installed or rust and cargo not in '\$PATH'."
+        return 2
+    elif [ $# -eq 0 ]; then
+        warning "No package given. Please provide at least one packge."
+        return 3
+    fi
+
+    local packages=("$@")
+
+    for pkg in "${packages[@]}"; do
+        if luarocks show "${pkg}" >/dev/null 2>&1; then
+            info "${pkg} is already installed, skipping ..."
+            continue
+        fi
+
+        debug "Installing ${pkg} ..."
+        if ! luarocks install --local "${pkg}"; then
+            error "Failed to install ${pkg}."
+            return 1
+        fi
+        info "Installed ${pkg}."
+    done
+    success "Finished package installation."
+    return 0
+}
+
+install_cargo_pkg() {
+    if ! check_command rustc || ! check_command cargo; then
+        warning "Rust is not installed or rust and cargo not in '\$PATH'."
+        return 2
+    elif [ $# -eq 0 ]; then
+        warning "No package given. Please provide at least one packge."
+        return 3
+    fi
+
+    local packages=("$@")
+
+    for pkg in "${packages[@]}"; do
+        if cargo install --list | grep -q "^${pkg} "; then
+            info "${pkg} is already installed, skipping ..."
+            continue
+        fi
+
+        debug "Installing ${pkg} ..."
+        if ! cargo install "${pkg}"; then
+            error "Failed to install ${pkg}."
+            return 1
+        fi
+        info "Installed ${pkg}."
+    done
+    success "Finished package installation."
+    return 0
+}

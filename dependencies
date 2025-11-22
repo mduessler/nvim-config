@@ -1,0 +1,110 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2034
+#
+# This file defines system package dependencies for this project.
+# It should be sourced by installer scripts (not executed directly).
+# Example:
+#   source "./dependencies"
+
+#
+# Production dependencies
+#
+
+export NVIM_MAJOR_REQ=0
+export NVIM_MINOR_REQ=11
+export NVIM_PATCH_REQ=4
+
+DEPS=(
+    rust
+)
+
+APT_DEPS=(
+    build-essential
+    clang
+    cmake
+    curl
+    g++
+    gcc
+    gettext
+    git
+    golang
+    libssl-dev
+    libstdc++-14-dev
+    lua5.4
+    luarocks
+    maven
+    neovim
+    ninja-build
+    nodejs
+    npm
+    openjdk-21-jdk
+    pkg-config
+    pre-commit
+    python3
+    python3-pip
+    python3-venv
+)
+
+DNF_DEPS=(
+    clang
+    cmake
+    curl
+    gcc
+    gcc-c++
+    gettext
+    git
+    glibc-gconv-extra
+    golang
+    java-latest-openjdk-devel
+    libstdc++-static
+    lua
+    luarocks
+    make
+    maven
+    neovim
+    ninja-build
+    nodejs
+    openssl-devel
+    pkg-config
+    pre-commit
+    python
+    python-pip
+)
+
+#
+# Production requirements
+#
+
+LUA_REQ=(
+    lpeglabel
+)
+
+RUST_REQ=(
+    selene
+)
+
+#
+# Development dependencies
+#
+
+APT_DEV_DEPS=(
+    ca-certificates
+    docker-ce
+    docker-ce-cli
+    containerd.io
+    docker-buildx-plugin
+)
+
+DNF_DEV_DEPS=(
+    docker-ce
+    docker-ce-cli
+    containerd.io
+    docker-buildx-plugin
+)
+
+#
+# Development requirements
+#
+LUA_DEV_REQ=(
+    luaunit
+)
