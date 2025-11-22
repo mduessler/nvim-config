@@ -60,18 +60,26 @@ vim.api.nvim_create_autocmd("VimEnter", {
 	desc = "Notify user about new config version.",
 	once = true,
 	callback = function()
+		local require_safe = require("utils.require_safe")
+		local request = require_safe("utils.request")
+
+		if not request then
+			return
+		end
+
 		local config_directory = vim.fn.stdpath("config")
 		local config_version = ""
-		local unix_time
+		local local_update_time
+		local last_update_timestamp
 
 		local function get_unix_time()
 			local handle = io.popen("git -C " .. config_directory .. " log -1 --format=%cd --date=unix")
 			if not handle then
 				return false
 			end
-			unix_time = tonumber(handle:read("*a"):gsub("%s+", ""))
-			if not unix_time or unix_time % 1 ~= 0 then
-				error("File does not contain a valid integer: " .. tostring(unix_time))
+			local_update_time = tonumber(handle:read("*a"):gsub("%s+", ""))
+			if not local_update_time or local_update_time % 1 ~= 0 then
+				error("File does not contain a valid integer: " .. tostring(local_update_time))
 				return false
 			end
 			return true
@@ -92,6 +100,13 @@ vim.api.nvim_create_autocmd("VimEnter", {
 			return config_version ~= ""
 		end
 
+		local function get_latest_commit_unixtime(url)
+			local response = request.get_json(url)
+			local date = response.commit.committer.date
+			local year, month, day, hour, min, sec = date:match("(%d+)-(%d+)-(%d+)T(%d+):(%d+):(%d+)Z")
+			return os.time({ year = year, month = month, day = day, hour = hour, min = min, sec = sec, isdst = false })
+		end
+
 		if is_git_tag() then
 			if config_version == "latest" then
 				print("Check if latest is updated.")
@@ -101,6 +116,12 @@ vim.api.nvim_create_autocmd("VimEnter", {
 		else
 			if config_version ~= "main" then
 				print("Skip this, only update main.")
+				return
+			end
+			last_update_timestamp =
+				get_latest_commit_unixtime("https://api.github.com/repos/mduessler/nvim-config/branches/main")
+			if last_update_timestamp > local_update_time then
+				print("UPDATE!")
 			end
 		end
 	end,
