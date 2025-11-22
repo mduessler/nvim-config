@@ -16,20 +16,29 @@ source "${SCRIPT_DIR}/nerd-fonts"
 source "${SCRIPT_DIR}/dev"
 
 function set_arguments() {
-    for arg in "$@"; do
-        case "$arg" in
+    while [[ $# -gt 0 ]]; do
+        case "${1}" in
             dev)
                 NVIM_DEV=true
+                shift
                 ;;
-            config-version)
-                CONFIG_VERSION="${arg}"
+            --config-version)
+                CONFIG_VERSION="${2}"
+                if [ "${2}" = "dev" ] | [ "${2}" = "--nerd-fonts" ]; then
+                    error "Missing Tag or version for --config-version"
+                    exit 1
+                fi
+                shift 2
                 ;;
             --nerd-fonts)
                 INSTALL_NERD_FONTS=true
+                shift
+                ;;
+            *)
+                shift
                 ;;
         esac
     done
-    return 0
 }
 
 main() {
