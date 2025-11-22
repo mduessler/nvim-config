@@ -59,5 +59,20 @@ vim.api.nvim_create_autocmd("VimEnter", {
 	pattern = "*",
 	desc = "Notify user about new config version.",
 	once = true,
-	callback = function() end,
+	callback = function()
+		local config_directory = vim.fn.stdpath("config")
+		function is_git_tag()
+			-- Checks if git HEAD is a tag.
+			local handle = io.popen("git -C " .. config_directory .. " describe --tags --exact-match 2>/dev/null")
+			if not handle then
+				return false
+			end
+			local tag = handle:read("*a"):gsub("%s+", "")
+			handle:close()
+			return tag ~= ""
+		end
+		if is_git_tag() then
+			print("Hello")
+		end
+	end,
 })
