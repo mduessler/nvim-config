@@ -19,9 +19,9 @@ developed with NVIM v0.11.4.
 
 ## Installation
 
-To clone everything, including the test files, simply clone the main branch.
+To clone everything, including the test files, simply clone the `main branch`.
 To install the editor for a specific NVIM version, download and install the
-tag, with `git clone <NVIM-VERSION> latest --single-branch` The latest tag
+tag, with `git clone <NVIM-VERSION> latest --single-branch`. The `latest tag`
 always contains the most recent version. Cloned it with
 `git clone --branch latest --single-branch`.
 
@@ -33,10 +33,15 @@ always contains the most recent version. Cloned it with
 
 ### Actual Installation
 
-To install everything, except *Nerd Fonts*, simply run `./install`. You can
-also install it with Nerd Fonts, but this process takes a very long time
-because it clones the whole Nerd Fonts git repo. For this simply run
-`./install --nerd-fonts`.
+To install the NVIM config, simply run `./install`. By default, the [latest
+version](https://github.com/mduessler/nvim-config/tree/latest) is installed.
+The installation can be modified by using the arguments:
+
+- **--config-version** -- Set the tag or branch which will be installed. Set it
+  with `--config-version <tag>`. The config version is automatically set to the
+  `main branch`, if the `dev` argument is used.
+- **dev** -- Enable development mode.
+- **--nerd-fonts** -- Clone the nerd-fonts repository.
 
 Currently, only an automatic installation for Fedora and Ubuntu is implemented.
 The installation script has been tested on Fedora 42 and Ubuntu 24.04. The
