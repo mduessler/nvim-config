@@ -35,6 +35,15 @@ function set_arguments() {
 main() {
     set_arguments "${@}"
 
+    if ! git fetch origin "${CONFIG_VERSION}" > /dev/null 2>&1; then
+        info "Could not fetch given CONFIG_VERSION ${CONFIG_VERSION}."
+        exit 1
+    fi
+    if ! git checkout "${CONFIG_VERSION}" > /dev/null 2>&1; then
+        info "Could change to ${CONFIG_VERSION}."
+        exit 1
+    fi
+
     if ${INSTALL_NERD_FONTS}; then
         init_nerd_process
         info "Cloning nerd-fonts in background."
