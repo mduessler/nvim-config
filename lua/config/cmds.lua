@@ -61,18 +61,43 @@ vim.api.nvim_create_autocmd("VimEnter", {
 	once = true,
 	callback = function()
 		local config_directory = vim.fn.stdpath("config")
+		local config_version = ""
+		local unix_time
+
+		function get_unix_time()
+			local handle = io.popen("git -C " .. config_directory .. " log -1 --format=%cd --date=unix")
+			if not handle then
+				return false
+			end
+			unix_time = tonumber(handle:read("*a"):gsub("%s+", ""))
+			if not unix_time or unix_time % 1 ~= 0 then
+				error("File does not contain a valid integer: " .. tostring(unix_time))
+				return false
+			end
+			return true
+		end
+
+		if not get_unix_time() then
+			return
+		end
+
 		function is_git_tag()
 			-- Checks if git HEAD is a tag.
 			local handle = io.popen("git -C " .. config_directory .. " describe --tags --exact-match 2>/dev/null")
 			if not handle then
 				return false
 			end
-			local tag = handle:read("*a"):gsub("%s+", "")
+			config_version = handle:read("*a"):gsub("%s+", "")
 			handle:close()
-			return tag ~= ""
+			return config_version ~= ""
 		end
+
 		if is_git_tag() then
-			print("Hello")
+			if config_version == "latest" then
+				print("Check if latest is updated")
+				return
+			end
+			print("Check if a newer tag is in the repo. And download it")
 		end
 	end,
 })
