@@ -54,3 +54,10 @@ vim.api.nvim_create_user_command("InitNVIM", function()
 		vim.cmd("qa!")
 	end
 end, { desc = "Initalize plugins, lsps and Treesitter" })
+
+vim.api.nvim_create_autocmd("VimEnter", {
+	pattern = "*",
+	desc = "Notify user about new config version.",
+	once = true,
+	callback = function() end,
+})
