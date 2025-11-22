@@ -71,7 +71,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
 		local config_version = ""
 		local last_update_timestamp = 0
 
-		local function get_unix_time()
+		local function get_last_local_update_time()
 			local handle = io.popen("git -C " .. config_directory .. " log -1 --format=%cd --date=unix")
 			if not handle then
 				return nil
@@ -89,7 +89,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
 			return local_update_time
 		end
 
-		local last_updated = get_unix_time()
+		local last_updated = get_last_local_update_time()
 		if not last_updated then
 			return
 		end
