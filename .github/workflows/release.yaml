@@ -25,7 +25,7 @@ jobs:
       - name: Select files from main to release.
         run: |
           cd ${NVIM_CONFIG}
-          git checkout --orphan "v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ}"
+          git checkout --orphan "Release"
           git rm -rf .
           ls -l
           git status
@@ -58,10 +58,12 @@ jobs:
             lazy-lock.json \
             LICENSE \
             README.md
-          git commit -m "Release for nvim v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ}"
+          git commit -m "Release config for nvim v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ}"
           git tag -a "v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ}" -m "Release for nvim v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ}"
           git tag -f latest
-          git push https://${USERNAME}:${TOKEN}@github.com/${{ github.repository }} HEAD --tags
+          git checkout main
+          git branch -D "Release"
+          git push https://${USERNAME}:${TOKEN}@github.com/${{ github.repository }} HEAD --tags --force
         env:
           USERNAME: ${{ github.actor }}
           TOKEN: ${{ secrets.PACKAGES_PAT }}
