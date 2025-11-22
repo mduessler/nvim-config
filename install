@@ -46,7 +46,7 @@ main() {
 
     if ${NVIM_DEV}; then
         CONFIG_VERSION=main
-        info "Dev is enabled. So switching branch to main for development."
+        debug "Dev is enabled. So switching branch to main for development."
     fi
 
     if ! git fetch origin "${CONFIG_VERSION}" >/dev/null 2>&1; then
