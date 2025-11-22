@@ -18,7 +18,7 @@ local function get(url)
 	return response_body
 end
 
-M.requst_json = function(url)
+M.get_json = function(url)
 	local response = get(url)
 	if not response then
 		return {}
