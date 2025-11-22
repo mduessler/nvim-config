@@ -2,6 +2,7 @@
 
 set -e
 
+CONFIG_VERSION=latest
 NVIM_DEV=false
 INSTALL_NERD_FONTS=false
 
@@ -19,6 +20,9 @@ function set_arguments() {
         case "$arg" in
             dev)
                 NVIM_DEV=true
+                ;;
+            config-version)
+                CONFIG_VERSION="${arg}"
                 ;;
             --nerd-fonts)
                 INSTALL_NERD_FONTS=true
