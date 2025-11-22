@@ -94,10 +94,14 @@ vim.api.nvim_create_autocmd("VimEnter", {
 
 		if is_git_tag() then
 			if config_version == "latest" then
-				print("Check if latest is updated")
+				print("Check if latest is updated.")
 				return
 			end
-			print("Check if a newer tag is in the repo. And download it")
+			print("Check if a newer tag is in the repo. And download it.")
+		else
+			if config_version ~= "main" then
+				print("Skip this, only update main.")
+			end
 		end
 	end,
 })
