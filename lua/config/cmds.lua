@@ -64,7 +64,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
 		local config_version = ""
 		local unix_time
 
-		function get_unix_time()
+		local function get_unix_time()
 			local handle = io.popen("git -C " .. config_directory .. " log -1 --format=%cd --date=unix")
 			if not handle then
 				return false
@@ -81,7 +81,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
 			return
 		end
 
-		function is_git_tag()
+		local function is_git_tag()
 			-- Checks if git HEAD is a tag.
 			local handle = io.popen("git -C " .. config_directory .. " describe --tags --exact-match 2>/dev/null")
 			if not handle then
