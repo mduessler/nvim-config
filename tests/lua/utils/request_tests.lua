@@ -48,12 +48,8 @@ function TestRequest:test_get_json_decode_failure()
 	package.loaded["utils.require_safe"] = function(name)
 		if name == "socket.http" then
 			return {
-				request = function(url)
-					if url == "https://api.github.com/repos/mduessler/nvim-config/commits/SUCCESS" then
-						return '{"committer":{"data":"2025-11-22t01:22:03z"}}', 200
-					else
-						return '{"committer":{"data":"2025-11-22t01:22:03z"}}', 500
-					end
+				request = function(_)
+					return '{"committer":{"data":"2025-11-22t01:22:03z"}}', 200
 				end,
 			}
 		end
