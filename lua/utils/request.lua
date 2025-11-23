@@ -26,6 +26,7 @@ M.get_json = function(url)
 
 	local ok, data = pcall(cjson.decode, response)
 	if not ok then
+		error("Can not decode response of request to " .. url .. ".")
 		return nil
 	end
 
