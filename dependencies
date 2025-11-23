@@ -77,6 +77,7 @@ DNF_DEPS=(
 
 LUA_REQ=(
     lpeglabel
+    luasocket
 )
 
 RUST_REQ=(
