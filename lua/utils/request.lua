@@ -1,8 +1,8 @@
 local require_safe = require("utils.require_safe")
 local http = require_safe("socket.http")
-local json = require_safe("json")
+local cjson = require_safe("cjson")
 
-if not (http and json) then
+if not (http and cjson) then
 	return
 end
 
@@ -21,9 +21,15 @@ end
 M.get_json = function(url)
 	local response = get(url)
 	if not response then
-		return {}
+		return nil
 	end
-	return json.decode(response)
+
+	local ok, data = pcall(cjson.decode, response)
+	if not ok then
+		return nil
+	end
+
+	return data
 end
 
 return M
