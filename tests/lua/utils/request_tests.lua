@@ -1,7 +1,5 @@
 local luaunit = require("luaunit")
 
-local TestRequest = {}
-
 local url_success = "https://api.github.com/repos/mduessler/nvim-config/commits/SUCCESS"
 local url_failure = "https://api.github.com/repos/mduessler/nvim-config/commits/FAIL"
 
@@ -26,15 +24,17 @@ package.loaded["utils.require_safe"] = function(name)
 	end
 end
 
-local M = require("utils.request")
+local request = require("utils.request")
+
+local TestRequest = {}
 
 TestRequest.test_get = function()
 	local function test_success()
-		local data = M.get(url_success)
+		local data = request.get(url_success)
 		luaunit.assertEqual(data, { ok = true })
 	end
 	local function test_failure()
-		local data = M.get(url_failure)
+		local data = request.get(url_failure)
 		luaunit.assertNil(data)
 		luaunit.assertErrorMsgEquals("Request to " .. url_failure .. " failed with 500")
 	end
