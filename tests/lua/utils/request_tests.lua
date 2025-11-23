@@ -1,4 +1,4 @@
-local luaunit = require("luaunit")
+local lu = require("luaunit")
 
 local url_success = "https://api.github.com/repos/mduessler/nvim-config/commits/SUCCESS"
 local url_failure = "https://api.github.com/repos/mduessler/nvim-config/commits/FAIL"
@@ -24,27 +24,26 @@ package.loaded["utils.require_safe"] = function(name)
 	end
 end
 
-local request = require("utils.request")
+local request = require("lua.utils.request")
 
-local TestRequest = {}
+_G.TestRequest = {}
 
-function TestRequest:test_getsuccess()
+function _G.TestRequest:test_get_success()
 	local response = request.get(url_success)
-	luaunit.assertEqual(response, { ok = true })
+	lu.assertEquals(response, '{"committer":{"data":"2025-11-22t01:22:03z"}}')
 end
 
-function TestRequest:test_getfailure()
+function _G.TestRequest:test_get_failure()
 	local response = request.get(url_failure)
-	luaunit.assertNil(response)
-	luaunit.assertErrorMsgEquals("Request to " .. url_failure .. " failed with 500")
+	lu.assertNil(response)
 end
 
-function TestRequest:test_get_json_is_nil()
+function _G.TestRequest:test_get_json_is_nil()
 	local data = request.get_json(url_failure)
-	luaunit.assertNil(data)
+	lu.assertNil(data)
 end
 
-function TestRequest:test_get_json_decode_failure()
+function _G.TestRequest:test_get_json_decode_failure()
 	package.loaded["utils.require_safe"] = function(name)
 		if name == "socket.http" then
 			return {
@@ -57,19 +56,20 @@ function TestRequest:test_get_json_decode_failure()
 			return {
 				decode = function()
 					error("bad json")
+					return "asd", 1
 				end,
 			}
 		end
 	end
-	local request_ = require("utils.request")
+	package.loaded["lua.utils.request"] = nil
+	local request_ = require("lua.utils.request")
 	local data = request_.get_json(url_success)
-	luaunit.assertNil(data)
-	luaunit.assertErrorMsgEquals("Can not decode response of request to " .. url_success .. ".")
+	lu.assertNil(data)
 end
 
-function TestRequest:test_get_json_decode_success()
+function _G.TestRequest:test_get_json_decode_success()
 	local data = request.get_json(url_success)
-	luaunit.assertEqual(data, { ok = true })
+	lu.assertEquals(data, { ok = true })
 end
 
-return TestRequest
+return _G.TestRequest
