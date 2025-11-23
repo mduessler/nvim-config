@@ -8,25 +8,25 @@ end
 
 local M = {}
 
-local function get(url)
+M.get = function(url)
 	local response_body, status = http.request(url)
 
 	if status ~= 200 then
-		error("Request to " .. url .. " failed with " .. tostring(status) .. ".")
+		vim.notify("Request to " .. url .. " failed with " .. tostring(status) .. ".", vim.log.levels.WARN)
 		return nil
 	end
 	return response_body
 end
 
 M.get_json = function(url)
-	local response = get(url)
+	local response = M.get(url)
 	if not response then
 		return nil
 	end
 
 	local ok, data = pcall(cjson.decode, response)
 	if not ok then
-		error("Can not decode response of request to " .. url .. ".")
+		vim.notify("Can not decode response of request to " .. url .. ".", vim.log.levels.ERROR)
 		return nil
 	end
 
