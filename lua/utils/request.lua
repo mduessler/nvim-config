@@ -12,7 +12,7 @@ local function get(url)
 	local response_body, status = http.request(url)
 
 	if status ~= 200 then
-		error("Request to " .. url .. " failed with " .. tostring(status))
+		error("Request to " .. url .. " failed with " .. tostring(status) .. ".")
 		return nil
 	end
 	return response_body
