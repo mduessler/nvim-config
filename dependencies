@@ -78,6 +78,7 @@ DNF_DEPS=(
 LUA_REQ=(
     lpeglabel
     luasocket
+    lua-cjson
 )
 
 RUST_REQ=(
