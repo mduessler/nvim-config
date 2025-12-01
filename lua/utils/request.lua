@@ -8,15 +8,17 @@ end
 
 local M = {}
 
-M.get = function(url)
-	local handle = vim.fn.system("curl", { url })
+M.request = function(url)
+	local output = vim.fn.system("curl", { url })
 	if vim.v.shell_error ~= 0 then
 		vim.notify("Request to " .. url .. " failed with " .. tostring(vim.v.shell_error) .. ".", vim.log.levels.WARN)
 		return nil
 	end
-	if handle == nil then
-		return nil
-	end
+	local header, body = output:match("([\0-\255]*)\r?\n\r?\n([\0-\255]*)")
+	return header, body
+end
+
+M.get = function(url)
 	local response_body, status = http.request(url)
 
 	if status ~= 200 then
