@@ -15,7 +15,7 @@ package.loaded["utils.require_safe"] = function(name)
 			end,
 		}
 	end
-	if name == "cjson" then
+	if name == "lunajson" then
 		return {
 			decode = function(_)
 				return { ok = true }
@@ -52,11 +52,10 @@ function _G.TestRequest:test_get_json_decode_failure()
 				end,
 			}
 		end
-		if name == "cjson" then
+		if name == "lunajson" then
 			return {
 				decode = function()
-					error("bad json")
-					return "asd", 1
+					return nil, 1, 2
 				end,
 			}
 		end
