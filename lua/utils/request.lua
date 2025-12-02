@@ -1,8 +1,7 @@
 local require_safe = require("utils.require_safe")
-local http = require_safe("socket.http")
-local cjson = require_safe("cjson")
+local lunajson = require_safe("lunajson")
 
-if not (http and cjson) then
+if not lunajson then
 	return
 end
 
@@ -36,31 +35,6 @@ M.get_new = function(url)
 	}
 
 	return response, body_raw
-end
-
-M.get = function(url)
-	local response_body, status = http.request(url)
-
-	if status ~= 200 then
-		vim.notify("Request to " .. url .. " failed with " .. tostring(status) .. ".", vim.log.levels.WARN)
-		return nil
-	end
-	return response_body
-end
-
-M.get_json = function(url)
-	local response = M.get(url)
-	if not response then
-		return nil
-	end
-
-	local ok, data = pcall(cjson.decode, response)
-	if not ok then
-		vim.notify("Can not decode response of request to " .. url .. ".", vim.log.levels.ERROR)
-		return nil
-	end
-
-	return data
 end
 
 return M
