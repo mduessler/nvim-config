@@ -8,14 +8,34 @@ end
 
 local M = {}
 
-M.request = function(url)
+M.get_new = function(url)
 	local output = vim.fn.system("curl", { url })
 	if vim.v.shell_error ~= 0 then
 		vim.notify("Request to " .. url .. " failed with " .. tostring(vim.v.shell_error) .. ".", vim.log.levels.WARN)
 		return nil
 	end
-	local header, body = output:match("([\0-\255]*)\r?\n\r?\n([\0-\255]*)")
-	return header, body
+
+	local function parse_header(raw)
+		local headers = {}
+		for line in raw:gmatch("[^\r\n]+") do
+			local key, value = line:match("([^:]+):%s*(.*)")
+			if key and value then
+				headers[key] = value
+			end
+		end
+		for k, v in pairs(headers) do
+			print(k, v)
+		end
+		return headers
+	end
+
+	local header_raw, body_raw = output:match("([\0-\255]*)\r?\n\r?\n([\0-\255]*)")
+
+	local response = {
+		header = parse_header(header_raw),
+	}
+
+	return response, body_raw
 end
 
 M.get = function(url)
