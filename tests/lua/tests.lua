@@ -10,6 +10,6 @@ vim = {
 	},
 }
 
-require("tests.lua.utils.request_tests")
+require("tests.lua.utils")
 
 os.exit(lu.LuaUnit.run())
