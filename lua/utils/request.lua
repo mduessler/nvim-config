@@ -9,22 +9,22 @@ end
 local M = {}
 
 M.get = function(url)
-	local response = http.request(url)
+	local body, status = http.request(url)
 
-	if response.status ~= 200 then
-		vim.notify("Request to " .. url .. " failed with " .. tostring(response.status) .. ".", vim.log.levels.WARN)
+	if status ~= 200 then
+		vim.notify("Request to " .. url .. " failed with " .. tostring(status) .. ".", vim.log.levels.WARN)
 		return nil
 	end
-	return response
+	return body
 end
 
 M.get_json = function(url)
-	local resp_body, _ = M.get(url)
-	if not resp_body then
+	local body = M.get(url)
+	if not body then
 		return nil
 	end
 
-	local data, pos, err = lunajson.decode(resp_body)
+	local data, pos, err = lunajson.decode(body)
 
 	if not data then
 		vim.notify(
