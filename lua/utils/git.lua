@@ -1,23 +1,24 @@
 local M = {}
 
+M.popen = io.popen
+
 M.get_tag = function(repo)
-	local handle = io.popen("git -C " .. repo .. " describe --tags --exact-match 2>/dev/null")
+	local handle = M.popen("git -C " .. repo .. " describe --tags --exact-match 2>/dev/null")
 	local ref = nil
 	if handle then
 		ref = handle:read("*a"):gsub("%s+", "")
 		handle:close()
+		return ref ~= "" and ref or nil
 	end
 	return ref
 end
 
 M.get_branch = function(repo)
-	local handle = io.popen("git -C " .. repo .. " rev-parse --abbrev-ref HEAD 2>/dev/null")
+	local handle = M.popen("git -C " .. repo .. " rev-parse --abbrev-ref HEAD 2>/dev/null")
 	if handle then
 		local ref = handle:read("*a"):gsub("%s+", "")
 		handle:close()
-		if ref ~= "" and ref ~= "HEAD" then
-			return ref
-		end
+		return (ref ~= "" and ref ~= "HEAD") and ref or nil
 	end
 	return nil
 end
