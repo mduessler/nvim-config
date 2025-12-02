@@ -1,7 +1,7 @@
 local lu = require("luaunit")
 local git = require("lua.utils.git")
 
-_G.TestGitUtils = {}
+_G.TestGit = {}
 
 local function mock_handle(output)
 	return {
@@ -12,42 +12,42 @@ local function mock_handle(output)
 	}
 end
 
-function _G.TestGitUtils:test_get_tag()
+function _G.TestGit:test_get_tag()
 	git.popen = function(_)
 		return mock_handle("v1.2.3\n")
 	end
 	lu.assertEquals(git.get_tag("/fake/repo"), "v1.2.3")
 end
 
-function _G.TestGitUtils:test_get_tag_nil()
+function _G.TestGit:test_get_tag_nil()
 	git.popen = function(_)
 		return mock_handle("\n")
 	end
 	lu.assertNil(git.get_tag("/fake/repo"))
 end
 
-function _G.TestGitUtils:test_get_branch()
+function _G.TestGit:test_get_branch()
 	git.popen = function(_)
 		return mock_handle("main\n")
 	end
 	lu.assertEquals(git.get_branch("/fake/repo"), "main")
 end
 
-function _G.TestGitUtils:test_get_branch_nil()
+function _G.TestGit:test_get_branch_nil()
 	git.popen = function(_)
 		return mock_handle("\n")
 	end
 	lu.assertNil(git.get_branch("/fake/repo"))
 end
 
-function _G.TestGitUtils:test_get_branch_nil_for_HEAD()
+function _G.TestGit:test_get_branch_nil_for_HEAD()
 	git.popen = function(_)
 		return mock_handle("HEAD\n")
 	end
 	lu.assertNil(git.get_branch("/fake/repo"))
 end
 
-function _G.TestGitUtils:test_is_tag_or_branch_tag()
+function _G.TestGit:test_is_tag_or_branch_tag()
 	git.popen = function(cmd)
 		if cmd:find("describe") then
 			return mock_handle("v1.2.3\n")
@@ -57,7 +57,7 @@ function _G.TestGitUtils:test_is_tag_or_branch_tag()
 	lu.assertEquals(git.is_tag_or_branch("/fake/repo"), "tag")
 end
 
-function _G.TestGitUtils:test_is_tag_or_branch_branch()
+function _G.TestGit:test_is_tag_or_branch_branch()
 	git.popen = function(cmd)
 		if cmd:find("describe") then
 			return mock_handle("")
@@ -67,11 +67,11 @@ function _G.TestGitUtils:test_is_tag_or_branch_branch()
 	lu.assertEquals(git.is_tag_or_branch("/fake/repo"), "branch")
 end
 
-function _G.TestGitUtils:test_is_tag_or_branch_nil()
+function _G.TestGit:test_is_tag_or_branch_nil()
 	git.popen = function(_)
 		return mock_handle("")
 	end
 	lu.assertNil(git.is_tag_or_branch("/fake/repo"))
 end
 
-return _G.TestGitUtils
+return _G.TestGit
