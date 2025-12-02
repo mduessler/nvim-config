@@ -64,30 +64,29 @@ vim.api.nvim_create_autocmd("VimEnter", {
 				end
 			end
 			if not commit then
-				error("Could not get sha of latest.")
+				return false
 			end
 			local handle = io.popen("git -C " .. config_directory .. " rev-parse HEAD")
 			if not handle then
-				return
+				return false
 			end
 			return commit == handle:read("*a"):gsub("%s+", "")
 		end
 
 		if is_git_tag() then
-			if update_neded() then
-				print("Update tag to latest.")
+			if not update_neded() then
+				return
 			end
-			return
 		else
 			if config_version ~= "main" then
-				print("Skip this, only update main.")
 				return
 			end
 			last_update_timestamp =
 				get_latest_commit_unixtime("https://api.github.com/repos/mduessler/nvim-config/branches/main")
-			if last_update_timestamp > last_updated then
-				print("UPDATE!")
+			if last_update_timestamp <= last_updated then
+				return
 			end
 		end
+		vim.notify("New version is out. Compile it with", vim.log.levels.SUCCESS)
 	end,
 })
