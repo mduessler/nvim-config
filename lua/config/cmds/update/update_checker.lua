@@ -11,71 +11,51 @@ vim.api.nvim_create_autocmd("VimEnter", {
 			return
 		end
 
-		local config_directory = vim.fn.stdpath("config")
-		local config_version = ""
-		local last_update_timestamp = 0
+		local config_dir = vim.fn.stdpath("config")
+		local main_branch_url = "https://api.github.com/repos/mduessler/nvim-config/branches/main"
+		local tags_url = "https://api.github.com/repos/mduessler/nvim-config/tags"
 
-		local function get_last_local_update_time(target)
-			local output = git.get_modified_timestamp(config_directory, target)
-			if not output then
-				return nil
+		local function get_local_timestamp(target)
+			local output = git.get_modified_timestamp(config_dir, target)
+			local ts = tonumber(output)
+			if ts and ts % 1 == 0 then
+				return ts
 			end
-
-			local local_update_time = tonumber(output)
-			if not local_update_time or local_update_time % 1 ~= 0 then
-				return nil
-			end
-			return local_update_time
 		end
 
-		local last_updated = get_last_local_update_time()
-		if not last_updated then
-			return
-		end
-
-		local function get_latest_commit_unixtime(url)
+		local function iso_8601_to_unix(url)
 			local response = request.get_json(url)
 			local date = response.commit.committer.date
 			local year, month, day, hour, min, sec = date:match("(%d+)-(%d+)-(%d+)T(%d+):(%d+):(%d+)Z")
 			return os.time({ year = year, month = month, day = day, hour = hour, min = min, sec = sec, isdst = false })
 		end
 
-		local function update_neded()
-			local response = request.get_json("https://api.github.com/repos/mduessler/nvim-config/tags")
-			local commit = nil
+		local function get_latest_commit_url()
+			local response = request.get_json(tags_url)
 			for _, tag in ipairs(response) do
 				if tag.name == "latest" then
-					commit = tag.commit.sha
+					return tag.commit.url
 				end
 			end
-			if not commit then
-				return false
-			end
-			local handle = io.popen("git -C " .. config_directory .. " rev-parse HEAD")
-			if not handle then
-				return false
-			end
-			return commit == handle:read("*a"):gsub("%s+", "")
 		end
 
-		local target = git.is_tag_or_branch(config_directory)
-
-		if target == "tag" then
-			if not update_neded() then
-				return
+		local function update_if_needed(local_ts, remote_ts)
+			if local_ts < remote_ts then
+				vim.notify("New config version is out. Compile it with", vim.log.levels.SUCCESS)
+				return true
 			end
-		elseif target == "branch" then
-			if config_version ~= "main" then
-				return
-			end
-			last_update_timestamp =
-				get_latest_commit_unixtime("https://api.github.com/repos/mduessler/nvim-config/branches/main")
-			if last_update_timestamp <= last_updated then
-				return
-			end
-		else
-			return
+			return false
 		end
-		vim.notify("New version is out. Compile it with", vim.log.levels.SUCCESS)
+
+		local target_type = git.is_tag_or_branch(config_dir)
+		if target_type == "tag" then
+			local local_ts = get_local_timestamp("latest")
+			local remote_ts = iso_8601_to_unix(get_latest_commit_url())
+			update_if_needed(local_ts, remote_ts)
+		elseif target_type == "branch" then
+			local local_ts = get_local_timestamp("main")
+			local remote_ts = iso_8601_to_unix(main_branch_url)
+			update_if_needed(local_ts, remote_ts)
+		end
 	end,
 })
