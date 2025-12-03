@@ -43,19 +43,15 @@ local function execute_simple_git_cmd(repo, argument_string)
 end
 
 M.fetch_tag = function(repo, tag)
-	return execute_simple_git_cmd(repo, "fetch origin tag " .. tag)
+	return execute_simple_git_cmd(repo, "fetch origin tag " .. tag .. " --force")
 end
 
 M.fetch_branch = function(repo, branch)
 	return execute_simple_git_cmd(repo, "fetch origin " .. branch)
 end
 
-M.checkout_tag = function(repo, tag)
-	return execute_simple_git_cmd(repo, "checkout tags/" .. tag)
-end
-
-M.checkout_branch = function(repo, branch)
-	return execute_simple_git_cmd(repo, "checkout " .. branch)
+M.merge_branch = function(repo, src, dest)
+	return execute_simple_git_cmd(repo, "merge " .. src .. " " .. dest)
 end
 
 return M
