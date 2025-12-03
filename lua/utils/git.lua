@@ -33,40 +33,29 @@ M.is_tag_or_branch = function(repo)
 	end
 end
 
-M.fetch_tag = function(repo, tag)
-	local handle = M.popen("git -C " .. repo .. " fetch origin tag " .. tag)
+local function execute_simple_git_cmd(repo, argument_string)
+	local handle = M.popen("git -C " .. repo .. " " .. argument_string)
 	if handle then
 		local success, _, _ = handle:close()
 		return success == true
 	end
 	return false
+end
+
+M.fetch_tag = function(repo, tag)
+	return execute_simple_git_cmd(repo, "fetch origin tag " .. tag)
 end
 
 M.fetch_branch = function(repo, branch)
-	local handle = M.popen("git -C " .. repo .. " fetch origin " .. branch)
-	if handle then
-		local success, _, _ = handle:close()
-		return success == true
-	end
-	return false
+	return execute_simple_git_cmd(repo, "fetch origin " .. branch)
 end
 
 M.checkout_tag = function(repo, tag)
-	local handle = M.popen("git -C " .. repo .. " checkout tags/" .. tag)
-	if handle then
-		local success, _, _ = handle:close()
-		return success == true
-	end
-	return false
+	return execute_simple_git_cmd(repo, "checkout tags/" .. tag)
 end
 
 M.checkout_branch = function(repo, branch)
-	local handle = M.popen("git -C " .. repo .. " checkout " .. branch)
-	if handle then
-		local success, _, _ = handle:close()
-		return success == true
-	end
-	return false
+	return execute_simple_git_cmd(repo, "checkout " .. branch)
 end
 
 return M
