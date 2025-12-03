@@ -132,7 +132,7 @@ function _G.TestGit:test_fetch_branch_fail_pipe()
 	lu.assertFalse(git.fetch_branch("/fake/repo", "main"))
 end
 
-function _G.TestGit:test_checkout_branch_success()
+function _G.TestGit:test_merge_branch_success()
 	git.popen = function(_)
 		return {
 			close = function()
@@ -140,10 +140,10 @@ function _G.TestGit:test_checkout_branch_success()
 			end,
 		}
 	end
-	lu.assertTrue(git.checkout_branch("/fake/repo", "main"))
+	lu.assertTrue(git.merge_branch("/fake/repo", "origin/main", "main"))
 end
 
-function _G.TestGit:test_checkout_branch_fail_git()
+function _G.TestGit:test_merge_branch_fail_git()
 	git.popen = function(_)
 		return {
 			close = function()
@@ -151,14 +151,14 @@ function _G.TestGit:test_checkout_branch_fail_git()
 			end,
 		}
 	end
-	lu.assertFalse(git.checkout_branch("/fake/repo", "main"))
+	lu.assertFalse(git.merge_branch("/fake/repo", "origin/main", "main"))
 end
 
-function _G.TestGit:test_checkoutbranch_fail_pipe()
+function _G.TestGit:test_merge_branch_fail_pipe()
 	git.popen = function()
 		return nil
 	end
-	lu.assertFalse(git.checkout_branch("/fake/repo", "main"))
+	lu.assertFalse(git.merge_branch("/fake/repo", "origin/main", "main"))
 end
 
 return _G.TestGit
