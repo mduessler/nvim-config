@@ -89,7 +89,7 @@ function _G.TestGit:test_festch_tag_fail_git()
 	git.popen = function(_)
 		return {
 			close = function()
-				return false, 0, "success"
+				return nil, 0, "success"
 			end,
 		}
 	end
