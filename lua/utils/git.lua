@@ -34,6 +34,10 @@ M.is_tag_or_branch = function(repo)
 	end
 end
 
+M.get_modified_timestamp = function(repo, revision)
+	return get_git_cmd_output(repo, "log " .. revision .. " -1 --format=%cd --date=unix")
+end
+
 local function execute_simple_git_cmd(repo, argument_string)
 	local handle = M.popen("git -C " .. repo .. " " .. argument_string)
 	if handle then
@@ -53,10 +57,6 @@ end
 
 M.merge_branch = function(repo, src, dest)
 	return execute_simple_git_cmd(repo, "merge " .. src .. " " .. dest)
-end
-
-M.get_modified_timestamp = function(repo, revision)
-	return execute_simple_git_cmd(repo, "log " .. revision .. " -1 --format=%cd --date=unix")
 end
 
 return M

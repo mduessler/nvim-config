@@ -4,9 +4,10 @@ vim.api.nvim_create_autocmd("VimEnter", {
 	once = true,
 	callback = function()
 		local require_safe = require("utils.require_safe")
+		local git = require_safe("utils.git")
 		local request = require_safe("utils.request")
 
-		if not request then
+		if not (git and request) then
 			return
 		end
 
@@ -14,20 +15,15 @@ vim.api.nvim_create_autocmd("VimEnter", {
 		local config_version = ""
 		local last_update_timestamp = 0
 
-		local function get_last_local_update_time()
-			local handle = io.popen("git -C " .. config_directory .. " log -1 --format=%cd --date=unix")
-			if not handle then
-				return nil
-			end
-			local output = handle:read("*a")
-			handle:close()
+		local function get_last_local_update_time(target)
+			local output = git.get_modified_timestamp(config_directory, target)
 			if not output then
 				return nil
 			end
-			output = output:gsub("%s+", "")
+
 			local local_update_time = tonumber(output)
 			if not local_update_time or local_update_time % 1 ~= 0 then
-				return nil, "Git output is not a valid integer: " .. tostring(output)
+				return nil
 			end
 			return local_update_time
 		end
