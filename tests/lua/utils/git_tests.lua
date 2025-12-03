@@ -76,6 +76,27 @@ function _G.TestGit:test_is_tag_or_branch_nil()
 	lu.assertNil(git.is_tag_or_branch("/fake/repo"))
 end
 
+function _G.TestGit:test_get_modified_timestamp()
+	git.popen = function(_)
+		return mock_handle("1764757432\n")
+	end
+	lu.assertEquals(git.get_modified_timestamp("/fake/repo", "latest"), "1764757432")
+end
+
+function _G.TestGit:test_get_modified_timestamp_nil()
+	git.popen = function(_)
+		return {
+			read = function()
+				return ""
+			end,
+			close = function()
+				return nil, 0, "exit"
+			end,
+		}
+	end
+	lu.assertNil(git.get_modified_timestamp("/fake/repo", "latest"))
+end
+
 function _G.TestGit:test_fetch_tag_success()
 	git.popen = function(_)
 		return {
