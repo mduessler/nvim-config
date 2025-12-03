@@ -16,7 +16,7 @@ end
 
 M.get_tag = function(repo)
 	local ref = get_git_cmd_output(repo, "describe --tags --exact-match 2>/dev/null")
-	return (ref ~= "" and ref ~= "HEAD") and ref or nil
+	return ref ~= "" and ref or nil
 end
 
 M.get_branch = function(repo)
