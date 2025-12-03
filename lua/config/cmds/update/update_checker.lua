@@ -30,13 +30,18 @@ vim.api.nvim_create_autocmd("VimEnter", {
 			return os.time({ year = year, month = month, day = day, hour = hour, min = min, sec = sec, isdst = false })
 		end
 
-		local function get_latest_commit_url()
+		local function get_latest_tag_commit_url()
 			local response = request.get_json(tags_url)
 			for _, tag in ipairs(response) do
 				if tag.name == "latest" then
 					return tag.commit.url
 				end
 			end
+		end
+
+		local function get_main_commit_url()
+			local response = request.get_json(main_branch_url)
+			return response.commit.url or nil
 		end
 
 		local function update_if_needed(local_ts, remote_ts)
@@ -50,11 +55,11 @@ vim.api.nvim_create_autocmd("VimEnter", {
 		local target_type = git.is_tag_or_branch(config_dir)
 		if target_type == "tag" then
 			local local_ts = get_local_timestamp("latest")
-			local remote_ts = iso_8601_to_unix(get_latest_commit_url())
+			local remote_ts = iso_8601_to_unix(get_latest_tag_commit_url())
 			update_if_needed(local_ts, remote_ts)
 		elseif target_type == "branch" then
 			local local_ts = get_local_timestamp("main")
-			local remote_ts = iso_8601_to_unix(main_branch_url)
+			local remote_ts = iso_8601_to_unix(get_main_commit_url())
 			update_if_needed(local_ts, remote_ts)
 		end
 	end,
