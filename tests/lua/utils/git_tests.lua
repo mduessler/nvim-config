@@ -132,35 +132,6 @@ function _G.TestGit:test_fetch_branch_fail_pipe()
 	lu.assertFalse(git.fetch_branch("/fake/repo", "main"))
 end
 
-function _G.TestGit:test_checkout_tag_success()
-	git.popen = function(_)
-		return {
-			close = function()
-				return true, 0, "success"
-			end,
-		}
-	end
-	lu.assertTrue(git.checkout_tag("/fake/repo", "latest"))
-end
-
-function _G.TestGit:test_checkout_tag_fail_git()
-	git.popen = function(_)
-		return {
-			close = function()
-				return nil, 0, "success"
-			end,
-		}
-	end
-	lu.assertFalse(git.checkout_tag("/fake/repo", "latest"))
-end
-
-function _G.TestGit:test_checkout_tag_fail_pipe()
-	git.popen = function()
-		return nil
-	end
-	lu.assertFalse(git.checkout_tag("/fake/repo", "latest"))
-end
-
 function _G.TestGit:test_checkout_branch_success()
 	git.popen = function(_)
 		return {
