@@ -37,7 +37,7 @@ M.fetch_tag = function(repo, tag)
 	local handle = M.popen("git -C " .. repo .. " fetch origin tag " .. tag)
 	if handle then
 		local success, _, _ = handle:close()
-		return success
+		return false and success == nil or true
 	end
 	return false
 end
@@ -46,7 +46,7 @@ M.fetch_branch = function(repo, branch)
 	local handle = M.popen("git -C " .. repo .. " fetch origin " .. branch)
 	if handle then
 		local success, _, _ = handle:close()
-		return success
+		return false and success == nil or true
 	end
 	return false
 end
