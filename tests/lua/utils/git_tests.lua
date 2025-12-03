@@ -74,4 +74,14 @@ function _G.TestGit:test_is_tag_or_branch_nil()
 	lu.assertNil(git.is_tag_or_branch("/fake/repo"))
 end
 
+function _G.TestGit:test_fetch_tag_success()
+	git.popen = function(_)
+		return {
+			close = function()
+				return true, 0, "success"
+			end,
+		}
+	end
+	lu.assertTrue(git.fetch_tag("/fake/repo", "latest"))
+end
 return _G.TestGit
