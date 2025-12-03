@@ -60,4 +60,13 @@ M.checkout_tag = function(repo, tag)
 	return false
 end
 
+M.checkout_branch = function(repo, branch)
+	local handle = M.popen("git -C " .. repo .. " checkout " .. branch)
+	if handle then
+		local success, _, _ = handle:close()
+		return success == true
+	end
+	return false
+end
+
 return M
