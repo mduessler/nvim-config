@@ -33,17 +33,6 @@ vim.api.nvim_create_autocmd("VimEnter", {
 			return
 		end
 
-		local function is_git_tag()
-			-- Checks if git HEAD is a tag.
-			local handle = io.popen("git -C " .. config_directory .. " describe --tags --exact-match 2>/dev/null")
-			if not handle then
-				return false
-			end
-			config_version = handle:read("*a"):gsub("%s+", "")
-			handle:close()
-			return config_version ~= ""
-		end
-
 		local function get_latest_commit_unixtime(url)
 			local response = request.get_json(url)
 			local date = response.commit.committer.date
@@ -69,11 +58,13 @@ vim.api.nvim_create_autocmd("VimEnter", {
 			return commit == handle:read("*a"):gsub("%s+", "")
 		end
 
-		if is_git_tag() then
+		local target = git.is_tag_or_branch(config_directory)
+
+		if target == "tag" then
 			if not update_neded() then
 				return
 			end
-		else
+		elseif target == "branch" then
 			if config_version ~= "main" then
 				return
 			end
@@ -82,6 +73,8 @@ vim.api.nvim_create_autocmd("VimEnter", {
 			if last_update_timestamp <= last_updated then
 				return
 			end
+		else
+			return
 		end
 		vim.notify("New version is out. Compile it with", vim.log.levels.SUCCESS)
 	end,
