@@ -103,7 +103,7 @@ function _G.TestGit:test_fetch_tag_fail_pipe()
 	lu.assertFalse(git.fetch_tag("/fake/repo", "latest"))
 end
 
-function _G.TestGit:test_branch_tag_success()
+function _G.TestGit:test_fetch_branch_success()
 	git.popen = function(_)
 		return {
 			close = function()
