@@ -8,7 +8,9 @@ local function mock_handle(output)
 		read = function()
 			return output
 		end,
-		close = function() end,
+		close = function()
+			return true, 0, "exit"
+		end,
 	}
 end
 

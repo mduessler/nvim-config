@@ -2,25 +2,26 @@ local M = {}
 
 M.popen = io.popen
 
-M.get_tag = function(repo)
-	local handle = M.popen("git -C " .. repo .. " describe --tags --exact-match 2>/dev/null")
-	local ref = nil
+local function get_git_cmd_output(repo, arg_string)
+	local handle = M.popen("git -C " .. repo .. " " .. arg_string)
 	if handle then
-		ref = handle:read("*a"):gsub("%s+", "")
-		handle:close()
-		return ref ~= "" and ref or nil
+		local output = handle:read("*a"):gsub("%s+", "")
+		local success, _, _ = handle:close()
+		if success then
+			return output
+		end
 	end
-	return ref
+	return nil
+end
+
+M.get_tag = function(repo)
+	local ref = get_git_cmd_output(repo, "describe --tags --exact-match 2>/dev/null")
+	return (ref ~= "" and ref ~= "HEAD") and ref or nil
 end
 
 M.get_branch = function(repo)
-	local handle = M.popen("git -C " .. repo .. " rev-parse --abbrev-ref HEAD 2>/dev/null")
-	if handle then
-		local ref = handle:read("*a"):gsub("%s+", "")
-		handle:close()
-		return (ref ~= "" and ref ~= "HEAD") and ref or nil
-	end
-	return nil
+	local ref = get_git_cmd_output(repo, "rev-parse --abbrev-ref HEAD 2>/dev/null")
+	return (ref ~= "" and ref ~= "HEAD") and ref or nil
 end
 
 M.is_tag_or_branch = function(repo)
@@ -52,6 +53,10 @@ end
 
 M.merge_branch = function(repo, src, dest)
 	return execute_simple_git_cmd(repo, "merge " .. src .. " " .. dest)
+end
+
+M.get_modified_timestamp = function(repo, revision)
+	return execute_simple_git_cmd(repo, "log " .. revision .. " -1 --format=%cd --date=unix")
 end
 
 return M
