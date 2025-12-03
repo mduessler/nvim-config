@@ -85,7 +85,7 @@ function _G.TestGit:test_fetch_tag_success()
 	lu.assertTrue(git.fetch_tag("/fake/repo", "latest"))
 end
 
-function _G.TestGit:test_festch_tag_fail_git()
+function _G.TestGit:test_fetch_tag_fail_git()
 	git.popen = function(_)
 		return {
 			close = function()
@@ -96,7 +96,7 @@ function _G.TestGit:test_festch_tag_fail_git()
 	lu.assertFalse(git.fetch_tag("/fake/repo", "latest"))
 end
 
-function _G.TestGit:test_festch_tag_fail_pipe()
+function _G.TestGit:test_fetch_tag_fail_pipe()
 	git.popen = function()
 		return nil
 	end
@@ -114,7 +114,7 @@ function _G.TestGit:test_branch_tag_success()
 	lu.assertTrue(git.fetch_branch("/fake/repo", "main"))
 end
 
-function _G.TestGit:test_festch_branch_fail_git()
+function _G.TestGit:test_fetch_branch_fail_git()
 	git.popen = function(_)
 		return {
 			close = function()
@@ -125,7 +125,7 @@ function _G.TestGit:test_festch_branch_fail_git()
 	lu.assertFalse(git.fetch_branch("/fake/repo", "main"))
 end
 
-function _G.TestGit:test_festch_branch_fail_pipe()
+function _G.TestGit:test_fetch_branch_fail_pipe()
 	git.popen = function()
 		return nil
 	end
