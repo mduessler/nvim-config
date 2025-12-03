@@ -51,4 +51,13 @@ M.fetch_branch = function(repo, branch)
 	return false
 end
 
+M.checkout_tag = function(repo, tag)
+	local handle = M.popen("git -C " .. repo .. " checkout tags/" .. tag)
+	if handle then
+		local success, _, _ = handle:close()
+		return success == true
+	end
+	return false
+end
+
 return M
