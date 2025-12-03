@@ -85,6 +85,17 @@ function _G.TestGit:test_fetch_tag_success()
 	lu.assertTrue(git.fetch_tag("/fake/repo", "latest"))
 end
 
+function _G.TestGit:test_festch_tag_fail_git()
+	git.popen = function(_)
+		return {
+			close = function()
+				return false, 0, "success"
+			end,
+		}
+	end
+	lu.assertFalse(git.fetch_tag("/fake/repo", "latest"))
+end
+
 function _G.TestGit:test_festch_tag_fail_pipe()
 	git.popen = function()
 		return nil
