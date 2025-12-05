@@ -49,7 +49,6 @@ end
 
 local function update_if_needed(local_ts, remote_ts)
 	if local_ts < remote_ts then
-		-- vim.notify("New config version is out. Compile it with", vim.log.levels.SUCCESS)
 		os.exit(1)
 	end
 	os.exit(0)
