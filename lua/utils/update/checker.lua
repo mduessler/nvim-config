@@ -1,12 +1,11 @@
-local require_safe = require("utils.require_safe")
-local git = require_safe("utils.git")
-local request = require_safe("utils.request")
+local git = require("lua.utils.git")
+local request = require("lua.utils.request")
 
 if not (git and request) then
-	return
+	os.exit(2)
 end
 
-local config_dir = vim.fn.stdpath("config")
+local config_dir = arg[1]
 local main_branch_url = "https://api.github.com/repos/mduessler/nvim-config/branches/main"
 local tags_url = "https://api.github.com/repos/mduessler/nvim-config/tags"
 
@@ -49,6 +48,7 @@ end
 
 local function update_if_needed(local_ts, remote_ts)
 	if local_ts < remote_ts then
+		print("HIER")
 		os.exit(1)
 	end
 	os.exit(0)
@@ -61,7 +61,9 @@ if target_type == "tag" then
 	return update_if_needed(local_ts, remote_ts)
 elseif target_type == "branch" then
 	local local_ts = get_local_timestamp("main")
+	print(local_ts)
 	local remote_ts = iso_8601_to_unix(get_main_commit_url())
+	print(remote_ts)
 	return update_if_needed(local_ts, remote_ts)
 end
 os.exit(0)
