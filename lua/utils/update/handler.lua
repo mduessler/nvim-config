@@ -5,7 +5,7 @@ vim.system({ "lua", handler, vim.fn.stdpath("config") }, { text = true }, functi
 		if ressult.code == 0 then
 			vim.notify("Config is up to date", vim.log.levels.INFO)
 		else
-			vim.notify("New version available", vim.log.levels.SUCCESS)
+			vim.notify("New version available", vim.log.levels.INFO)
 		end
 	end)
 end)

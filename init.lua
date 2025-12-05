@@ -28,7 +28,7 @@ vim.g.mapleader = " "
 
 require("config")
 
--- vim.notify = require("notify")
+vim.notify = require("notify")
 
 require("core.keymaps")
 require("core")
