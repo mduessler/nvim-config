@@ -22,6 +22,9 @@ local specs = {
 
 lazy.setup({
 	spec = specs,
+	rocks = {
+		hererocks = true,
+	},
 	ui = {
 		border = "rounded",
 	},
