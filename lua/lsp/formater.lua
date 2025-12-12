@@ -11,4 +11,5 @@ return {
 	cmakelang = "cmakelang",
 	yamlfmt = "yamlfmt",
 	beautysh = "beautysh",
+	rust = "rustfmt",
 }

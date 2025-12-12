@@ -13,4 +13,5 @@ return {
 	cpplint = "cpplint",
 	cmakelint = "cmakelint",
 	yamllint = "yamllint",
+	rust = "bacon",
 }
