@@ -59,6 +59,7 @@ M.input = function(opts, on_confirm)
 	vim.bo[bufnr].bufhidden = "wipe"
 	vim.bo[bufnr].modifiable = true
 	vim.bo[bufnr].filetype = "nofile"
+	vim.b[bufnr].cmp_enabled = false
 
 	local win = vim.api.nvim_open_win(bufnr, true, float_config(default, opts.prompt))
 	vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, { default })
