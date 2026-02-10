@@ -51,6 +51,7 @@ return {
 				python = { "isort", "black" },
 				typescript = { "prettier" },
 				yaml = { "yamlfmt" },
+				xml = { "xmlformatter" },
 			},
 			formatters = {
 				black = {
