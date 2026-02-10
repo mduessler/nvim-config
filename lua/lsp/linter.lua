@@ -13,5 +13,7 @@ return {
 	cpplint = "cpplint",
 	cmakelint = "cmakelint",
 	yamllint = "yamllint",
-	rust = "bacon",
+	bacon = "bacon",
+	["sonarlint-language-server"] = "sonarlint-language-server",
+	checkstyle = "checkstyle",
 }
