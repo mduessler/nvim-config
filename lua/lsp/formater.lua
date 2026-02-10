@@ -11,7 +11,7 @@ return {
 	cmakelang = "cmakelang",
 	yamlfmt = "yamlfmt",
 	beautysh = "beautysh",
-	rust = "rustfmt",
-	["sonarlint-language-server"] = "sonarlint-language-server",
+	rustfmt = "rustfmt",
+	xmlformatter = "xmlformatter",
 	["google-java-format"] = "google-java-format",
 }
