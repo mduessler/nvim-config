@@ -30,6 +30,7 @@ return {
 			dockerfile = { "hadolint" },
 			html = { "djlint" },
 			htmldjango = { "djlint" },
+			java = { "checkstyle" },
 			javascript = { "eslint_d" },
 			json = { "jsonlint" },
 			lua = { "selene" },
