@@ -12,4 +12,6 @@ return {
 	yamlfmt = "yamlfmt",
 	beautysh = "beautysh",
 	rust = "rustfmt",
+	["sonarlint-language-server"] = "sonarlint-language-server",
+	["google-java-format"] = "google-java-format",
 }
