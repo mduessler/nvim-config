@@ -46,6 +46,7 @@ return {
 				json = { "prettier" },
 				lua = { "stylua" },
 				markdown = { "mdformat" },
+				rust = { "rustfmt" },
 				python = { "isort", "black" },
 				typescript = { "prettier" },
 				yaml = { "yamlfmt" },
@@ -55,6 +56,11 @@ return {
 					prepend_args = function()
 						return { "--line-length", "120" }
 					end,
+				},
+				cargo_fmt = {
+					command = "cargo",
+					args = { "fmt", "--all" },
+					stdin = false,
 				},
 				clang_format = {
 					prepend_args = function()
