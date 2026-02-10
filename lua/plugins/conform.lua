@@ -42,6 +42,7 @@ return {
 				css = { "prettier" },
 				html = { "djlint" },
 				htmldjango = { "djlint" },
+				java = { "google-java-format" },
 				javascript = { "prettier" },
 				json = { "prettier" },
 				lua = { "stylua" },
