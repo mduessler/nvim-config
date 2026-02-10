@@ -1,6 +1,6 @@
 return {
 	["bash-language-server"] = "bashls", -- Bash ls
-	["harper-ls"] = "harper_ls", -- Spelling and grammar?
+	["grammarly-languageserver"] = "grammarly", -- Spelling and grammar?
 	["prosemd-lsp"] = "prosemd_lsp", -- Spelling and grammar
 	["ltex-ls"] = "ltex", -- Spelling and grammar
 	["marksman"] = "marksman", -- Markdown ls
@@ -21,5 +21,7 @@ return {
 	["htmx-lsp"] = "htmx", --Htmx
 	["clangd"] = "clangd", -- C, c++ ...,
 	["cmake-language-server"] = "cmake", -- Cmake
+	["rust-analyzer"] = "rust_analyzer",
+	["jdtls"] = "jdtls", -- java
 	-- "eslint",
 }
