@@ -38,6 +38,7 @@ return {
 			python = { "flake8", "mypy" },
 			typescript = { "eslint_d" },
 			yaml = { "yamllint" },
+			xml = { "sonarlint-language-server" },
 		}
 
 		local flake8 = lint.linters.flake8
