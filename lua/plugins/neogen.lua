@@ -18,6 +18,7 @@ return {
 			cpp = { template = { annotation_convention = "doxygen" } },
 			python = { template = { annotation_convention = "numpydoc" } },
 			rust = { template = { annotation_convention = "rustdoc" } },
+			java = { template = { annotation_convention = "javadoc" } },
 			javascript = { template = { annotation_convention = "jsdoc" } },
 			typescript = { template = { annotation_convention = "tsdoc" } },
 			typescriptreact = { template = { annotation_convention = "tsdoc" } },
