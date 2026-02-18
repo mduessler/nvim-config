@@ -3,7 +3,7 @@ return {
 	dependencies = {
 		"nvim-lua/plenary.nvim",
 	},
-	ft = { "scala", "sbt", "java" },
+	ft = { "scala", "sbt" },
 	keys = {
 		{
 			"<leader>tm",
@@ -15,7 +15,7 @@ return {
 	},
 	opts = function()
 		local metals_config = require("metals").bare_config()
-		local lsp_config = require("config.lsp.lsp_config")
+		local lsp_config = require("lsp.init")
 		metals_config.on_attach = lsp_config.on_attach
 		metals_config.settings = {
 			autoImportBuild = "On",
