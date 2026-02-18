@@ -38,7 +38,7 @@ return {
 			python = { "flake8", "mypy" },
 			typescript = { "eslint_d" },
 			yaml = { "yamllint" },
-			xml = { "sonarlint-language-server" },
+			-- xml = { "sonarlint-language-server" },
 		}
 
 		local flake8 = lint.linters.flake8
@@ -46,6 +46,9 @@ return {
 
 		local yamllint = lint.linters.yamllint
 		table.insert(yamllint.args, "-c ~/.config/nvim/configs/yamllint.yaml")
+
+		local checkstyle = lint.linters.checkstyle
+		table.insert(checkstyle.args, "-c ~/.config/checkstyle-doc.xml")
 
 		local lint_augroup = vim.api.nvim_create_augroup("lint", { clear = true })
 
