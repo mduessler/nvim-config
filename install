@@ -45,17 +45,17 @@ main() {
     set_arguments "${@}"
 
     if ${NVIM_DEV}; then
-        CONFIG_VERSION=main
-        debug "Dev is enabled. So switching branch to main for development."
-    fi
-
-    if ! git fetch origin "${CONFIG_VERSION}" >/dev/null 2>&1; then
-        info "Could not fetch given CONFIG_VERSION ${CONFIG_VERSION}."
-        exit 1
-    fi
-    if ! git checkout "${CONFIG_VERSION}" >/dev/null 2>&1; then
-        info "Could change to ${CONFIG_VERSION}."
-        exit 1
+        CONFIG_VERSION=$(git branch --show-current 2>/dev/null)
+        debug "Dev is enabled. Set branch to current branch ${CONFIG_VERSION} for development."
+    else
+        if ! git fetch origin "${CONFIG_VERSION}" >/dev/null 2>&1; then
+            info "Could not fetch given CONFIG_VERSION ${CONFIG_VERSION}."
+            exit 1
+        fi
+        if ! git checkout "${CONFIG_VERSION}" >/dev/null 2>&1; then
+            info "Could change to ${CONFIG_VERSION}."
+            exit 1
+        fi
     fi
 
     if ${INSTALL_NERD_FONTS}; then
