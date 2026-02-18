@@ -9,11 +9,7 @@ local function create_buffer(msg)
 	return buf
 end
 
-local function inform(msg, level)
-	if level == nil then
-		level = vim.log.levels.INFO
-	end
-	local buf = create_buffer(msg)
+local function create_information_window(buf, msg)
 	local width = vim.fn.strdisplaywidth(msg)
 	local opts = {
 		relative = "editor",
@@ -28,7 +24,10 @@ local function inform(msg, level)
 	local win = vim.api.nvim_open_win(buf, false, opts)
 	vim.wo[win].number = false
 	vim.wo[win].relativenumber = false
+	return win
+end
 
+local function close_window_after_x_seconds(win)
 	local timer = vim.loop.new_timer()
 	timer:start(
 		5000,
@@ -37,6 +36,15 @@ local function inform(msg, level)
 			vim.api.nvim_win_close(win, true)
 		end)
 	)
+end
+
+local function inform(msg, level)
+	if level == nil then
+		level = vim.log.levels.INFO
+	end
+	local buf = create_buffer(msg)
+	local win = create_information_window(buf, msg)
+	close_window_after_x_seconds(win)
 end
 
 return inform
