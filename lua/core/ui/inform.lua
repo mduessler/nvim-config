@@ -1,7 +1,4 @@
-local function inform(msg, level)
-	if level == nil then
-		level = vim.log.levels.INFO
-	end
+local function create_buffer(msg)
 	local buf = vim.api.nvim_create_buf(false, false)
 	if buf == 0 then
 		vim.notify("Can not create an temporary buffer for update message.", vim.log.levels.ERROR)
@@ -9,6 +6,14 @@ local function inform(msg, level)
 	end
 	vim.api.nvim_buf_set_lines(buf, 0, 0, true, { msg })
 	vim.bo[buf].bufhidden = "wipe"
+	return buf
+end
+
+local function inform(msg, level)
+	if level == nil then
+		level = vim.log.levels.INFO
+	end
+	local buf = create_buffer(msg)
 	local width = vim.fn.strdisplaywidth(msg)
 	local opts = {
 		relative = "editor",
