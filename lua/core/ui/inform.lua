@@ -19,7 +19,7 @@ local function create_information_window(buf, msg)
 		height = 1,
 		focusable = false,
 		mouse = false,
-		border = "rounded",
+		border = { "╔", "═", "╗", "║", "╝", "═", "╚", "║" },
 	}
 	local win = vim.api.nvim_open_win(buf, false, opts)
 	vim.wo[win].number = false
