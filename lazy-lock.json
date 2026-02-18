@@ -26,7 +26,7 @@
   "lsp_signature.nvim": { "branch": "master", "commit": "7d3bb0a641f516f1c7fd2e47852580dadbd7a430" },
   "lspkind-nvim": { "branch": "master", "commit": "3ddd1b4edefa425fda5a9f95a4f25578727c0bb3" },
   "markdown-preview.nvim": { "branch": "master", "commit": "a923f5fc5ba36a3b17e289dc35dc17f66d0548ee" },
-  "markdown-toc": { "branch": "main", "commit": "1aa53cec6207754610fc0254662cdfff730aceab" },
+  "markdown-toc.nvim": { "branch": "main", "commit": "869af35bce0c27e2006f410fa3f706808db4843d" },
   "mason-lspconfig.nvim": { "branch": "main", "commit": "c55bd8a8fb191e24176c206a7af1dd51ce7276a5" },
   "mason-tool-installer.nvim": { "branch": "main", "commit": "517ef5994ef9d6b738322664d5fdd948f0fdeb46" },
   "mason.nvim": { "branch": "main", "commit": "57e5a8addb8c71fb063ee4acda466c7cf6ad2800" },
