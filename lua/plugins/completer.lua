@@ -54,7 +54,7 @@ return {
 		cmp.setup({
 			enabled = function()
 				local disabled = false
-				disabled = disabled or (vim.api.nvim_get_option_value("buftype", { buf = 0 }) == "prompt")
+				-- disabled = disabled or (vim.api.nvim_get_option_value("buftype", { buf = 0 }) == "prompt")
 				disabled = disabled or (vim.fn.reg_recording() ~= "")
 				disabled = disabled or (vim.fn.reg_executing() ~= "")
 				disabled = vim.b[0].cmp_enabled == false
