@@ -1,10 +1,10 @@
-local function create_buffer(msg)
+local function create_buffer(msg, width)
 	local buf = vim.api.nvim_create_buf(false, true)
 	if buf == 0 then
 		vim.notify("Can not create an temporary buffer for update message.", vim.log.levels.ERROR)
 		return 1
 	end
-	vim.api.nvim_buf_set_lines(buf, 0, 0, true, { " " .. msg .. " " })
+	vim.api.nvim_buf_set_lines(buf, 0, 0, true, { string.rep("_", width), " " .. msg .. " " })
 	vim.bo[buf].bufhidden = "wipe"
 	vim.bo[buf].buftype = "nofile"
 	vim.bo[buf].swapfile = false
@@ -33,15 +33,13 @@ end
 local function set_border(level)
 	local hl = get_hl(level)
 	local border = {}
-	for _, value in ipairs({ "╔", "═", "╗", "║", "╝", "═", "╚", "║" }) do
+	for _, value in ipairs({ "╭", "─", "╮", "│", "╯", "─", "╰", "│" }) do
 		border[#border + 1] = { value, hl }
 	end
 	return border
 end
 
-local function create_information_window(buf, msg, level)
-	msg = msg
-	local width = vim.fn.strdisplaywidth(msg) + 2
+local function create_information_window(buf, width, level)
 	local opts = {
 		relative = "editor",
 		row = 2,
@@ -75,8 +73,9 @@ local function inform(msg, level)
 	if level == nil then
 		level = vim.log.levels.INFO
 	end
-	local buf = create_buffer(msg)
-	local win = create_information_window(buf, msg, level)
+	local width = vim.fn.strdisplaywidth(msg) + 2
+	local buf = create_buffer(msg, width)
+	local win = create_information_window(buf, width, level)
 	close_window_after_x_seconds(win)
 end
 
