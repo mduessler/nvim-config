@@ -16,7 +16,30 @@ local function calc_position(width)
 	return vim.o.columns - vim.o.columns * 0.01 - width
 end
 
-local function create_information_window(buf, msg)
+local function get_hl(level)
+	if level == vim.log.levels.DEBUG then
+		return "NotifyDEBUG"
+	elseif level == vim.log.levels.INFO then
+		return "NotifyINFO"
+	elseif level == vim.log.levels.WARN then
+		return "NotifyWARN"
+	elseif level == vim.log.levels.ERROR then
+		return "NotifyERROR"
+	else
+		return "FloatBorder"
+	end
+end
+
+local function set_border(level)
+	local hl = get_hl(level)
+	local border = {}
+	for _, value in ipairs({ "╔", "═", "╗", "║", "╝", "═", "╚", "║" }) do
+		border[#border + 1] = { value, hl }
+	end
+	return border
+end
+
+local function create_information_window(buf, msg, level)
 	msg = msg
 	local width = vim.fn.strdisplaywidth(msg) + 2
 	local opts = {
@@ -27,7 +50,7 @@ local function create_information_window(buf, msg)
 		height = 1,
 		focusable = false,
 		mouse = false,
-		border = { "╔", "═", "╗", "║", "╝", "═", "╚", "║" },
+		border = set_border(level),
 		noautocmd = true,
 	}
 	local win = vim.api.nvim_open_win(buf, false, opts)
@@ -53,7 +76,7 @@ local function inform(msg, level)
 		level = vim.log.levels.INFO
 	end
 	local buf = create_buffer(msg)
-	local win = create_information_window(buf, msg)
+	local win = create_information_window(buf, msg, level)
 	close_window_after_x_seconds(win)
 end
 
