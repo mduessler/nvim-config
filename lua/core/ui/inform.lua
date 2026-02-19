@@ -18,15 +18,15 @@ end
 
 local function get_hl(level)
 	if level == vim.log.levels.DEBUG then
-		return "NotifyDEBUG"
+		return "InformDEBUG"
 	elseif level == vim.log.levels.INFO then
-		return "NotifyINFO"
+		return "InformINFO"
 	elseif level == vim.log.levels.WARN then
-		return "NotifyWARN"
+		return "InformWARN"
 	elseif level == vim.log.levels.ERROR then
-		return "NotifyERROR"
+		return "InformERROR"
 	else
-		return "FloatBorder"
+		return "InformDefault"
 	end
 end
 
