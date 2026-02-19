@@ -33,15 +33,6 @@ local function create_information_window(buf, msg)
 	vim.wo[win].number = false
 	vim.wo[win].relativenumber = false
 	vim.wo[win].cursorline = false
-	--
-	-- vim.api.nvim_create_autocmd("WinClosed", {
-	-- 	pattern = tostring(win),
-	-- 	callback = function(_)
-	-- 		if #vim.api.nvim_list_wins() == 1 then
-	-- 			vim.cmd("quit!")
-	-- 		end
-	-- 	end,
-	-- })
 	return win
 end
 
