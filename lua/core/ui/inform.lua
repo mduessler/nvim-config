@@ -4,7 +4,7 @@ local function create_buffer(msg)
 		vim.notify("Can not create an temporary buffer for update message.", vim.log.levels.ERROR)
 		return 1
 	end
-	vim.api.nvim_buf_set_lines(buf, 0, 0, true, { msg })
+	vim.api.nvim_buf_set_lines(buf, 0, 0, true, { " " .. msg .. " " })
 	vim.bo[buf].bufhidden = "wipe"
 	vim.bo[buf].buftype = "nofile"
 	vim.bo[buf].swapfile = false
@@ -17,7 +17,8 @@ local function calc_position(width)
 end
 
 local function create_information_window(buf, msg)
-	local width = vim.fn.strdisplaywidth(msg)
+	msg = msg
+	local width = vim.fn.strdisplaywidth(msg) + 2
 	local opts = {
 		relative = "editor",
 		row = 2,
