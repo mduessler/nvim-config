@@ -54,7 +54,7 @@ local function create_buffer(msg, hl)
 	return buf
 end
 
-local function create_information_window(buf, hl)
+local function create_information_window(buf, msg, hl)
 	local function opts()
 		local function calc_position()
 			return vim.o.columns - vim.o.columns * 0.01 - LOCAL.width
@@ -68,9 +68,13 @@ local function create_information_window(buf, hl)
 			return border
 		end
 
+		local function calculate_rows()
+			return 3 + math.floor(vim.fn.strdisplaywidth(msg) / (LOCAL.width - 2))
+		end
+
 		return {
 			relative = "editor",
-			row = 3,
+			row = calculate_rows(),
 			col = calc_position(),
 			width = LOCAL.width,
 			height = 3,
@@ -124,7 +128,7 @@ local function logger(msg, level)
 	end
 	local hl = get_hl(level)
 	local buf = create_buffer(msg, hl)
-	local win = create_information_window(buf, hl)
+	local win = create_information_window(buf, msg, hl)
 	close_window_after_x_seconds(win)
 end
 
