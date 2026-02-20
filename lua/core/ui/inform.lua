@@ -7,7 +7,11 @@ end
 
 local LOCAL = {
 	width = 40,
-	ns = { divider = vim.api.nvim_create_namespace("ns_divider_line") },
+	ns = {
+		time = vim.api.nvim_create_namespace("LoggerTime"),
+		divider = vim.api.nvim_create_namespace("LoggerDivider"),
+		msg = vim.api.nvim_create_namespace("LoggerMsg"),
+	},
 	windows = {},
 }
 
@@ -39,7 +43,11 @@ local function create_buffer(lines, hl)
 	end
 
 	vim.api.nvim_buf_set_lines(buf, 0, 0, true, lines)
+	hl_buf_line(buf, LOCAL.ns.time, 1, #lines[1], "LoggerTime")
 	hl_buf_line(buf, LOCAL.ns.divider, 2, #LOCAL.signs.divider, hl)
+	for i = 3, #lines do
+		hl_buf_line(buf, LOCAL.ns.divider, i, #lines[i], "LoggerMsg")
+	end
 	set_buf_options(buf)
 
 	return buf, #lines
