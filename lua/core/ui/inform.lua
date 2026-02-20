@@ -108,7 +108,7 @@ local function close_window_after_x_seconds(win)
 	)
 end
 
-local function content(msg)
+local function create_buffer_lines(msg)
 	local function parse_msg(lines)
 		local line = " "
 		for word in string.gmatch(msg, "%S+") do
@@ -141,7 +141,7 @@ local function logger(msg, level)
 		level = vim.log.levels.INFO
 	end
 	local hl = get_hl(level)
-	local lines = content(msg)
+	local lines = create_buffer_lines(msg)
 	local buf, height = create_buffer(lines, hl)
 	local win = create_information_window(buf, height, hl)
 	close_window_after_x_seconds(win)
