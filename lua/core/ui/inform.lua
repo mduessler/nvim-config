@@ -11,15 +11,29 @@ local LOCAL = {
 }
 
 local function create_buffer(msg, hl)
-	local function parse_msg()
-		return " " .. msg
-		-- return string.rep(" ", LOCAL.width - vim.fn.strdisplaywidth(msg) - 1) .. msg
-	end
+	local function content(divider)
+		local function parse_msg(lines)
+			local line = " "
+			for word in string.gmatch(msg, "%S+") do
+				if vim.fn.strdisplaywidth(line .. word .. " ") > LOCAL.width then
+					lines[#lines + 1] = line
+					line = " "
+				end
+				line = line .. word .. " "
+			end
+			return lines
+		end
 
-	local function parse_time_string()
-		local time = signs.ui.statusline.datetime.time .. " " .. os.date("%H:%M:%S")
-		return " " .. time
-		-- return string.rep(" ", LOCAL.width - vim.fn.strdisplaywidth(time) - 1) .. time
+		local function parse_time_string()
+			local time = signs.ui.statusline.datetime.time .. " " .. os.date("%H:%M:%S")
+			return " " .. time
+			-- return string.rep(" ", LOCAL.width - vim.fn.strdisplaywidth(time) - 1) .. time
+		end
+
+		local lines = { parse_time_string(), divider }
+		lines = parse_msg(lines)
+
+		return lines
 	end
 
 	local function hl_buf_line(buf, ns, line, end_col, hl_group)
@@ -45,9 +59,9 @@ local function create_buffer(msg, hl)
 	end
 
 	local divider = string.rep("─", LOCAL.width)
-	local content = { parse_time_string(), divider, parse_msg() }
+	-- local content = { parse_time_string(), divider, parse_msg() }
 
-	vim.api.nvim_buf_set_lines(buf, 0, 0, true, content)
+	vim.api.nvim_buf_set_lines(buf, 0, 0, true, content(divider))
 	hl_buf_line(buf, LOCAL.ns.divider, 2, #divider, hl)
 	set_buf_options(buf)
 
