@@ -47,10 +47,6 @@ local function create_buffer(msg, width, hl)
 	return buf
 end
 
-local function calc_position(width)
-	return vim.o.columns - vim.o.columns * 0.01 - width
-end
-
 local function get_hl(level)
 	if level == vim.log.levels.DEBUG then
 		return "InformDEBUG"
@@ -65,30 +61,42 @@ local function get_hl(level)
 	end
 end
 
-local function set_border(hl)
-	local border = {}
-	for _, value in ipairs({ "╭", "─", "╮", "│", "╯", "─", "╰", "│" }) do
-		border[#border + 1] = { value, hl }
-	end
-	return border
-end
-
 local function create_information_window(buf, width, hl)
-	local opts = {
-		relative = "editor",
-		row = 3,
-		col = calc_position(width),
-		width = width,
-		height = 3,
-		focusable = false,
-		mouse = false,
-		border = set_border(hl),
-		noautocmd = true,
-	}
-	local win = vim.api.nvim_open_win(buf, false, opts)
-	vim.wo[win].number = false
-	vim.wo[win].relativenumber = false
-	vim.wo[win].cursorline = false
+	local function opts()
+		local function calc_position()
+			return vim.o.columns - vim.o.columns * 0.01 - width
+		end
+
+		local function set_border()
+			local border = {}
+			for _, value in ipairs({ "╭", "─", "╮", "│", "╯", "─", "╰", "│" }) do
+				border[#border + 1] = { value, hl }
+			end
+			return border
+		end
+
+		return {
+			relative = "editor",
+			row = 3,
+			col = calc_position(),
+			width = width,
+			height = 3,
+			focusable = false,
+			mouse = false,
+			border = set_border(),
+			noautocmd = true,
+		}
+	end
+
+	local function set_window_options(win)
+		vim.wo[win].number = false
+		vim.wo[win].relativenumber = false
+		vim.wo[win].cursorline = false
+	end
+
+	local win = vim.api.nvim_open_win(buf, false, opts())
+	set_window_options(win)
+
 	return win
 end
 
