@@ -47,20 +47,6 @@ local function create_buffer(msg, width, hl)
 	return buf
 end
 
-local function get_hl(level)
-	if level == vim.log.levels.DEBUG then
-		return "InformDEBUG"
-	elseif level == vim.log.levels.INFO then
-		return "InformINFO"
-	elseif level == vim.log.levels.WARN then
-		return "InformWARN"
-	elseif level == vim.log.levels.ERROR then
-		return "InformERROR"
-	else
-		return "InformDefault"
-	end
-end
-
 local function create_information_window(buf, width, hl)
 	local function opts()
 		local function calc_position()
@@ -98,6 +84,20 @@ local function create_information_window(buf, width, hl)
 	set_window_options(win)
 
 	return win
+end
+
+local function get_hl(level)
+	if level == vim.log.levels.DEBUG then
+		return "InformDEBUG"
+	elseif level == vim.log.levels.INFO then
+		return "InformINFO"
+	elseif level == vim.log.levels.WARN then
+		return "InformWARN"
+	elseif level == vim.log.levels.ERROR then
+		return "InformERROR"
+	else
+		return "InformDefault"
+	end
 end
 
 local function close_window_after_x_seconds(win)
