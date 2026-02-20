@@ -112,11 +112,23 @@ local function create_buffer_lines(msg)
 	local function parse_msg(lines)
 		local line = " "
 		for word in string.gmatch(msg, "%S+") do
-			if vim.fn.strdisplaywidth(line .. word .. " ") > LOCAL.width then
-				lines[#lines + 1] = line
-				line = " "
+			if vim.fn.strdisplaywidth(word) > LOCAL.width then
+				for i = 1, #word do
+					local c = word:sub(i, i)
+					if vim.fn.strdisplaywidth(line .. c .. " ") > LOCAL.width then
+						lines[#lines + 1] = line .. " "
+						line = " "
+					end
+					line = line .. c
+				end
+				line = line .. " "
+			else
+				if vim.fn.strdisplaywidth(line .. word .. " ") > LOCAL.width then
+					lines[#lines + 1] = line
+					line = " "
+				end
+				line = line .. word .. " "
 			end
-			line = line .. word .. " "
 		end
 		if line ~= " " then
 			lines[#lines + 1] = line
