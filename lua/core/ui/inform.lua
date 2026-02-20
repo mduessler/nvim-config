@@ -8,6 +8,7 @@ end
 local LOCAL = {
 	width = 40,
 	ns = { divider = vim.api.nvim_create_namespace("ns_divider_line") },
+	windows = {},
 }
 
 LOCAL.signs = {
@@ -45,7 +46,7 @@ local function create_buffer(lines, hl)
 end
 
 local function create_information_window(buf, height, hl)
-	local function opts()
+	local function create_opts()
 		local function calc_position()
 			return vim.o.columns - vim.o.columns * 0.01 - LOCAL.width
 		end
@@ -77,7 +78,21 @@ local function create_information_window(buf, height, hl)
 		vim.wo[win].cursorline = false
 	end
 
-	local win = vim.api.nvim_open_win(buf, false, opts())
+	local opts = create_opts()
+	local function reposition_other_logging_windows()
+		for winid, value in pairs(LOCAL.windows) do
+			if value ~= nil then
+				local config = vim.api.nvim_win_get_config(winid)
+				config.row = config.row + opts.height + 2
+				vim.api.nvim_win_set_config(winid, config)
+			end
+		end
+	end
+
+	local win = vim.api.nvim_open_win(buf, false, opts)
+	reposition_other_logging_windows()
+	LOCAL.windows[win] = vim.api.nvim_win_get_height(win) + 2
+
 	set_window_options(win)
 
 	return win
@@ -104,6 +119,7 @@ local function close_window_after_x_seconds(win)
 		0,
 		vim.schedule_wrap(function()
 			vim.api.nvim_win_close(win, true)
+			LOCAL.windows[win] = nil
 		end)
 	)
 end
