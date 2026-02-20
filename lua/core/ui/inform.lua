@@ -68,16 +68,16 @@ local function create_information_window(buf, msg, hl)
 			return border
 		end
 
-		local function calculate_rows()
+		local function calculate_height()
 			return 3 + math.floor(vim.fn.strdisplaywidth(msg) / (LOCAL.width - 2))
 		end
 
 		return {
 			relative = "editor",
-			row = calculate_rows(),
+			row = 3,
 			col = calc_position(),
 			width = LOCAL.width,
-			height = 3,
+			height = calculate_height(),
 			focusable = false,
 			mouse = false,
 			border = set_border(),
