@@ -43,8 +43,7 @@ local function get_hl(level)
 	end
 end
 
-local function set_border(level)
-	local hl = get_hl(level)
+local function set_border(hl)
 	local border = {}
 	for _, value in ipairs({ "╭", "─", "╮", "│", "╯", "─", "╰", "│" }) do
 		border[#border + 1] = { value, hl }
@@ -52,7 +51,7 @@ local function set_border(level)
 	return border
 end
 
-local function create_information_window(buf, width, level)
+local function create_information_window(buf, width, hl)
 	local opts = {
 		relative = "editor",
 		row = 2,
@@ -61,7 +60,7 @@ local function create_information_window(buf, width, level)
 		height = 3,
 		focusable = false,
 		mouse = false,
-		border = set_border(level),
+		border = set_border(hl),
 		noautocmd = true,
 	}
 	local win = vim.api.nvim_open_win(buf, false, opts)
@@ -86,9 +85,10 @@ local function inform(msg, level)
 	if level == nil then
 		level = vim.log.levels.INFO
 	end
+	local hl = get_hl(level)
 	local width = vim.fn.strdisplaywidth(msg) + 2
 	local buf = create_buffer(msg, width)
-	local win = create_information_window(buf, width, level)
+	local win = create_information_window(buf, width, hl)
 	close_window_after_x_seconds(win)
 end
 
