@@ -9,29 +9,41 @@ local LOCAL = {
 	ns = { divider = vim.api.nvim_create_namespace("ns_divider_line") },
 }
 
-local function hl_buf_line(buf, ns, line, end_col, hl)
-	vim.api.nvim_buf_set_extmark(buf, ns, line - 1, 0, { end_row = line - 1, end_col = end_col, hl_group = hl })
-end
-
-local function parse_time_string(width)
-	local time = signs.ui.statusline.datetime.time .. " " .. os.date("%H:%M:%S")
-	return string.rep(" ", width - vim.fn.strdisplaywidth(time) - 1) .. time
-end
-
 local function create_buffer(msg, width, hl)
+	local function parse_time_string()
+		local time = signs.ui.statusline.datetime.time .. " " .. os.date("%H:%M:%S")
+		return string.rep(" ", width - vim.fn.strdisplaywidth(time) - 1) .. time
+	end
+
+	local function hl_buf_line(buf, ns, line, end_col, hl_group)
+		local opts = {
+			end_row = line - 1,
+			end_col = end_col,
+			hl_group = hl_group,
+		}
+		vim.api.nvim_buf_set_extmark(buf, ns, line - 1, 0, opts)
+	end
+
+	local function set_buf_options(buf)
+		vim.bo[buf].bufhidden = "wipe"
+		vim.bo[buf].buftype = "nofile"
+		vim.bo[buf].swapfile = false
+		vim.bo[buf].buflisted = false
+	end
+
 	local buf = vim.api.nvim_create_buf(false, true)
 	if buf == 0 then
 		vim.notify("Can not create an temporary buffer for update message.", vim.log.levels.ERROR)
 		return 1
 	end
+
 	local divider = string.rep("─", width)
-	local content = { parse_time_string(width), divider, " " .. msg .. " " }
+	local content = { parse_time_string(), divider, " " .. msg .. " " }
+
 	vim.api.nvim_buf_set_lines(buf, 0, 0, true, content)
 	hl_buf_line(buf, LOCAL.ns.divider, 2, #divider, hl)
-	vim.bo[buf].bufhidden = "wipe"
-	vim.bo[buf].buftype = "nofile"
-	vim.bo[buf].swapfile = false
-	vim.bo[buf].buflisted = false
+	set_buf_options(buf)
+
 	return buf
 end
 
