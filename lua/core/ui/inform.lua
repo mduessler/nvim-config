@@ -14,6 +14,7 @@ local function create_buffer(msg, hl)
 	local function parse_msg()
 		return string.rep(" ", LOCAL.width - vim.fn.strdisplaywidth(msg) - 1) .. msg
 	end
+
 	local function parse_time_string()
 		local time = signs.ui.statusline.datetime.time .. " " .. os.date("%H:%M:%S")
 		return string.rep(" ", LOCAL.width - vim.fn.strdisplaywidth(time) - 1) .. time
