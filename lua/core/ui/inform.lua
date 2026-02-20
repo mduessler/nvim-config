@@ -110,7 +110,7 @@ end
 local function close_window_after_x_seconds(win)
 	local timer = vim.loop.new_timer()
 	timer:start(
-		5000,
+		20000,
 		0,
 		vim.schedule_wrap(function()
 			vim.api.nvim_win_close(win, true)
