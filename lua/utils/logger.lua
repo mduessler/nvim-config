@@ -19,7 +19,7 @@ LOCAL.signs = {
 	divider = string.rep("─", LOCAL.width),
 }
 
-local function create_buffer(lines, hl)
+local function logging_buffer(lines, hl)
 	local function hl_buf_line(buf, ns, line, end_col, hl_group)
 		local opts = {
 			end_row = line - 1,
@@ -53,7 +53,7 @@ local function create_buffer(lines, hl)
 	return buf, #lines
 end
 
-local function create_information_window(buf, height, hl)
+local function logging_window(buf, height, hl)
 	local function create_opts()
 		local function calc_position()
 			return vim.o.columns - vim.o.columns * 0.01 - LOCAL.width
@@ -80,6 +80,18 @@ local function create_information_window(buf, height, hl)
 		}
 	end
 
+	local function set_close_timer(win)
+		local timer = vim.loop.new_timer()
+		timer:start(
+			20000,
+			0,
+			vim.schedule_wrap(function()
+				vim.api.nvim_win_close(win, true)
+				LOCAL.windows[win] = nil
+			end)
+		)
+	end
+
 	local function set_window_options(win)
 		vim.wo[win].number = false
 		vim.wo[win].relativenumber = false
@@ -102,23 +114,10 @@ local function create_information_window(buf, height, hl)
 	LOCAL.windows[win] = vim.api.nvim_win_get_height(win) + 2
 
 	set_window_options(win)
-
-	return win
+	set_close_timer(win)
 end
 
-local function close_window_after_x_seconds(win)
-	local timer = vim.loop.new_timer()
-	timer:start(
-		20000,
-		0,
-		vim.schedule_wrap(function()
-			vim.api.nvim_win_close(win, true)
-			LOCAL.windows[win] = nil
-		end)
-	)
-end
-
-local function create_buffer_lines(msg)
+local function logging_lines(msg)
 	local function parse_msg(lines)
 		local line = " "
 		for word in string.gmatch(msg, "%S+") do
@@ -160,10 +159,9 @@ local function create_buffer_lines(msg)
 end
 
 local function logger(msg, hl)
-	local lines = create_buffer_lines(msg)
-	local buf, height = create_buffer(lines, hl)
-	local win = create_information_window(buf, height, hl)
-	close_window_after_x_seconds(win)
+	local lines = logging_lines(msg)
+	local buf, height = logging_buffer(lines, hl)
+	logging_window(buf, height, hl)
 end
 
 local M = {
