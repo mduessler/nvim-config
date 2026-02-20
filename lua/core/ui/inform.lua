@@ -16,13 +16,8 @@ local function create_buffer(msg, width)
 		vim.notify("Can not create an temporary buffer for update message.", vim.log.levels.ERROR)
 		return 1
 	end
-	vim.api.nvim_buf_set_lines(
-		buf,
-		0,
-		0,
-		true,
-		{ parse_time_string(width), string.rep("─", width), " " .. msg .. " " }
-	)
+	local content = { parse_time_string(width), string.rep("─", width), " " .. msg .. " " }
+	vim.api.nvim_buf_set_lines(buf, 0, 0, true, content)
 	vim.bo[buf].bufhidden = "wipe"
 	vim.bo[buf].buftype = "nofile"
 	vim.bo[buf].swapfile = false
