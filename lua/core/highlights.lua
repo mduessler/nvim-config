@@ -233,6 +233,8 @@ local function inform_ui_hl()
 	set(0, "InformWARN", { fg = colors.default.yellow })
 	set(0, "InformERROR", { fg = colors.default.red })
 	set(0, "InformDEFAULT", { fg = colors.default.grey })
+	set(0, "LoggerTime", { fg = colors.default.blue.light })
+	set(0, "LoggerMsg", { fg = colors.default.grey })
 end
 
 statuslineHL()
