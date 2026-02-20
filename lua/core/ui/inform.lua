@@ -21,6 +21,9 @@ local function create_buffer(msg, hl)
 				end
 				line = line .. word .. " "
 			end
+			if line ~= " " then
+				lines[#lines + 1] = line
+			end
 			return lines
 		end
 
@@ -61,14 +64,15 @@ local function create_buffer(msg, hl)
 	local divider = string.rep("─", LOCAL.width)
 	-- local content = { parse_time_string(), divider, parse_msg() }
 
-	vim.api.nvim_buf_set_lines(buf, 0, 0, true, content(divider))
+	local lines = content(divider)
+	vim.api.nvim_buf_set_lines(buf, 0, 0, true, lines)
 	hl_buf_line(buf, LOCAL.ns.divider, 2, #divider, hl)
 	set_buf_options(buf)
 
-	return buf
+	return buf, #lines
 end
 
-local function create_information_window(buf, msg, hl)
+local function create_information_window(buf, height, hl)
 	local function opts()
 		local function calc_position()
 			return vim.o.columns - vim.o.columns * 0.01 - LOCAL.width
@@ -82,16 +86,12 @@ local function create_information_window(buf, msg, hl)
 			return border
 		end
 
-		local function calculate_height()
-			return 3 + math.floor(vim.fn.strdisplaywidth(msg) / (LOCAL.width - 2))
-		end
-
 		return {
 			relative = "editor",
 			row = 3,
 			col = calc_position(),
 			width = LOCAL.width,
-			height = calculate_height(),
+			height = height,
 			focusable = false,
 			mouse = false,
 			border = set_border(),
@@ -141,8 +141,8 @@ local function logger(msg, level)
 		level = vim.log.levels.INFO
 	end
 	local hl = get_hl(level)
-	local buf = create_buffer(msg, hl)
-	local win = create_information_window(buf, msg, hl)
+	local buf, height = create_buffer(msg, hl)
+	local win = create_information_window(buf, height, hl)
 	close_window_after_x_seconds(win)
 end
 
