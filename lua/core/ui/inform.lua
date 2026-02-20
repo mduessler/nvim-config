@@ -64,7 +64,7 @@ end
 local function create_information_window(buf, width, hl)
 	local opts = {
 		relative = "editor",
-		row = 2,
+		row = 3,
 		col = calc_position(width),
 		width = width,
 		height = 3,
