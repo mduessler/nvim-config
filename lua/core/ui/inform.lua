@@ -1,10 +1,28 @@
+local require_safe = require("utils.require_safe")
+local signs = require_safe("config.signs")
+
+if not signs then
+	return
+end
+
+local function parse_time_string(width)
+	local time = signs.ui.statusline.datetime.time .. " " .. os.date("%H:%M:%S")
+	return string.rep(" ", width - vim.fn.strdisplaywidth(time) - 1) .. time
+end
+
 local function create_buffer(msg, width)
 	local buf = vim.api.nvim_create_buf(false, true)
 	if buf == 0 then
 		vim.notify("Can not create an temporary buffer for update message.", vim.log.levels.ERROR)
 		return 1
 	end
-	vim.api.nvim_buf_set_lines(buf, 0, 0, true, { string.rep("_", width), " " .. msg .. " " })
+	vim.api.nvim_buf_set_lines(
+		buf,
+		0,
+		0,
+		true,
+		{ parse_time_string(width), string.rep("─", width), " " .. msg .. " " }
+	)
 	vim.bo[buf].bufhidden = "wipe"
 	vim.bo[buf].buftype = "nofile"
 	vim.bo[buf].swapfile = false
@@ -45,7 +63,7 @@ local function create_information_window(buf, width, level)
 		row = 2,
 		col = calc_position(width),
 		width = width,
-		height = 1,
+		height = 3,
 		focusable = false,
 		mouse = false,
 		border = set_border(level),
