@@ -106,20 +106,6 @@ local function create_information_window(buf, height, hl)
 	return win
 end
 
-local function get_hl(level)
-	if level == vim.log.levels.DEBUG then
-		return "InformDEBUG"
-	elseif level == vim.log.levels.INFO then
-		return "InformINFO"
-	elseif level == vim.log.levels.WARN then
-		return "InformWARN"
-	elseif level == vim.log.levels.ERROR then
-		return "InformERROR"
-	else
-		return "InformDefault"
-	end
-end
-
 local function close_window_after_x_seconds(win)
 	local timer = vim.loop.new_timer()
 	timer:start(
@@ -154,16 +140,17 @@ local function create_buffer_lines(msg)
 				line = line .. word .. " "
 			end
 		end
+
 		if line ~= " " then
 			lines[#lines + 1] = line
 		end
+
 		return lines
 	end
 
 	local function parse_time_string()
 		local time = signs.ui.statusline.datetime.time .. " " .. os.date("%H:%M:%S")
 		return " " .. time
-		-- return string.rep(" ", LOCAL.width - vim.fn.strdisplaywidth(time) - 1) .. time
 	end
 
 	local lines = { parse_time_string(), LOCAL.signs.divider }
@@ -172,15 +159,26 @@ local function create_buffer_lines(msg)
 	return lines
 end
 
-local function logger(msg, level)
-	if level == nil then
-		level = vim.log.levels.INFO
-	end
-	local hl = get_hl(level)
+local function logger(msg, hl)
 	local lines = create_buffer_lines(msg)
 	local buf, height = create_buffer(lines, hl)
 	local win = create_information_window(buf, height, hl)
 	close_window_after_x_seconds(win)
 end
 
-return logger
+local M = {
+	debug = function(msg)
+		logger(msg, "InformDEBUG")
+	end,
+	info = function(msg)
+		logger(msg, "InformINFO")
+	end,
+	warn = function(msg)
+		logger(msg, "InformWARN")
+	end,
+	error = function(msg)
+		logger(msg, "InformERROR")
+	end,
+}
+
+return M
