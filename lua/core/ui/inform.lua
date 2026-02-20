@@ -10,35 +10,11 @@ local LOCAL = {
 	ns = { divider = vim.api.nvim_create_namespace("ns_divider_line") },
 }
 
-local function create_buffer(msg, hl)
-	local function content(divider)
-		local function parse_msg(lines)
-			local line = " "
-			for word in string.gmatch(msg, "%S+") do
-				if vim.fn.strdisplaywidth(line .. word .. " ") > LOCAL.width then
-					lines[#lines + 1] = line
-					line = " "
-				end
-				line = line .. word .. " "
-			end
-			if line ~= " " then
-				lines[#lines + 1] = line
-			end
-			return lines
-		end
+LOCAL.signs = {
+	divider = string.rep("─", LOCAL.width),
+}
 
-		local function parse_time_string()
-			local time = signs.ui.statusline.datetime.time .. " " .. os.date("%H:%M:%S")
-			return " " .. time
-			-- return string.rep(" ", LOCAL.width - vim.fn.strdisplaywidth(time) - 1) .. time
-		end
-
-		local lines = { parse_time_string(), divider }
-		lines = parse_msg(lines)
-
-		return lines
-	end
-
+local function create_buffer(lines, hl)
 	local function hl_buf_line(buf, ns, line, end_col, hl_group)
 		local opts = {
 			end_row = line - 1,
@@ -61,12 +37,8 @@ local function create_buffer(msg, hl)
 		return 1
 	end
 
-	local divider = string.rep("─", LOCAL.width)
-	-- local content = { parse_time_string(), divider, parse_msg() }
-
-	local lines = content(divider)
 	vim.api.nvim_buf_set_lines(buf, 0, 0, true, lines)
-	hl_buf_line(buf, LOCAL.ns.divider, 2, #divider, hl)
+	hl_buf_line(buf, LOCAL.ns.divider, 2, #LOCAL.signs.divider, hl)
 	set_buf_options(buf)
 
 	return buf, #lines
@@ -136,12 +108,41 @@ local function close_window_after_x_seconds(win)
 	)
 end
 
+local function content(msg)
+	local function parse_msg(lines)
+		local line = " "
+		for word in string.gmatch(msg, "%S+") do
+			if vim.fn.strdisplaywidth(line .. word .. " ") > LOCAL.width then
+				lines[#lines + 1] = line
+				line = " "
+			end
+			line = line .. word .. " "
+		end
+		if line ~= " " then
+			lines[#lines + 1] = line
+		end
+		return lines
+	end
+
+	local function parse_time_string()
+		local time = signs.ui.statusline.datetime.time .. " " .. os.date("%H:%M:%S")
+		return " " .. time
+		-- return string.rep(" ", LOCAL.width - vim.fn.strdisplaywidth(time) - 1) .. time
+	end
+
+	local lines = { parse_time_string(), LOCAL.signs.divider }
+	lines = parse_msg(lines)
+
+	return lines
+end
+
 local function logger(msg, level)
 	if level == nil then
 		level = vim.log.levels.INFO
 	end
 	local hl = get_hl(level)
-	local buf, height = create_buffer(msg, hl)
+	local lines = content(msg)
+	local buf, height = create_buffer(lines, hl)
 	local win = create_information_window(buf, height, hl)
 	close_window_after_x_seconds(win)
 end
