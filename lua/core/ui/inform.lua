@@ -6,13 +6,17 @@ if not signs then
 end
 
 local LOCAL = {
+	width = 40,
 	ns = { divider = vim.api.nvim_create_namespace("ns_divider_line") },
 }
 
-local function create_buffer(msg, width, hl)
+local function create_buffer(msg, hl)
+	local function parse_msg()
+		return string.rep(" ", LOCAL.width - vim.fn.strdisplaywidth(msg) - 1) .. msg
+	end
 	local function parse_time_string()
 		local time = signs.ui.statusline.datetime.time .. " " .. os.date("%H:%M:%S")
-		return string.rep(" ", width - vim.fn.strdisplaywidth(time) - 1) .. time
+		return string.rep(" ", LOCAL.width - vim.fn.strdisplaywidth(time) - 1) .. time
 	end
 
 	local function hl_buf_line(buf, ns, line, end_col, hl_group)
@@ -37,8 +41,8 @@ local function create_buffer(msg, width, hl)
 		return 1
 	end
 
-	local divider = string.rep("─", width)
-	local content = { parse_time_string(), divider, " " .. msg .. " " }
+	local divider = string.rep("─", LOCAL.width)
+	local content = { parse_time_string(), divider, parse_msg() }
 
 	vim.api.nvim_buf_set_lines(buf, 0, 0, true, content)
 	hl_buf_line(buf, LOCAL.ns.divider, 2, #divider, hl)
@@ -47,10 +51,10 @@ local function create_buffer(msg, width, hl)
 	return buf
 end
 
-local function create_information_window(buf, width, hl)
+local function create_information_window(buf, hl)
 	local function opts()
 		local function calc_position()
-			return vim.o.columns - vim.o.columns * 0.01 - width
+			return vim.o.columns - vim.o.columns * 0.01 - LOCAL.width
 		end
 
 		local function set_border()
@@ -65,7 +69,7 @@ local function create_information_window(buf, width, hl)
 			relative = "editor",
 			row = 3,
 			col = calc_position(),
-			width = width,
+			width = LOCAL.width,
 			height = 3,
 			focusable = false,
 			mouse = false,
@@ -116,9 +120,8 @@ local function log(msg, level)
 		level = vim.log.levels.INFO
 	end
 	local hl = get_hl(level)
-	local width = vim.fn.strdisplaywidth(msg) + 2
-	local buf = create_buffer(msg, width, hl)
-	local win = create_information_window(buf, width, hl)
+	local buf = create_buffer(msg, hl)
+	local win = create_information_window(buf, hl)
 	close_window_after_x_seconds(win)
 end
 
