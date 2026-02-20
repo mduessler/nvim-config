@@ -116,7 +116,7 @@ local function close_window_after_x_seconds(win)
 	)
 end
 
-local function log(msg, level)
+local function logger(msg, level)
 	if level == nil then
 		level = vim.log.levels.INFO
 	end
@@ -126,4 +126,4 @@ local function log(msg, level)
 	close_window_after_x_seconds(win)
 end
 
-return log
+return logger
