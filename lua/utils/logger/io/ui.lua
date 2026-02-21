@@ -1,69 +1,15 @@
 local require_safe = require("utils.require_safe")
+
+local LOCAL = require_safe("utils.logger.config")
 local signs = require_safe("config.signs")
 
-if not signs then
+if not (LOCAL and signs) then
 	return
 end
 
-local LOCAL = {
-	width = 40,
-	ns = {
-		time = vim.api.nvim_create_namespace("LoggerTime"),
-		divider = vim.api.nvim_create_namespace("LoggerDivider"),
-		msg = vim.api.nvim_create_namespace("LoggerMsg"),
-	},
-	windows = {},
-	config = {
-		path = vim.fn.stdpath("log"),
-		name = "nvim",
-		files = 2,
-		size = 100,
-	},
-}
+local M = {}
 
-LOCAL.signs = {
-	divider = string.rep("─", LOCAL.width),
-}
-
-local function write_to_file(msg, level)
-	local file_name = string.format("%s/%s.log", LOCAL.config.path, LOCAL.config.name)
-
-	local function timestamp()
-		local ms = vim.loop.now() % 1000
-		return os.date("%Y-%m-%d--%H:%M:%S") .. string.format(".%03d", ms % 1000)
-	end
-
-	local function log_is_larger_than_500MB()
-		local stat = vim.loop.fs_stat(file_name)
-		if not stat then
-			error("Can not access file " .. file_name .. ".", vim.log.levels.ERROR)
-			return nil
-		end
-		return stat.size > LOCAL.config.size * 1024 * 1024
-	end
-
-	local function rotate_log_file()
-		local rotate = string.format("%s/%s-2.log", LOCAL.config.path, LOCAL.config.name)
-		if vim.loop.fs_stat(rotate) then
-			os.remove(rotate)
-		end
-		os.rename(file_name, rotate)
-	end
-
-	if log_is_larger_than_500MB() then
-		rotate_log_file()
-	end
-
-	local handler = io.open(file_name, "a")
-	if handler then
-		handler:write(string.format("%s | %-6s| %s\n", timestamp(), level, msg))
-		handler:close()
-		return
-	end
-	error("Can not open log file at " .. file_name .. ".", vim.log.levels.ERROR)
-end
-
-local function logging_buffer(lines, hl)
+local function create_buffer(lines, hl)
 	local function hl_buf_line(buf, ns, line, end_col, hl_group)
 		local opts = {
 			end_row = line - 1,
@@ -97,7 +43,7 @@ local function logging_buffer(lines, hl)
 	return buf, #lines
 end
 
-local function logging_window(buf, height, hl)
+local function create_window(buf, height, hl)
 	local function create_opts()
 		local function calc_position()
 			return vim.o.columns - vim.o.columns * 0.01 - LOCAL.width
@@ -161,7 +107,7 @@ local function logging_window(buf, height, hl)
 	set_close_timer(win)
 end
 
-local function logging_lines(msg)
+local function create_buffer_lines(msg)
 	local function parse_msg(lines)
 		local line = " "
 		for word in string.gmatch(msg, "%S+") do
@@ -202,29 +148,10 @@ local function logging_lines(msg)
 	return lines
 end
 
-local function logger(msg, hl)
-	local lines = logging_lines(msg)
-	local buf, height = logging_buffer(lines, hl)
-	logging_window(buf, height, hl)
+M.write = function(msg, hl)
+	local lines = create_buffer_lines(msg)
+	local buf, height = create_buffer(lines, hl)
+	create_window(buf, height, hl)
 end
-
-local M = {
-	debug = function(msg)
-		logger(msg, "InformDEBUG")
-		write_to_file(msg, "DEBUG")
-	end,
-	info = function(msg)
-		logger(msg, "InformINFO")
-		write_to_file(msg, "INFO")
-	end,
-	warn = function(msg)
-		logger(msg, "InformWARN")
-		write_to_file(msg, "WARN")
-	end,
-	error = function(msg)
-		logger(msg, "InformERROR")
-		write_to_file(msg, "ERROR")
-	end,
-}
 
 return M
