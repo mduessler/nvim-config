@@ -227,18 +227,7 @@ local function vim_ui_hl()
 	vim.api.nvim_set_hl(0, "VimUiInputStartIcon", { fg = colors.default.green.light })
 end
 
-local function inform_ui_hl()
-	set(0, "InformDEBUG", { fg = colors.default.black })
-	set(0, "InformINFO", { fg = colors.default.green.light })
-	set(0, "InformWARN", { fg = colors.default.yellow })
-	set(0, "InformERROR", { fg = colors.default.red })
-	set(0, "InformDEFAULT", { fg = colors.default.grey })
-	set(0, "LoggerTime", { fg = colors.default.blue.light })
-	set(0, "LoggerMsg", { fg = colors.default.grey })
-end
-
 statuslineHL()
 tablineHL()
 winbar_hl()
 vim_ui_hl()
-inform_ui_hl()

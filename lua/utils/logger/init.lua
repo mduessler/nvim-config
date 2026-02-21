@@ -2,28 +2,29 @@ local require_safe = require("utils.require_safe")
 
 local LOCAL = require_safe("utils.logger.config")
 local cmds = require_safe("lua.utils.logger.cmds")
+local hl = require_safe("lua.utils.logger.highlights")
 local file = require_safe("utils.logger.io.file")
 local ui = require_safe("utils.logger.io.ui")
 
-if not (LOCAL and cmds and file and ui) then
+if not (LOCAL and cmds and hl and file and ui) then
 	return
 end
 
 local M = {
 	debug = function(msg)
-		ui.show(msg, "InformDEBUG")
+		ui.show(msg, "DEBUG")
 		file.write(msg, "DEBUG")
 	end,
 	info = function(msg)
-		ui.show(msg, "InformINFO")
+		ui.show(msg, "INFO")
 		file.write(msg, "INFO")
 	end,
 	warn = function(msg)
-		ui.show(msg, "InformWARN")
+		ui.show(msg, "WARN")
 		file.write(msg, "WARN")
 	end,
 	error = function(msg)
-		ui.show(msg, "InformERROR")
+		ui.show(msg, "ERROR")
 		file.write(msg, "ERROR")
 	end,
 }
