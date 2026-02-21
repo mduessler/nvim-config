@@ -13,6 +13,11 @@ local LOCAL = {
 		msg = vim.api.nvim_create_namespace("LoggerMsg"),
 	},
 	windows = {},
+	config = {
+		path = vim.fn.stdpath("log"),
+		files = 2,
+		size = 500,
+	},
 }
 
 LOCAL.signs = {
