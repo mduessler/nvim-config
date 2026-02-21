@@ -9,13 +9,13 @@ end
 local M = {}
 
 local function create_buffer(lines, hl)
-	local function hl_buf_line(buf, ns, line, end_col, hl_group)
+	local function hl_buf_line(buf, line, end_col, hl_group)
 		local opts = {
 			end_row = line - 1,
 			end_col = end_col,
 			hl_group = hl_group,
 		}
-		vim.api.nvim_buf_set_extmark(buf, ns, line - 1, 0, opts)
+		vim.api.nvim_buf_set_extmark(buf, LOCAL.ns, line - 1, 0, opts)
 	end
 
 	local function set_buf_options(buf)
@@ -25,6 +25,15 @@ local function create_buffer(lines, hl)
 		vim.bo[buf].buflisted = false
 	end
 
+	local function hl_lines(buf)
+		hl_buf_line(buf, 1, #lines[1], "LoggerTime")
+		hl_buf_line(buf, 1, #lines[1] - 2 - #(LOCAL.signs.time .. " " .. os.date("%H:%M:%S")), hl)
+		hl_buf_line(buf, 2, #LOCAL.signs.divider, hl)
+		for i = 3, #lines do
+			hl_buf_line(buf, i, #lines[i], "LoggerMsg")
+		end
+	end
+
 	local buf = vim.api.nvim_create_buf(false, true)
 	if buf == 0 then
 		vim.notify("Can not create an temporary buffer for update message.", vim.log.levels.ERROR)
@@ -32,11 +41,8 @@ local function create_buffer(lines, hl)
 	end
 
 	vim.api.nvim_buf_set_lines(buf, 0, 0, true, lines)
-	hl_buf_line(buf, LOCAL.ns, 1, #lines[1], "LoggerLevelTime")
-	hl_buf_line(buf, LOCAL.ns, 2, #LOCAL.signs.divider, hl)
-	for i = 3, #lines do
-		hl_buf_line(buf, LOCAL.ns, i, #lines[i], "LoggerMsg")
-	end
+	hl_lines(buf)
+
 	set_buf_options(buf)
 
 	return buf, #lines
