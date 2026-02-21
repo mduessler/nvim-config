@@ -5,6 +5,13 @@ if not signs then
 	return
 end
 
+-- border styles:
+-- { "┏", "━", "┓", "┃", "┛", "━", "┗", "┃" }
+-- { " ", "━", " ", "┃", " ", "━", " ", "┃" }
+--
+-- { "╭", "─", "╮", "│", "╯", "─", "╰", "│" }
+-- { " ", "─", " ", "│", " ", "─", " ", "│" }
+--
 local LOCAL = {
 	width = 40,
 	ns = vim.api.nvim_create_namespace("Logger"),
@@ -16,7 +23,7 @@ local LOCAL = {
 		size = 100,
 	},
 	signs = {
-		border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" },
+		border = { "┏", "━", "┓", "┃", "┛", "━", "┗", "┃" },
 		padding = " ",
 		debug = "",
 		info = "",
@@ -27,6 +34,6 @@ local LOCAL = {
 	},
 }
 
-LOCAL.signs.divider = string.rep("─", LOCAL.width)
+LOCAL.signs.divider = string.rep("━", LOCAL.width)
 
 return LOCAL
