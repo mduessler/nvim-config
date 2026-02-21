@@ -19,6 +19,10 @@ local M = {
 		ui.show(msg, "INFO")
 		file.write(msg, "INFO")
 	end,
+	pass = function(msg)
+		ui.show(msg, "PASS")
+		file.write(msg, "PASS")
+	end,
 	warn = function(msg)
 		ui.show(msg, "WARN")
 		file.write(msg, "WARN")

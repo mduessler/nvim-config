@@ -20,6 +20,7 @@ local LOCAL = {
 		padding = " ",
 		debug = "",
 		info = "",
+		pass = "",
 		warn = "",
 		error = "",
 		time = signs.ui.statusline.datetime.time,
