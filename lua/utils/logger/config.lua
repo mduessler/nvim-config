@@ -16,6 +16,7 @@ local LOCAL = {
 		size = 100,
 	},
 	signs = {
+		padding = " ",
 		debug = "",
 		info = "",
 		warn = "",
