@@ -12,6 +12,12 @@ local LOCAL = {
 		files = 2,
 		size = 100,
 	},
+	signs = {
+		debug = "",
+		info = "",
+		warn = "",
+		error = "",
+	},
 }
 
 LOCAL.signs = {
