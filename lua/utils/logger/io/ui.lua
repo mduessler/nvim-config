@@ -148,7 +148,7 @@ local function create_buffer_lines(msg)
 	return lines
 end
 
-M.write = function(msg, hl)
+M.show = function(msg, hl)
 	local lines = create_buffer_lines(msg)
 	local buf, height = create_buffer(lines, hl)
 	create_window(buf, height, hl)
