@@ -7,11 +7,7 @@ end
 
 local LOCAL = {
 	width = 40,
-	ns = {
-		time = vim.api.nvim_create_namespace("LoggerTime"),
-		divider = vim.api.nvim_create_namespace("LoggerDivider"),
-		msg = vim.api.nvim_create_namespace("LoggerMsg"),
-	},
+	ns = vim.api.nvim_create_namespace("Logger"),
 	windows = {},
 	config = {
 		path = vim.fn.stdpath("log"),
