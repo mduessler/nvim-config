@@ -16,6 +16,7 @@ local LOCAL = {
 		size = 100,
 	},
 	signs = {
+		border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" },
 		padding = " ",
 		debug = "",
 		info = "",

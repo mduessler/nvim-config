@@ -50,7 +50,7 @@ local function create_window(buf, height, hl)
 
 		local function set_border()
 			local border = {}
-			for _, value in ipairs({ "╭", "─", "╮", "│", "╯", "─", "╰", "│" }) do
+			for _, value in ipairs(LOCAL.signs.border) do
 				border[#border + 1] = { value, hl }
 			end
 			return border
