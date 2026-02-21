@@ -32,7 +32,7 @@ local function create_buffer(lines, hl)
 	end
 
 	vim.api.nvim_buf_set_lines(buf, 0, 0, true, lines)
-	hl_buf_line(buf, LOCAL.ns, 1, #lines[1], "LoggerTime")
+	hl_buf_line(buf, LOCAL.ns, 1, #lines[1], "LoggerLevelTime")
 	hl_buf_line(buf, LOCAL.ns, 2, #LOCAL.signs.divider, hl)
 	for i = 3, #lines do
 		hl_buf_line(buf, LOCAL.ns, i, #lines[i], "LoggerMsg")
