@@ -1,3 +1,10 @@
+local require_safe = require("utils.require_safe")
+local signs = require_safe("config.signs")
+
+if not signs then
+	return
+end
+
 local LOCAL = {
 	width = 40,
 	ns = {
@@ -17,6 +24,7 @@ local LOCAL = {
 		info = "",
 		warn = "",
 		error = "",
+		time = signs.ui.statusline.datetime.time,
 	},
 }
 

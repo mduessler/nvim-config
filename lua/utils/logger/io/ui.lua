@@ -1,9 +1,8 @@
 local require_safe = require("utils.require_safe")
 
 local LOCAL = require_safe("utils.logger.config")
-local signs = require_safe("config.signs")
 
-if not (LOCAL and signs) then
+if not LOCAL then
 	return
 end
 
@@ -138,7 +137,7 @@ local function create_buffer_lines(msg)
 	end
 
 	local function parse_time_string()
-		local time = signs.ui.statusline.datetime.time .. " " .. os.date("%H:%M:%S")
+		local time = LOCAL.signs.time .. " " .. os.date("%H:%M:%S")
 		return " " .. time
 	end
 
