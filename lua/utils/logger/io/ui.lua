@@ -112,7 +112,7 @@ local function create_window(buf, height, hl)
 	set_close_timer(win)
 end
 
-local function create_buffer_lines(msg, level)
+local function create_buffer_lines(msg, level, entry)
 	local function parse_msg(lines)
 		local line = " "
 		for word in string.gmatch(msg, "%S+") do
@@ -144,12 +144,16 @@ local function create_buffer_lines(msg, level)
 
 	local function parse_time_string()
 		local level_string = LOCAL.signs[level:lower()] .. " " .. level
+		local line_string = LOCAL.signs.line .. tostring(entry) .. " "
 		local time_string = LOCAL.signs.time .. " " .. os.date("%H:%M:%S")
 		local level_width = vim.fn.strdisplaywidth(level_string)
+		local line_width = vim.fn.strdisplaywidth(line_string)
 		local time_width = vim.fn.strdisplaywidth(time_string)
 		return " "
 			.. level_string
-			.. LOCAL.signs.padding:rep(LOCAL.width - 2 - level_width - time_width)
+			.. LOCAL.signs.padding:rep(LOCAL.width - (3 + level_width + line_width + time_width))
+			.. line_string
+			.. " "
 			.. time_string
 			.. " "
 	end
@@ -160,9 +164,9 @@ local function create_buffer_lines(msg, level)
 	return lines
 end
 
-M.show = function(msg, level)
+M.show = function(msg, level, entry)
 	local hl = "Logger" .. level
-	local lines = create_buffer_lines(msg, level)
+	local lines = create_buffer_lines(msg, level, entry)
 	local buf, height = create_buffer(lines, hl)
 	create_window(buf, height, hl)
 end
