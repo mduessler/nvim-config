@@ -12,24 +12,24 @@ end
 
 local M = {
 	debug = function(msg)
-		ui.show(msg, "DEBUG")
-		file.write(msg, "DEBUG")
+		local entry = file.write(msg, "DEBUG")
+		ui.show(msg, "DEBUG", entry)
 	end,
 	info = function(msg)
-		ui.show(msg, "INFO")
-		file.write(msg, "INFO")
+		local entry = file.write(msg, "INFO")
+		ui.show(msg, "INFO", entry)
 	end,
 	pass = function(msg)
-		ui.show(msg, "PASS")
-		file.write(msg, "PASS")
+		local entry = file.write(msg, "PASS")
+		ui.show(msg, "PASS", entry)
 	end,
 	warn = function(msg)
-		ui.show(msg, "WARN")
-		file.write(msg, "WARN")
+		local entry = file.write(msg, "WARN")
+		ui.show(msg, "WARN", entry)
 	end,
 	error = function(msg)
-		ui.show(msg, "ERROR")
-		file.write(msg, "ERROR")
+		local entry = file.write(msg, "ERROR")
+		ui.show(msg, "ERROR", entry)
 	end,
 }
 
