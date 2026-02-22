@@ -23,6 +23,7 @@ local LOCAL = {
 		pass = "",
 		warn = "",
 		error = "",
+		line = "",
 		time = signs.ui.statusline.datetime.time,
 	},
 }
