@@ -39,6 +39,7 @@ M.write = function(msg, level)
 
 	local handler = io.open(file_name, "a")
 	if handler then
+		msg = msg:gsub("\n", "  ")
 		handler:write(string.format("%s | %-6s| %s\n", timestamp(), level, msg))
 		handler:close()
 		return
