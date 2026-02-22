@@ -10,6 +10,7 @@ local M = {}
 
 M.write = function(msg, level)
 	local file_name = string.format("%s/%s.log", LOCAL.config.path, LOCAL.config.name)
+	local meta_file = string.format("%s/%s.meta", LOCAL.config.path, LOCAL.config.name)
 
 	local function timestamp()
 		local ms = vim.loop.now() % 1000
@@ -25,10 +26,51 @@ M.write = function(msg, level)
 		return stat.size > LOCAL.config.size * 1024 * 1024
 	end
 
+	local function reset_meta_handler()
+		local meta_handler = io.open(meta_file, "w")
+		if meta_handler then
+			meta_handler:close()
+			return true
+		end
+		error("Could not reset meta counter", vim.log.levels.ERROR)
+		return false
+	end
+
+	local function update_meta_line_counter()
+		local function get_meta_line_counter()
+			local meta_handler = io.open(meta_file, "r")
+			if not meta_handler then
+				return 0
+			end
+			return tonumber(meta_handler:read("*n"))
+		end
+
+		local function set_meta_line_counter(counter)
+			if not reset_meta_handler() then
+				return false
+			end
+			local meta_handler = io.open(meta_file, "w")
+			if not meta_handler then
+				error("Could set meta handler", vim.log.levels.ERROR)
+				return false
+			end
+
+			meta_handler:write(tostring(counter))
+			meta_handler:close()
+			return true
+		end
+
+		local counter = get_meta_line_counter() + 1
+		set_meta_line_counter(counter)
+
+		return counter
+	end
+
 	local function rotate_log_file()
 		local rotate = string.format("%s/%s-2.log", LOCAL.config.path, LOCAL.config.name)
 		if vim.loop.fs_stat(rotate) then
 			os.remove(rotate)
+			reset_meta_handler()
 		end
 		os.rename(file_name, rotate)
 	end
@@ -42,9 +84,10 @@ M.write = function(msg, level)
 		msg = msg:gsub("\n", "  ")
 		handler:write(string.format("%s | %-6s| %s\n", timestamp(), level, msg))
 		handler:close()
-		return
+		return update_meta_line_counter()
 	end
 	error("Can not open log file at " .. file_name .. ".", vim.log.levels.ERROR)
+	return -1
 end
 
 return M
