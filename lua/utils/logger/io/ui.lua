@@ -112,10 +112,29 @@ local function create_window(buf, height, hl)
 	set_close_timer(win)
 end
 
-local function create_buffer_content(msg, level, entry)
+local function create_content(msg, level, entry)
 	local content = {}
 
-	local function parse_msg()
+	local function info_line()
+		local level_string = LOCAL.signs[level:lower()] .. " " .. level
+		local level_width = vim.fn.strdisplaywidth(level_string)
+		local line_string = LOCAL.signs.line .. tostring(entry) .. " "
+		local line_width = vim.fn.strdisplaywidth(line_string)
+		local time_string = LOCAL.signs.time .. " " .. os.date("%H:%M:%S")
+		local time_width = vim.fn.strdisplaywidth(time_string)
+		local line_time_pad = 3
+
+		local components = {
+			level_string,
+			LOCAL.signs.padding:rep(LOCAL.width - (2 + level_width + line_width + line_time_pad + time_width)),
+			line_string,
+			LOCAL.padding:rep(line_time_pad),
+			time_string,
+		}
+		content[1] = components
+	end
+
+	local function create_msg_components()
 		local line = " "
 		for word in string.gmatch(msg, "%S+") do
 			if vim.fn.strdisplaywidth(word) > LOCAL.width then
@@ -142,29 +161,16 @@ local function create_buffer_content(msg, level, entry)
 		end
 	end
 
-	local function parse_first_line()
-		local strings = {
-			level = LOCAL.signs[level:lower()] .. " " .. level,
-			line = LOCAL.signs.line .. tostring(entry) .. " ",
-			time = LOCAL.signs.time .. " " .. os.date("%H:%M:%S"),
-		}
-		local level_width = vim.fn.strdisplaywidth(strings.level)
-		local line_width = vim.fn.strdisplaywidth(strings.line)
-		local time_width = vim.fn.strdisplaywidth(strings.time)
-		strings.padding = LOCAL.signs.padding:rep(LOCAL.width - (3 + level_width + line_width + time_width))
-		content[1] = strings
-	end
-
-	parse_first_line()
+	info_line()
 	content[2] = LOCAL.signs.divider
-	parse_msg()
+	create_msg_components()
 
 	return content
 end
 
 M.show = function(msg, level, entry)
 	local hl = "Logger" .. level
-	local lines = create_buffer_content(msg, level, entry)
+	local lines = create_content(msg, level, entry)
 	local buf, height = create_buffer(lines, hl)
 	create_window(buf, height, hl)
 end
