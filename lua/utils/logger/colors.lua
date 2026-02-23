@@ -13,6 +13,7 @@ colors.logger = {
 	warn = "#FF8314",
 	error = "#F62430",
 	level_time = "#6F6F6F",
+	line = "#FFFFFF",
 	msg = colors.default.grey,
 }
 
