@@ -20,13 +20,13 @@ local function create_buffer(content, hl)
 		end
 	end
 
-	local function hl_buf_line(buf, line, end_col, hl_group)
+	local function hl_buf_line(buf, line, start_col, end_col, hl_group)
 		local opts = {
 			end_row = line - 1,
 			end_col = end_col,
 			hl_group = hl_group,
 		}
-		vim.api.nvim_buf_set_extmark(buf, LOCAL.ns, line - 1, 0, opts)
+		vim.api.nvim_buf_set_extmark(buf, LOCAL.ns, line - 1, start_col, opts)
 	end
 
 	local function set_buf_options(buf)
@@ -37,16 +37,20 @@ local function create_buffer(content, hl)
 	end
 
 	local function hl_lines(buf)
+		local infos = content[1]
 		local end_col = #lines[1]
-		hl_buf_line(buf, 1, end_col, "LoggerTime")
-		end_col = end_col - #content[1][#content[1]]
-		hl_buf_line(buf, 1, end_col, "LoggerLine")
-		end_col = end_col - #content[1][#content[1] - 1] - #content[1][#content[1] - 1]
-		hl_buf_line(buf, 1, end_col, hl)
+		local start_col = end_col - (#infos[#infos] + #infos[#infos - 1])
+		hl_buf_line(buf, 1, start_col, end_col, "LoggerTime")
+		end_col = start_col
+		start_col = start_col - (#infos[#infos - 2] + #infos[#infos - 3])
+		hl_buf_line(buf, 1, start_col, end_col, "LoggerLine")
+		end_col = start_col
+		start_col = 1
+		hl_buf_line(buf, 1, start_col, end_col, hl)
 
-		hl_buf_line(buf, 2, #LOCAL.signs.divider, hl)
+		hl_buf_line(buf, 2, 0, #LOCAL.signs.divider, hl)
 		for i = 3, #content do
-			hl_buf_line(buf, i, #content[i], "LoggerMsg")
+			hl_buf_line(buf, i, 1, #content[i], "LoggerMsg")
 		end
 	end
 
