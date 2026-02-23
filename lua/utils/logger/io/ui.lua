@@ -112,7 +112,7 @@ local function create_window(buf, height, hl)
 	set_close_timer(win)
 end
 
-local function create_buffer_lines(msg, level, entry)
+local function create_buffer_content(msg, level, entry)
 	local content = {}
 
 	local function parse_msg()
@@ -164,7 +164,7 @@ end
 
 M.show = function(msg, level, entry)
 	local hl = "Logger" .. level
-	local lines = create_buffer_lines(msg, level, entry)
+	local lines = create_buffer_content(msg, level, entry)
 	local buf, height = create_buffer(lines, hl)
 	create_window(buf, height, hl)
 end
