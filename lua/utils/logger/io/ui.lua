@@ -8,7 +8,18 @@ end
 
 local M = {}
 
-local function create_buffer(lines, hl)
+local function create_buffer(content, hl)
+	local lines = {}
+	local function parse_lines()
+		for _, value in ipairs(content) do
+			if type(value) == "table" then
+				lines[#lines + 1] = table.concat(value)
+			else
+				lines[#lines + 1] = value
+			end
+		end
+	end
+
 	local function hl_buf_line(buf, line, end_col, hl_group)
 		local opts = {
 			end_row = line - 1,
@@ -26,11 +37,16 @@ local function create_buffer(lines, hl)
 	end
 
 	local function hl_lines(buf)
-		hl_buf_line(buf, 1, #lines[1], "LoggerTime")
-		hl_buf_line(buf, 1, #lines[1] - 2 - #(LOCAL.signs.time .. " " .. os.date("%H:%M:%S")), hl)
+		local end_col = #lines[1]
+		hl_buf_line(buf, 1, end_col, "LoggerTime")
+		end_col = end_col - #content[1][#content[1]]
+		hl_buf_line(buf, 1, end_col, "LoggerLine")
+		end_col = end_col - #content[1][#content[1] - 1] - #content[1][#content[1] - 1]
+		hl_buf_line(buf, 1, end_col, hl)
+
 		hl_buf_line(buf, 2, #LOCAL.signs.divider, hl)
-		for i = 3, #lines do
-			hl_buf_line(buf, i, #lines[i], "LoggerMsg")
+		for i = 3, #content do
+			hl_buf_line(buf, i, #content[i], "LoggerMsg")
 		end
 	end
 
@@ -40,12 +56,13 @@ local function create_buffer(lines, hl)
 		return 1
 	end
 
+	parse_lines()
 	vim.api.nvim_buf_set_lines(buf, 0, 0, true, lines)
 	hl_lines(buf)
 
 	set_buf_options(buf)
 
-	return buf, #lines
+	return buf, #content
 end
 
 local function create_window(buf, height, hl)
@@ -128,7 +145,7 @@ local function create_content(msg, level, entry)
 			level_string,
 			LOCAL.signs.padding:rep(LOCAL.width - (2 + level_width + line_width + line_time_pad + time_width)),
 			line_string,
-			LOCAL.padding:rep(line_time_pad),
+			LOCAL.signs.padding:rep(line_time_pad),
 			time_string,
 		}
 		content[1] = components
