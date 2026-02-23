@@ -8,7 +8,7 @@ end
 
 local M = {}
 
-M.create = function(level, entry)
+M.create = function(level, entry, msg)
 	local content = {}
 
 	local function info_line()
@@ -30,7 +30,36 @@ M.create = function(level, entry)
 		content[1] = components
 	end
 
+	local function create_msg_components()
+		local line = " "
+		for word in string.gmatch(msg, "%S+") do
+			if vim.fn.strdisplaywidth(word) > LOCAL.width then
+				for i = 1, #word do
+					local c = word:sub(i, i)
+					if vim.fn.strdisplaywidth(line .. c .. " ") > LOCAL.width then
+						content[#content + 1] = line .. " "
+						line = " "
+					end
+					line = line .. c
+				end
+				line = line .. " "
+			else
+				if vim.fn.strdisplaywidth(line .. word .. " ") > LOCAL.width then
+					content[#content + 1] = line
+					line = " "
+				end
+				line = line .. word .. " "
+			end
+		end
+
+		if line ~= " " then
+			content[#content + 1] = line
+		end
+	end
+
 	info_line()
+	content[2] = LOCAL.signs.divider
+	create_msg_components()
 
 	return content
 end
