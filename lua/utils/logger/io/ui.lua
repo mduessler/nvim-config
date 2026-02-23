@@ -142,11 +142,13 @@ local function create_content(msg, level, entry)
 		local line_time_pad = 3
 
 		local components = {
+			LOCAL.signs.padding,
 			level_string,
 			LOCAL.signs.padding:rep(LOCAL.width - (2 + level_width + line_width + line_time_pad + time_width)),
 			line_string,
 			LOCAL.signs.padding:rep(line_time_pad),
 			time_string,
+			LOCAL.signs.padding,
 		}
 		content[1] = components
 	end
