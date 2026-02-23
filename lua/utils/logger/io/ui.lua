@@ -37,21 +37,31 @@ local function create_buffer(content, hl)
 	end
 
 	local function hl_lines(buf)
-		local infos = content[1]
-		local end_col = #lines[1]
-		local start_col = end_col - (#infos[#infos] + #infos[#infos - 1])
-		hl_buf_line(buf, 1, start_col, end_col, "LoggerTime")
-		end_col = start_col
-		start_col = start_col - (#infos[#infos - 2] + #infos[#infos - 3])
-		hl_buf_line(buf, 1, start_col, end_col, "LoggerLine")
-		end_col = start_col
-		start_col = 1
-		hl_buf_line(buf, 1, start_col, end_col, hl)
+		local function hl_first_line()
+			local line_segments = content[1]
 
-		hl_buf_line(buf, 2, 0, #LOCAL.signs.divider, hl)
-		for i = 3, #content do
-			hl_buf_line(buf, i, 1, #content[i], "LoggerMsg")
+			local level_start = #line_segments[1]
+			local level_end = level_start + #line_segments[2]
+			hl_buf_line(buf, 1, level_start, level_end, hl)
+
+			local line_start = level_end + #line_segments[3]
+			local line_end = line_start + #line_segments[4]
+			hl_buf_line(buf, 1, line_start, line_end, "LoggerLine")
+
+			local time_start = line_end + #line_segments[5]
+			local time_end = time_start + #line_segments[6]
+			hl_buf_line(buf, 1, time_start, time_end, "LoggerTime")
 		end
+
+		local function hl_message_lines()
+			for i = 3, #content do
+				hl_buf_line(buf, i, 1, #content[i], "LoggerMsg")
+			end
+		end
+
+		hl_first_line()
+		hl_buf_line(buf, 2, 0, #LOCAL.signs.divider, hl)
+		hl_message_lines()
 	end
 
 	local buf = vim.api.nvim_create_buf(false, true)
