@@ -113,14 +113,16 @@ local function create_window(buf, height, hl)
 end
 
 local function create_buffer_lines(msg, level, entry)
-	local function parse_msg(lines)
+	local content = {}
+
+	local function parse_msg()
 		local line = " "
 		for word in string.gmatch(msg, "%S+") do
 			if vim.fn.strdisplaywidth(word) > LOCAL.width then
 				for i = 1, #word do
 					local c = word:sub(i, i)
 					if vim.fn.strdisplaywidth(line .. c .. " ") > LOCAL.width then
-						lines[#lines + 1] = line .. " "
+						content[#content + 1] = line .. " "
 						line = " "
 					end
 					line = line .. c
@@ -128,7 +130,7 @@ local function create_buffer_lines(msg, level, entry)
 				line = line .. " "
 			else
 				if vim.fn.strdisplaywidth(line .. word .. " ") > LOCAL.width then
-					lines[#lines + 1] = line
+					content[#content + 1] = line
 					line = " "
 				end
 				line = line .. word .. " "
@@ -136,32 +138,28 @@ local function create_buffer_lines(msg, level, entry)
 		end
 
 		if line ~= " " then
-			lines[#lines + 1] = line
+			content[#content + 1] = line
 		end
-
-		return lines
 	end
 
-	local function parse_time_string()
-		local level_string = LOCAL.signs[level:lower()] .. " " .. level
-		local line_string = LOCAL.signs.line .. tostring(entry) .. " "
-		local time_string = LOCAL.signs.time .. " " .. os.date("%H:%M:%S")
-		local level_width = vim.fn.strdisplaywidth(level_string)
-		local line_width = vim.fn.strdisplaywidth(line_string)
-		local time_width = vim.fn.strdisplaywidth(time_string)
-		return " "
-			.. level_string
-			.. LOCAL.signs.padding:rep(LOCAL.width - (3 + level_width + line_width + time_width))
-			.. line_string
-			.. " "
-			.. time_string
-			.. " "
+	local function parse_first_line()
+		local strings = {
+			level = LOCAL.signs[level:lower()] .. " " .. level,
+			line = LOCAL.signs.line .. tostring(entry) .. " ",
+			time = LOCAL.signs.time .. " " .. os.date("%H:%M:%S"),
+		}
+		local level_width = vim.fn.strdisplaywidth(strings.level)
+		local line_width = vim.fn.strdisplaywidth(strings.line)
+		local time_width = vim.fn.strdisplaywidth(strings.time)
+		strings.padding = LOCAL.signs.padding:rep(LOCAL.width - (3 + level_width + line_width + time_width))
+		content[1] = strings
 	end
 
-	local lines = { parse_time_string(), LOCAL.signs.divider }
-	lines = parse_msg(lines)
+	parse_first_line()
+	content[2] = LOCAL.signs.divider
+	parse_msg()
 
-	return lines
+	return content
 end
 
 M.show = function(msg, level, entry)
