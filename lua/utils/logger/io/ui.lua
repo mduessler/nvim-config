@@ -67,7 +67,7 @@ local function create_buffer(content, hl)
 	local buf = vim.api.nvim_create_buf(false, true)
 	if buf == 0 then
 		vim.notify("Can not create an temporary buffer for update message.", vim.log.levels.ERROR)
-		return 1
+		return 0
 	end
 
 	parse_lines()
@@ -205,7 +205,9 @@ M.show = function(msg, level, entry)
 	local hl = "Logger" .. level
 	local lines = create_content(msg, level, entry)
 	local buf, height = create_buffer(lines, hl)
-	create_window(buf, height, hl)
+	if buf ~= 0 then
+		create_window(buf, height, hl)
+	end
 end
 
 return M
