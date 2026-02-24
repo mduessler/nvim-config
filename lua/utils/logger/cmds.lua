@@ -6,6 +6,10 @@ if not config then
 	return
 end
 
+---
+--- Helper functions for the commands.
+---
+
 --- Validates if a given input is a valid number.
 ---@param arg string Given input of the user command.
 ---@return integer|nil number On success returns the number, otherwise nil.
@@ -51,6 +55,10 @@ local function get_log_line(file, line_number)
 	end
 	return nil
 end
+
+---
+--- Commands
+---
 
 --- Opens the logfile in a new tab
 ---@usage: :LOGOpen [N]   (Opens nvim-N.log in a new tabpage, default opens nvim.log)
