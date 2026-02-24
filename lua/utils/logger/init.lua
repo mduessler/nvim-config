@@ -13,6 +13,10 @@ end
 
 local M = {}
 
+---
+--- Helper functions of the logging file.
+---
+
 --- Write a message to the log file and show it in a floating window.
 ---@param level string Log level (e.g., "DEBUG", "INFO")
 ---@param msg string The message to log
@@ -22,6 +26,10 @@ local function log(level, msg)
 		ui.show(msg, level, entry)
 	end
 end
+
+---
+--- Public functions of the logging module
+---
 
 --- Log a debug message.
 ---@param msg string The message
