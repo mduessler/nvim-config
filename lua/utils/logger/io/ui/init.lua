@@ -8,6 +8,10 @@ if not (buffer and segments and window) then
 	return
 end
 
+---
+--- Interface for the logging.ui module.
+---
+
 local M = {}
 
 --- Function to capsulate all functions to generate the ui

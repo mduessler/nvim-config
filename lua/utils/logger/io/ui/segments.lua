@@ -6,7 +6,9 @@ if not config then
 	return
 end
 
-local M = {}
+---
+--- Helper function for the logging.ui.segments module
+---
 
 --- Function to build the components of the firstline.
 ---@param level string Logging level
@@ -76,6 +78,12 @@ local function wrap_message(msg)
 
 	return lines
 end
+
+---
+--- Public functions of the logging.ui.segments module
+---
+
+local M = {}
 
 --- Build the structured content for a log message.
 --- The content is an array where:

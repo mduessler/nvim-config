@@ -6,7 +6,9 @@ if not config then
 	return
 end
 
-local M = {}
+---
+--- Helper function for the logging.ui.buffer module
+---
 
 --- Flatten line.
 --- @param segment string|table
@@ -80,6 +82,12 @@ local function hl_message_lines(buf, segments)
 		hl_buf_line(buf, i, 0, #line_str, "LoggerMsg")
 	end
 end
+
+---
+--- Public functions of the logging.ui.buffer module
+---
+
+local M = {}
 
 --- Create a buffer for the logger.
 --- @param segments table Structured log segments (see create_segments)

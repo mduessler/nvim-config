@@ -6,7 +6,9 @@ if not config then
 	return
 end
 
-local M = {}
+---
+--- Helper function for the logging.ui.window module
+---
 
 --- Clean up resources associated with a logger window.
 ---@param win integer Window ID
@@ -71,6 +73,12 @@ local function reposition_other_logging_windows(new_win, shift_by)
 		end
 	end
 end
+
+---
+--- Public functions of the logging.ui.window module
+---
+
+local M = {}
 
 --- Main function to create the logger window.
 ---@param buf integer Buffer handle

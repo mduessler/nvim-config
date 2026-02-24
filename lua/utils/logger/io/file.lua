@@ -6,7 +6,9 @@ if not config then
 	return
 end
 
-local M = {}
+---
+--- Helper function for the logging.file module
+---
 
 --- Function to create a timestamp with ms from the current time.
 ---@return string timestamp
@@ -91,6 +93,12 @@ local function update_meta_line_counter(file)
 
 	return linenumber
 end
+
+---
+--- Public functions of the logging.file module
+---
+
+local M = {}
 
 M.write = function(msg, level)
 	local log_file = string.format("%s/%s.log", config.config.path, config.config.name)
