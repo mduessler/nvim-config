@@ -5,13 +5,11 @@ if not (git and request) then
 	os.exit(2)
 end
 
--- local config_dir = arg[1]
+local config_dir = arg[1]
 local main_branch_url = "https://api.github.com/repos/mduessler/nvim-config/branches/main"
 local tags_url = "https://api.github.com/repos/mduessler/nvim-config/tags"
 
-local M = {}
-
-local function get_local_timestamp(config_dir, target)
+local function get_local_timestamp(target)
 	local output = git.get_modified_timestamp(config_dir, target)
 	local ts = tonumber(output)
 	if ts and ts % 1 == 0 then
@@ -55,21 +53,17 @@ local function update_if_needed(local_ts, remote_ts)
 	os.exit(0)
 end
 
-M.run = function(config_dir)
-	local target_type = git.is_tag_or_branch(config_dir)
-	if target_type == "tag" then
-		local local_ts = get_local_timestamp(config_dir, "latest")
-		local remote_ts = iso_8601_to_unix(get_latest_tag_commit_url())
-		return update_if_needed(local_ts, remote_ts)
-	elseif target_type == "branch" then
-		local local_ts = get_local_timestamp(config_dir, "main")
-		print(local_ts)
-		local remote_ts = iso_8601_to_unix(get_main_commit_url())
-		print(remote_ts)
-		return update_if_needed(local_ts, remote_ts)
-	end
+local target_type = git.is_tag_or_branch(config_dir)
+if target_type == "tag" then
+	local local_ts = get_local_timestamp("latest")
+	local remote_ts = iso_8601_to_unix(get_latest_tag_commit_url())
+	return update_if_needed(local_ts, remote_ts)
+elseif target_type == "branch" then
+	local local_ts = get_local_timestamp("main")
+	print(local_ts)
+	local remote_ts = iso_8601_to_unix(get_main_commit_url())
+	print(remote_ts)
+	return update_if_needed(local_ts, remote_ts)
 end
 
-return M
-
--- os.exit(0)
+os.exit(0)
