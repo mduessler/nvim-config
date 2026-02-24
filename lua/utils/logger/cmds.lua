@@ -1,18 +1,18 @@
 local require_safe = require("utils.require_safe")
 
-local LOCAL = require_safe("utils.logger.config")
+local config = require_safe("utils.logger.config")
 
-if not LOCAL then
+if not config then
 	return
 end
 
 vim.api.nvim_create_user_command("LOGOpen", function()
-	local file_name = string.format("%s/%s.log", LOCAL.config.path, LOCAL.config.name)
+	local file_name = string.format("%s/%s.log", config.config.path, config.config.name)
 	vim.cmd("tabnew " .. file_name)
 end, { desc = "Open the nvim log file" })
 
 vim.api.nvim_create_user_command("LOGLast", function()
-	local file_name = string.format("%s/%s.log", LOCAL.config.path, LOCAL.config.name)
+	local file_name = string.format("%s/%s.log", config.config.path, config.config.name)
 	local last_line = vim.fn.system("tail -n 1 " .. vim.fn.shellescape(file_name)):gsub("\n$", "")
 	local msg = last_line:match("| [A-Z]+ | (.*)")
 	print(msg)
@@ -26,7 +26,7 @@ vim.api.nvim_create_user_command("LOGLineN", function(opts)
 		return
 	end
 
-	local file_name = string.format("%s/%s.log", LOCAL.config.path, LOCAL.config.name)
+	local file_name = string.format("%s/%s.log", config.config.path, config.config.name)
 	local file = io.open(file_name, "r")
 	if file then
 		local cur = 0

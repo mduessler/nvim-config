@@ -1,13 +1,13 @@
 local require_safe = require("utils.require_safe")
 
-local LOCAL = require_safe("utils.logger.config")
+local config = require_safe("utils.logger.config")
 local cmds = require_safe("lua.utils.logger.cmds")
 local file = require_safe("utils.logger.io.file")
 local hl = require_safe("lua.utils.logger.highlights")
 local levels = require_safe("utils.logger.levels")
 local ui = require_safe("utils.logger.io.ui")
 
-if not (LOCAL and cmds and file and hl and levels and ui) then
+if not (config and cmds and file and hl and levels and ui) then
 	return
 end
 
@@ -17,7 +17,7 @@ local M = {}
 ---@param level string Log level (e.g., "DEBUG", "INFO")
 ---@param msg string The message to log
 local function log(level, msg)
-	if levels[LOCAL.level] <= levels[level] then
+	if levels[config.level] <= levels[level] then
 		local entry = file.write(msg, level)
 		ui.show(msg, level, entry)
 	end
@@ -59,16 +59,16 @@ end
 ---@usage M.setup({ width = 60, signs = { line = " " } })
 function M.setup(user_config)
 	for key, value in pairs(user_config) do
-		if LOCAL[key] == nil and (not LOCAL.config or LOCAL.config[key] == nil) then
+		if config[key] == nil and (not config.config or config.config[key] == nil) then
 			error(string.format("Invalid configuration key: '%s'", key), vim.log.levels.ERROR)
 		end
-		if LOCAL.config and LOCAL.config[key] ~= nil then
-			LOCAL.config[key] = value
+		if config.config and config.config[key] ~= nil then
+			config.config[key] = value
 		else
 			if key == "width" then
-				LOCAL.divider = string.rep(LOCAL.signs.divider, LOCAL.width)
+				config.divider = string.rep(config.signs.divider, config.width)
 			end
-			LOCAL[key] = value
+			config[key] = value
 		end
 	end
 end

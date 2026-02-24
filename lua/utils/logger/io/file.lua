@@ -1,16 +1,16 @@
 local require_safe = require("utils.require_safe")
 
-local LOCAL = require_safe("utils.logger.config")
+local config = require_safe("utils.logger.config")
 
-if not LOCAL then
+if not config then
 	return
 end
 
 local M = {}
 
 M.write = function(msg, level)
-	local file_name = string.format("%s/%s.log", LOCAL.config.path, LOCAL.config.name)
-	local meta_file = string.format("%s/%s.meta", LOCAL.config.path, LOCAL.config.name)
+	local file_name = string.format("%s/%s.log", config.config.path, config.config.name)
+	local meta_file = string.format("%s/%s.meta", config.config.path, config.config.name)
 
 	local function timestamp()
 		local ms = vim.loop.now() % 1000
@@ -23,7 +23,7 @@ M.write = function(msg, level)
 			error("Can not access file " .. file_name .. ".", vim.log.levels.ERROR)
 			return nil
 		end
-		return stat.size > LOCAL.config.size * 1024 * 1024
+		return stat.size > config.config.size * 1024 * 1024
 	end
 
 	local function reset_meta_handler()
@@ -67,7 +67,7 @@ M.write = function(msg, level)
 	end
 
 	local function rotate_log_file()
-		local rotate = string.format("%s/%s-2.log", LOCAL.config.path, LOCAL.config.name)
+		local rotate = string.format("%s/%s-2.log", config.config.path, config.config.name)
 		if vim.loop.fs_stat(rotate) then
 			os.remove(rotate)
 			reset_meta_handler()

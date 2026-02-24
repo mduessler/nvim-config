@@ -1,8 +1,8 @@
 local require_safe = require("utils.require_safe")
 
-local LOCAL = require_safe("utils.logger.config")
+local config = require_safe("utils.logger.config")
 
-if not LOCAL then
+if not config then
 	return
 end
 
@@ -11,19 +11,19 @@ local M = {}
 --- Clean up resources associated with a logger window.
 ---@param win integer Window ID
 local function clean_window(win)
-	if LOCAL.timers[win] then
-		LOCAL.timers[win]:close()
-		LOCAL.timers[win] = nil
+	if config.timers[win] then
+		config.timers[win]:close()
+		config.timers[win] = nil
 	end
-	LOCAL.windows[win] = nil
+	config.windows[win] = nil
 end
 
 --- Set up a timer to auto‑close a window after X seconds.
 ---@param win integer Window ID
 local function init_close_timer(win)
-	LOCAL.timers[win] = vim.loop.new_timer()
-	LOCAL.timers[win]:start(
-		LOCAL.close,
+	config.timers[win] = vim.loop.new_timer()
+	config.timers[win]:start(
+		config.close,
 		0,
 		vim.schedule_wrap(function()
 			if vim.api.nvim_win_is_valid(win) then
@@ -45,7 +45,7 @@ end
 --- Calculate the column position for the window.
 ---@return integer column
 local function calc_position()
-	return vim.o.columns - vim.o.columns * 0.01 - LOCAL.width
+	return vim.o.columns - vim.o.columns * 0.01 - config.width
 end
 
 --- Build the border table using the configured signs and highlight.
@@ -53,7 +53,7 @@ end
 ---@return table border
 local function set_border(hl)
 	local border = {}
-	for _, value in ipairs(LOCAL.signs.border) do
+	for _, value in ipairs(config.signs.border) do
 		border[#border + 1] = { value, hl }
 	end
 	return border
@@ -63,11 +63,11 @@ end
 ---@param new_win integer The newly created window
 ---@param shift_by integer Amount to shift each existing window down
 local function reposition_other_logging_windows(new_win, shift_by)
-	for winid, _ in pairs(LOCAL.windows) do
+	for winid, _ in pairs(config.windows) do
 		if winid ~= new_win and vim.api.nvim_win_is_valid(winid) then
-			local config = vim.api.nvim_win_get_config(winid)
-			config.row = config.row + shift_by
-			vim.api.nvim_win_set_config(winid, config)
+			local window_config = vim.api.nvim_win_get_config(winid)
+			window_config.row = window_config.row + shift_by
+			vim.api.nvim_win_set_config(winid, window_config)
 		end
 	end
 end
@@ -81,7 +81,7 @@ M.create = function(buf, height, hl)
 		relative = "editor",
 		row = 3,
 		col = calc_position(),
-		width = LOCAL.width,
+		width = config.width,
 		height = height,
 		focusable = false,
 		mouse = false,
@@ -108,7 +108,7 @@ M.create = function(buf, height, hl)
 	local shift_amount = height + 2
 	reposition_other_logging_windows(win, shift_amount)
 
-	LOCAL.windows[win] = vim.api.nvim_win_get_height(win) + 2
+	config.windows[win] = vim.api.nvim_win_get_height(win) + 2
 
 	set_window_options(win)
 	init_close_timer(win)

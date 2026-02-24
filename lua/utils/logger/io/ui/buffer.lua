@@ -1,8 +1,8 @@
 local require_safe = require("utils.require_safe")
 
-local LOCAL = require_safe("utils.logger.config")
+local config = require_safe("utils.logger.config")
 
-if not LOCAL then
+if not config then
 	return
 end
 
@@ -41,7 +41,7 @@ local function hl_buf_line(buf, line, start_col, end_col, hl_group)
 		end_col = end_col,
 		hl_group = hl_group,
 	}
-	vim.api.nvim_buf_set_extmark(buf, LOCAL.ns, line - 1, start_col, opts)
+	vim.api.nvim_buf_set_extmark(buf, config.ns, line - 1, start_col, opts)
 end
 
 --- Local Buffer options.
@@ -101,7 +101,7 @@ M.create = function(segments, hl)
 	else
 		hl_buf_line(buf, 1, 0, #lines[1], hl)
 	end
-	hl_buf_line(buf, 2, 0, #LOCAL.divider, hl)
+	hl_buf_line(buf, 2, 0, #config.divider, hl)
 	hl_message_lines(buf, segments)
 
 	set_buf_options(buf)

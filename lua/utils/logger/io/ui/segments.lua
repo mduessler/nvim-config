@@ -1,8 +1,8 @@
 local require_safe = require("utils.require_safe")
 
-local LOCAL = require_safe("utils.logger.config")
+local config = require_safe("utils.logger.config")
 
-if not LOCAL then
+if not config then
 	return
 end
 
@@ -13,9 +13,9 @@ local M = {}
 ---@param entry integer Linenumber of the entry in the log file
 ---@return table components Table of the first line components
 local function build_first_line_components(level, entry)
-	local level_str = LOCAL.signs[level:lower()] .. " " .. level
-	local line_str = LOCAL.signs.line .. tostring(entry) .. " "
-	local time_str = LOCAL.signs.time .. " " .. os.date("%H:%M:%S")
+	local level_str = config.signs[level:lower()] .. " " .. level
+	local line_str = config.signs.line .. tostring(entry) .. " "
+	local time_str = config.signs.time .. " " .. os.date("%H:%M:%S")
 
 	local level_width = vim.fn.strdisplaywidth(level_str)
 	local line_width = vim.fn.strdisplaywidth(line_str)
@@ -23,16 +23,16 @@ local function build_first_line_components(level, entry)
 	local fixed_pad_after_line = 3
 
 	local fixed_total = level_width + line_width + time_width + fixed_pad_after_line
-	local dynamic_pad_width = LOCAL.width - fixed_total - 2 -- 2 = left + right padding
+	local dynamic_pad_width = config.width - fixed_total - 2 -- 2 = left + right padding
 
 	local components = {
-		LOCAL.signs.padding,
+		config.signs.padding,
 		level_str,
-		LOCAL.signs.padding:rep(dynamic_pad_width),
+		config.signs.padding:rep(dynamic_pad_width),
 		line_str,
-		LOCAL.signs.padding:rep(fixed_pad_after_line),
+		config.signs.padding:rep(fixed_pad_after_line),
 		time_str,
-		LOCAL.signs.padding,
+		config.signs.padding,
 	}
 	return components
 end
@@ -49,11 +49,11 @@ local function wrap_message(msg)
 	for word in string.gmatch(msg, "%S+") do
 		local word_width = vim.fn.strdisplaywidth(word)
 
-		if word_width > LOCAL.width then
+		if word_width > config.width then
 			for i = 1, #word do
 				local char = word:sub(i, i)
 				local candidate = current_line .. char .. " "
-				if vim.fn.strdisplaywidth(candidate) > LOCAL.width then
+				if vim.fn.strdisplaywidth(candidate) > config.width then
 					table.insert(lines, current_line .. " ")
 					current_line = " "
 				end
@@ -62,7 +62,7 @@ local function wrap_message(msg)
 			current_line = current_line .. " "
 		else
 			local candidate = current_line .. word .. " "
-			if vim.fn.strdisplaywidth(candidate) > LOCAL.width then
+			if vim.fn.strdisplaywidth(candidate) > config.width then
 				table.insert(lines, current_line)
 				current_line = " "
 			end
@@ -89,7 +89,7 @@ end
 M.create = function(msg, level, entry)
 	local content = {}
 	content[1] = build_first_line_components(level, entry)
-	content[2] = LOCAL.divider
+	content[2] = config.divider
 
 	local msg_lines = wrap_message(msg)
 	for i = 1, #msg_lines do
