@@ -61,6 +61,21 @@ vim.api.nvim_create_user_command("LOGLast", function(opts)
 	end
 end, { desc = "Copy the last log message to the clipboard and print it.", nargs = "?" })
 
+--- Function to extract given line number from the file
+---@param file file* Handler of the file to read
+---@param line_number integer Line to extract from file
+---@return string|nil line Returns line on success otherwise nil
+local function get_log_line(file, line_number)
+	local cur = 0
+	for line in file:lines() do
+		cur = cur + 1
+		if cur == line_number then
+			return line
+		end
+	end
+	return nil
+end
+
 --- Reads the log file sequentially until it reaches the requested line,
 --- then prints and copies the message part.
 ---@usage: LOGLineN N [M] (Prints line N from file nvim-M.log, default prints N from file nvim.log)
@@ -79,17 +94,24 @@ vim.api.nvim_create_user_command("LOGLineN", function(opts)
 
 	local file_name = string.format("%s/%s.log", config.config.path, name)
 	local file = io.open(file_name, "r")
-	if file then
-		local cur = 0
-		for line in file:lines() do
-			cur = cur + 1
-			if cur == line_number then
-				local msg = line:match("| [A-Z]+ | (.*)")
-				print(msg)
-				vim.fn.setreg("+", msg)
-				file:close()
-				return
-			end
-		end
+	if not file then
+		error("File does not exist or cannot be opened", vim.log.levels.ERROR)
+		return
 	end
-end, { desc = "Copy the last log message of line N to the clipboard and print it.", nargs = "*" })
+
+	local line = get_log_line(file, line_number)
+	file:close()
+
+	if line == nil then
+		error("Line does not exist in the given file", vim.log.levels.ERROR)
+		return
+	end
+
+	local msg = line:match("| [A-Z]+ | (.*)")
+	if msg then
+		print(msg)
+		vim.fn.setreg("+", msg)
+	else
+		vim.notify("Line format unexpected – could not extract message", vim.log.levels.WARN)
+	end
+end, { desc = "Copy the log message of line N to the clipboard and print it.", nargs = "*" })
