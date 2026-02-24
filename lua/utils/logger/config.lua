@@ -6,6 +6,7 @@ if not signs then
 end
 
 local LOCAL = {
+	level = os.getenv("NVIM_LOG_LEVEL") or "INFO",
 	width = 40,
 	close = 10000,
 	ns = vim.api.nvim_create_namespace("Logger"),
