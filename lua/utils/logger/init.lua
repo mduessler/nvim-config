@@ -2,11 +2,12 @@ local require_safe = require("utils.require_safe")
 
 local LOCAL = require_safe("utils.logger.config")
 local cmds = require_safe("lua.utils.logger.cmds")
-local hl = require_safe("lua.utils.logger.highlights")
 local file = require_safe("utils.logger.io.file")
+local hl = require_safe("lua.utils.logger.highlights")
+local levels = require_safe("utils.logger.levels")
 local ui = require_safe("utils.logger.io.ui")
 
-if not (LOCAL and cmds and hl and file and ui) then
+if not (LOCAL and cmds and file and hl and levels and ui) then
 	return
 end
 
@@ -16,8 +17,10 @@ local M = {}
 ---@param level string Log level (e.g., "DEBUG", "INFO")
 ---@param msg string The message to log
 local function log(level, msg)
-	local entry = file.write(msg, level)
-	ui.show(msg, level, entry)
+	if levels[LOCAL.level] <= levels[level] then
+		local entry = file.write(msg, level)
+		ui.show(msg, level, entry)
+	end
 end
 
 --- Log a debug message.
