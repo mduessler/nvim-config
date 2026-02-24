@@ -37,6 +37,21 @@ local function validate_log_number(arg)
 	return name
 end
 
+--- Function to extract given line number from the file
+---@param file file* Handler of the file to read
+---@param line_number integer Line to extract from file
+---@return string|nil line Returns line on success otherwise nil
+local function get_log_line(file, line_number)
+	local cur = 0
+	for line in file:lines() do
+		cur = cur + 1
+		if cur == line_number then
+			return line
+		end
+	end
+	return nil
+end
+
 --- Opens the logfile in a new tab
 ---@usage: :LOGOpen [N]   (Opens nvim-N.log in a new tabpage, default opens nvim.log)
 vim.api.nvim_create_user_command("LOGOpen", function(opts)
@@ -60,21 +75,6 @@ vim.api.nvim_create_user_command("LOGLast", function(opts)
 		vim.fn.setreg("+", msg)
 	end
 end, { desc = "Copy the last log message to the clipboard and print it.", nargs = "?" })
-
---- Function to extract given line number from the file
----@param file file* Handler of the file to read
----@param line_number integer Line to extract from file
----@return string|nil line Returns line on success otherwise nil
-local function get_log_line(file, line_number)
-	local cur = 0
-	for line in file:lines() do
-		cur = cur + 1
-		if cur == line_number then
-			return line
-		end
-	end
-	return nil
-end
 
 --- Reads the log file sequentially until it reaches the requested line,
 --- then prints and copies the message part.
