@@ -16,5 +16,3 @@ require("config")
 
 require("core.keymaps")
 require("core")
-
-require("utils.update.handler")
