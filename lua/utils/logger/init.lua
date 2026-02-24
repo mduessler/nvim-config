@@ -14,7 +14,7 @@ end
 local M = {}
 
 ---
---- Helper functions of the logging file.
+--- Helper functions of the logging module.
 ---
 
 --- Write a message to the log file and show it in a floating window.
