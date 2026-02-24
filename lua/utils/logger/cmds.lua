@@ -8,6 +8,7 @@ end
 
 ---
 --- Helper functions for the commands.
+--- Commands are definied below.
 ---
 
 --- Validates if a given input is a valid number.
