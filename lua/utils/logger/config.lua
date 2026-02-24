@@ -9,6 +9,7 @@ local LOCAL = {
 	width = 40,
 	ns = vim.api.nvim_create_namespace("Logger"),
 	windows = {},
+	timers = {},
 	config = {
 		path = vim.fn.stdpath("log"),
 		name = "nvim",
