@@ -106,14 +106,24 @@ local function create_window(buf, height, hl)
 		}
 	end
 
+	local function clean(win)
+		if LOCAL.timers[win] then
+			LOCAL.timers[win]:close()
+			LOCAL.timers[win] = nil
+		end
+		LOCAL.windows[win] = nil
+	end
+
 	local function set_close_timer(win)
-		local timer = vim.loop.new_timer()
-		timer:start(
+		LOCAL.timers[win] = vim.loop.new_timer()
+		LOCAL.timers[win]:start(
 			20000,
 			0,
 			vim.schedule_wrap(function()
-				vim.api.nvim_win_close(win, true)
-				LOCAL.windows[win] = nil
+				if vim.api.nvim_win_is_valid(win) then
+					vim.api.nvim_win_close(win, true)
+				end
+				clean(win)
 			end)
 		)
 	end
@@ -136,6 +146,17 @@ local function create_window(buf, height, hl)
 	end
 
 	local win = vim.api.nvim_open_win(buf, false, opts)
+
+	local group = vim.api.nvim_create_augroup("LoggerWindow" .. win, { clear = true })
+	vim.api.nvim_create_autocmd("WinClosed", {
+		pattern = tostring(win),
+		group = group,
+		callback = function()
+			clean(win)
+			pcall(vim.api.nvim_del_augroup_by_id, group)
+		end,
+	})
+
 	reposition_other_logging_windows()
 	LOCAL.windows[win] = vim.api.nvim_win_get_height(win) + 2
 
