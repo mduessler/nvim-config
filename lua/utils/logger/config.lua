@@ -5,7 +5,7 @@ if not signs then
 	return
 end
 ---@class LoggerConfig
----@field level string   "DEBUG", "INFO", "WARN", "ERROR"
+---@field level string   "DEBUG", "INFO", "PASS","WARN", "ERROR"
 ---@field width number   Width in columns
 ---@field close number   Timeout in milliseconds
 ---@field ns number      Namespace ID
