@@ -20,6 +20,7 @@ local LOCAL = {
 	},
 	signs = {
 		border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" },
+		divider = "─",
 		padding = " ",
 		debug = "",
 		info = "",
@@ -31,6 +32,6 @@ local LOCAL = {
 	},
 }
 
-LOCAL.signs.divider = string.rep("─", LOCAL.width)
+LOCAL.divider = string.rep(LOCAL.signs.divider, LOCAL.width)
 
 return LOCAL

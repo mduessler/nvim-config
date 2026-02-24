@@ -101,7 +101,7 @@ M.create = function(segments, hl)
 	else
 		hl_buf_line(buf, 1, 0, #lines[1], hl)
 	end
-	hl_buf_line(buf, 2, 0, #LOCAL.signs.divider, hl)
+	hl_buf_line(buf, 2, 0, #LOCAL.divider, hl)
 	hl_message_lines(buf, segments)
 
 	set_buf_options(buf)

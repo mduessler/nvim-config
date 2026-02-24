@@ -65,6 +65,9 @@ function M.setup(user_config)
 		if LOCAL.config and LOCAL.config[key] ~= nil then
 			LOCAL.config[key] = value
 		else
+			if key == "width" then
+				LOCAL.divider = string.rep(LOCAL.signs.divider, LOCAL.width)
+			end
 			LOCAL[key] = value
 		end
 	end

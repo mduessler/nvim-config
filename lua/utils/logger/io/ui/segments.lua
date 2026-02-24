@@ -89,7 +89,7 @@ end
 M.create = function(msg, level, entry)
 	local content = {}
 	content[1] = build_first_line_components(level, entry)
-	content[2] = LOCAL.signs.divider
+	content[2] = LOCAL.divider
 
 	local msg_lines = wrap_message(msg)
 	for i = 1, #msg_lines do
