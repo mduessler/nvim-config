@@ -86,7 +86,7 @@ end
 --- @param hl string Main highlight group for the level part
 --- @return integer buf Buffer ID (0 if creation failed)
 --- @return integer height Number of lines in the buffer
-M.create_buffer = function(segments, hl)
+M.create = function(segments, hl)
 	local buf = vim.api.nvim_create_buf(false, true)
 	if buf == 0 then
 		vim.notify("Cannot create a temporary buffer for the log message.", vim.log.levels.ERROR)
