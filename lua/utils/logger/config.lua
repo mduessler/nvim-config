@@ -28,7 +28,7 @@ end
 ---@field signs.error string
 ---@field signs.line string
 ---@field signs.time string|any   (depends on `signs.ui.statusline.datetime.time`)
-local LOCAL = {
+local LoggerConfig = {
 	level = os.getenv("NVIM_LOG_LEVEL") or "INFO",
 	width = 40,
 	close = 10000,
@@ -56,6 +56,6 @@ local LOCAL = {
 	},
 }
 
-LOCAL.divider = string.rep(LOCAL.signs.divider, LOCAL.width)
+LoggerConfig.divider = string.rep(LoggerConfig.signs.divider, LoggerConfig.width)
 
-return LOCAL
+return LoggerConfig
