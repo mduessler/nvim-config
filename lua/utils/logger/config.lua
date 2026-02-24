@@ -7,6 +7,7 @@ end
 
 local LOCAL = {
 	width = 40,
+	close = 10000,
 	ns = vim.api.nvim_create_namespace("Logger"),
 	windows = {},
 	timers = {},
