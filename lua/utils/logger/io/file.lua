@@ -8,85 +8,106 @@ end
 
 local M = {}
 
-M.write = function(msg, level)
-	local file_name = string.format("%s/%s.log", config.config.path, config.config.name)
-	local meta_file = string.format("%s/%s.meta", config.config.path, config.config.name)
+--- Function to create a timestamp with ms from the current time.
+---@return string timestamp
+local function timestamp()
+	local ms = vim.loop.now() % 1000
+	return os.date("%Y-%m-%d--%H:%M:%S") .. string.format(".%03d", ms % 1000)
+end
 
-	local function timestamp()
-		local ms = vim.loop.now() % 1000
-		return os.date("%Y-%m-%d--%H:%M:%S") .. string.format(".%03d", ms % 1000)
+--- Function to verify file does not exceed the maximum size.
+---@param file string Filename to check
+---@return boolean|nil
+local function log_is_larger_than_500MB(file)
+	local stat = vim.loop.fs_stat(file)
+	if not stat then
+		error("Can not access file " .. file .. ".", vim.log.levels.ERROR)
+		return nil
 	end
+	return stat.size > config.config.size * 1024 * 1024
+end
 
-	local function log_is_larger_than_500MB()
-		local stat = vim.loop.fs_stat(file_name)
-		if not stat then
-			error("Can not access file " .. file_name .. ".", vim.log.levels.ERROR)
-			return nil
-		end
-		return stat.size > config.config.size * 1024 * 1024
+--- Function to reset the meta file
+---@param file string Name of the file which stores the meta data.
+---@return boolean
+local function reset_meta_handler(file)
+	local meta_handler = io.open(file, "w")
+	if meta_handler then
+		meta_handler:close()
+		return true
 	end
+	error("Could not reset meta counter", vim.log.levels.ERROR)
+	return false
+end
 
-	local function reset_meta_handler()
-		local meta_handler = io.open(meta_file, "w")
-		if meta_handler then
-			meta_handler:close()
-			return true
-		end
-		error("Could not reset meta counter", vim.log.levels.ERROR)
+--- Function to rename and delete old log rotates and reset meta file.
+---@param log_file string Name of the log file.
+---@param meta_file string Name of the meta file.
+local function rotate_log_file(log_file, meta_file)
+	local rotate = string.format("%s/%s-%i.log", config.config.path, config.config.name, config.config.files)
+	if vim.loop.fs_stat(rotate) then
+		os.remove(rotate)
+		reset_meta_handler(meta_file)
+	end
+	os.rename(log_file, rotate)
+end
+
+--- Function to get line counter from the meta file.
+---@param file string Name of the meta file.
+---@return integer linenumber
+local function get_meta_line_counter(file)
+	local handler = io.open(file, "r")
+	if not handler then
+		return 0
+	end
+	return tonumber(handler:read("*n"), 10)
+end
+
+--- Function to set the new meta line counter.
+---@param entry integer Linenumber of the logging message in the metafile.
+---@param file string Name of the meta file.
+---@return boolean
+local function set_meta_line_counter(entry, file)
+	if not reset_meta_handler(file) then
+		return false
+	end
+	local handler = io.open(file, "w")
+	if not handler then
+		error("Could set meta handler", vim.log.levels.ERROR)
 		return false
 	end
 
-	local function update_meta_line_counter()
-		local function get_meta_line_counter()
-			local meta_handler = io.open(meta_file, "r")
-			if not meta_handler then
-				return 0
-			end
-			return tonumber(meta_handler:read("*n"))
-		end
+	handler:write(tostring(entry))
+	handler:close()
+	return true
+end
 
-		local function set_meta_line_counter(counter)
-			if not reset_meta_handler() then
-				return false
-			end
-			local meta_handler = io.open(meta_file, "w")
-			if not meta_handler then
-				error("Could set meta handler", vim.log.levels.ERROR)
-				return false
-			end
+--- Function to the line entry in the meta file.
+---@param file string Name of the meta file.
+---@return integer linenumber
+local function update_meta_line_counter(file)
+	local linenumber = get_meta_line_counter(file) + 1
+	set_meta_line_counter(linenumber, file)
 
-			meta_handler:write(tostring(counter))
-			meta_handler:close()
-			return true
-		end
+	return linenumber
+end
 
-		local counter = get_meta_line_counter() + 1
-		set_meta_line_counter(counter)
+M.write = function(msg, level)
+	local log_file = string.format("%s/%s.log", config.config.path, config.config.name)
+	local meta_file = string.format("%s/%s.meta", config.config.path, config.config.name)
 
-		return counter
+	if log_is_larger_than_500MB(log_file) then
+		rotate_log_file(log_file, meta_file)
 	end
 
-	local function rotate_log_file()
-		local rotate = string.format("%s/%s-2.log", config.config.path, config.config.name)
-		if vim.loop.fs_stat(rotate) then
-			os.remove(rotate)
-			reset_meta_handler()
-		end
-		os.rename(file_name, rotate)
-	end
-
-	if log_is_larger_than_500MB() then
-		rotate_log_file()
-	end
-
-	local handler = io.open(file_name, "a")
+	local handler = io.open(log_file, "a")
 	if handler then
 		msg = msg:gsub("\n", "  ")
 		handler:write(string.format("%s | %-6s| %s\n", timestamp(), level, msg))
 		handler:close()
-		return update_meta_line_counter()
+		return update_meta_line_counter(meta_file)
 	end
-	error("Can not open log file at " .. file_name .. ".", vim.log.levels.ERROR)
+	error("Can not open log file at " .. log_file .. ".", vim.log.levels.ERROR)
 	return -1
 end
 
