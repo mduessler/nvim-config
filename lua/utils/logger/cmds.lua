@@ -23,7 +23,7 @@ end
 ---@return string|nil name Log file to open
 local function validate_log_number(arg)
 	local name = config.config.name
-	if arg ~= "" then
+	if arg ~= "" and arg ~= nil then
 		local number = validate_number(arg)
 		if number == nil then
 			return
@@ -65,7 +65,7 @@ end, { desc = "Copy the last log message to the clipboard and print it.", nargs 
 --- then prints and copies the message part.
 ---@usage: LOGLineN N [M] (Prints line N from file nvim-M.log, default prints N from file nvim.log)
 vim.api.nvim_create_user_command("LOGLineN", function(opts)
-	local args = opts.args
+	local args = opts.fargs
 	if #args < 1 then
 		error("At least one argument is required", vim.log.levels.ERROR)
 		return
