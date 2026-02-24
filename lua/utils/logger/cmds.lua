@@ -23,7 +23,7 @@ end
 ---@return string|nil name Log file to open
 local function validate_log_number(arg)
 	local name = config.config.name
-	if arg ~= "" and arg ~= nil then
+	if arg ~= nil then
 		local number = validate_number(arg)
 		if number == nil then
 			return
@@ -40,7 +40,7 @@ end
 --- Opens the logfile in a new tab
 ---@usage: :LOGOpen [N]   (Opens nvim-N.log in a new tabpage, default opens nvim.log)
 vim.api.nvim_create_user_command("LOGOpen", function(opts)
-	local name = validate_log_number(opts.args)
+	local name = validate_log_number(opts.fargs[1])
 	if name then
 		local file_name = string.format("%s/%s.log", config.config.path, name)
 		vim.cmd("tabnew " .. file_name)
@@ -51,7 +51,7 @@ end, { desc = "Open the nvim log file", nargs = "?" })
 --- prints it and copies it to the clipboard.
 ---@usage: :LOGLast [N]   (Prints last line from file nvim-N.log, default prints nvim.log)
 vim.api.nvim_create_user_command("LOGLast", function(opts)
-	local name = validate_log_number(opts.args)
+	local name = validate_log_number(opts.fargs[1])
 	if name then
 		local file_name = string.format("%s/%s.log", config.config.path, name)
 		local last_line = vim.fn.system("tail -n 1 " .. vim.fn.shellescape(file_name)):gsub("\n$", "")
