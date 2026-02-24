@@ -58,7 +58,7 @@ local function get_log_line(file, line_number)
 end
 
 ---
---- Commands
+--- Commands of logging module
 ---
 
 --- Opens the logfile in a new tab
