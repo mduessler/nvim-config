@@ -10,43 +10,58 @@ if not (LOCAL and cmds and hl and file and ui) then
 	return
 end
 
-local M = {
-	debug = function(msg)
-		local entry = file.write(msg, "DEBUG")
-		ui.show(msg, "DEBUG", entry)
-	end,
-	info = function(msg)
-		local entry = file.write(msg, "INFO")
-		ui.show(msg, "INFO", entry)
-	end,
-	pass = function(msg)
-		local entry = file.write(msg, "PASS")
-		ui.show(msg, "PASS", entry)
-	end,
-	warn = function(msg)
-		local entry = file.write(msg, "WARN")
-		ui.show(msg, "WARN", entry)
-	end,
-	error = function(msg)
-		local entry = file.write(msg, "ERROR")
-		ui.show(msg, "ERROR", entry)
-	end,
-}
+local M = {}
 
-M.setup = function(...)
-	local args = { ... }
-	for key, value in ipairs(args) do
-		if key == "config" then
-			for k, config in ipairs(value) do
-				if config[k] == nil then
-					error(string.format("The key %s does not exists in the table 'config'.", key))
-				end
-				LOCAL.config[k] = config
-			end
+--- Write a message to the log file and show it in a floating window.
+---@param level string Log level (e.g., "DEBUG", "INFO")
+---@param msg string The message to log
+local function log(level, msg)
+	local entry = file.write(msg, level)
+	ui.show(msg, level, entry)
+end
+
+--- Log a debug message.
+---@param msg string The message
+function M.debug(msg)
+	log("DEBUG", msg)
+end
+
+--- Log an info message.
+---@param msg string The message
+function M.info(msg)
+	log("INFO", msg)
+end
+
+--- Log a pass (success) message.
+---@param msg string The message
+function M.pass(msg)
+	log("PASS", msg)
+end
+
+--- Log a warning message.
+---@param msg string The message
+function M.warn(msg)
+	log("WARN", msg)
+end
+
+--- Log an error message.
+---@param msg string The message
+function M.error(msg)
+	log("ERROR", msg)
+end
+
+--- Merge user settings into the global `LOCAL` configuration table.
+--- Validates that every provided key exists in the default configuration.
+---@param user_config table A table with configuration keys (e.g., {width=40, signs={...}})
+---@usage M.setup({ width = 60, signs = { line = " " } })
+function M.setup(user_config)
+	for key, value in pairs(user_config) do
+		if LOCAL[key] == nil and (not LOCAL.config or LOCAL.config[key] == nil) then
+			error(string.format("Invalid configuration key: '%s'", key), vim.log.levels.ERROR)
+		end
+		if LOCAL.config and LOCAL.config[key] ~= nil then
+			LOCAL.config[key] = value
 		else
-			if value[key] == nil then
-				error(string.format("The key %s does not exists in the table.", key))
-			end
 			LOCAL[key] = value
 		end
 	end
