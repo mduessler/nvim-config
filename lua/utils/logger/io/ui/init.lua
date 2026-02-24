@@ -10,6 +10,10 @@ end
 
 local M = {}
 
+--- Function to capsulate all functions to generate the ui
+---@param msg string Logging message to display
+---@param level string Logging level
+---@param entry integer Line number of the entry in the logging file
 M.show = function(msg, level, entry)
 	local hl = "Logger" .. level
 	local content = segments.create(msg, level, entry)
