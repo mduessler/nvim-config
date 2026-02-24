@@ -88,7 +88,7 @@ end, { desc = "Copy the last log message to the clipboard and print it.", nargs 
 --- Reads the log file sequentially until it reaches the requested line,
 --- then prints and copies the message part.
 ---@usage: LOGLineN N [M] (Prints line N from file nvim-M.log, default prints N from file nvim.log)
-vim.api.nvim_create_user_command("LOGLineN", function(opts)
+vim.api.nvim_create_user_command("LOGLine", function(opts)
 	local args = opts.fargs
 	if #args < 1 then
 		error("At least one argument is required", vim.log.levels.ERROR)
