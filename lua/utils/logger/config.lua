@@ -31,6 +31,6 @@ local LOCAL = {
 	},
 }
 
-LOCAL.signs.divider = string.rep("━", LOCAL.width)
+LOCAL.signs.divider = string.rep("─", LOCAL.width)
 
 return LOCAL
