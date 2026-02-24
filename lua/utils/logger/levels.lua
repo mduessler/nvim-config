@@ -1,3 +1,5 @@
+---@class LevelClass
+---@field level integer
 return {
 	DEBUG = 1,
 	INFO = 2,
