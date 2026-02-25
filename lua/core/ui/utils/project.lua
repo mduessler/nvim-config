@@ -1,7 +1,7 @@
 local require_safe = require("utils.require_safe")
 
 local devicons = require_safe("nvim-web-devicons")
-local git = require_safe("core.ui.utils.git.handler")
+local git = require_safe("core.utils.git.handler")
 local relative_path = require_safe("core.ui.utils.relative_path")
 local str = require_safe("utils.str")
 

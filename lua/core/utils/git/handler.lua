@@ -2,11 +2,11 @@ local require_safe = require("utils.require_safe")
 
 local close_process = require_safe("core.ui.utils.async.close_process")
 local close_timer = require_safe("core.ui.utils.async.close_timer")
-local branch = require_safe("core.ui.utils.git.branch")
-local status = require_safe("core.ui.utils.git.status")
-local changes = require_safe("core.ui.utils.git.changes")
-local commits_to_pull = require_safe("core.ui.utils.git.commits_to_pull")
-local commits_to_push = require_safe("core.ui.utils.git.commits_to_push")
+local branch = require_safe("core.utils.git.branch")
+local status = require_safe("core.utils.git.status")
+local changes = require_safe("core.utils.git.changes")
+local commits_to_pull = require_safe("core.utils.git.commits_to_pull")
+local commits_to_push = require_safe("core.utils.git.commits_to_push")
 
 if not (close_process and close_timer and branch and status and changes and commits_to_pull and commits_to_push) then
 	return
