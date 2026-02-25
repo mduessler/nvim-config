@@ -1,14 +1,28 @@
 local require_safe = require("utils.require_safe")
 
+local changes = require_safe("core.utils.git.changes")
 local close_process = require_safe("core.utils.async.close_process")
 local close_timer = require_safe("core.utils.async.close_timer")
-local reference = require_safe("core.utils.git.reference")
-local status = require_safe("core.utils.git.status")
-local changes = require_safe("core.utils.git.changes")
 local commits_to_pull = require_safe("core.utils.git.commits_to_pull")
 local commits_to_push = require_safe("core.utils.git.commits_to_push")
+local fetch = require_safe("core.utils.git.fetch")
+local logger = require_safe("utils.logger")
+local status = require_safe("core.utils.git.status")
+local reference = require_safe("core.utils.git.reference")
 
-if not (close_process and close_timer and reference and status and changes and commits_to_pull and commits_to_push) then
+if
+	not (
+		changes
+		and close_process
+		and close_timer
+		and commits_to_pull
+		and commits_to_push
+		and fetch
+		and logger
+		and status
+		and reference
+	)
+then
 	return
 end
 
@@ -21,6 +35,7 @@ local M = {
 		changes = false,
 		commits_to_push = false,
 		commots_to_pull = false,
+		fetch = false,
 	},
 	_handle = {
 		timer = nil,
@@ -29,7 +44,9 @@ local M = {
 		changes = nil,
 		commits_to_pull = nil,
 		commits_to_push = nil,
+		fetch = nil,
 	},
+	fetch = false,
 	reference = "",
 	modified = false,
 	changes = { NOFILE = { added = 0, deleted = 0 } },
@@ -79,6 +96,25 @@ M.run = function(cwd)
 			close_handles()
 		end,
 	})
+end
+
+--- Function to run the fetch option async.
+---@param ref string Reference to fetch from remote
+M.fetch = function(ref)
+	if M._running.fetch then
+		logger.INFO("Fetch process already running. Only one fetch is allowed at a time.")
+		return
+	end
+	local timer = vim.loop.new_timer()
+	timer:start(
+		1000,
+		0,
+		vim.schedule_wrap(function()
+			logger.DEBUG(string.format("Started fetch process for reference '%s'", ref))
+			fetch(M, ref)
+			timer:close()
+		end)
+	)
 end
 
 return M
