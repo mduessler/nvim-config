@@ -1,7 +1,7 @@
 local require_safe = require("utils.require_safe")
 
-local close_process = require_safe("core.ui.utils.async.close_process")
-local close_timer = require_safe("core.ui.utils.async.close_timer")
+local close_process = require_safe("core.utils.async.close_process")
+local close_timer = require_safe("core.utils.async.close_timer")
 local branch = require_safe("core.utils.git.branch")
 local status = require_safe("core.utils.git.status")
 local changes = require_safe("core.utils.git.changes")

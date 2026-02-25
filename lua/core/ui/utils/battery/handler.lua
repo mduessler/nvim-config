@@ -1,7 +1,7 @@
 local require_safe = require("utils.require_safe")
 
-local close_process = require_safe("core.ui.utils.async.close_process")
-local close_timer = require_safe("core.ui.utils.async.close_timer")
+local close_process = require_safe("core.utils.async.close_process")
+local close_timer = require_safe("core.utils.async.close_timer")
 local capacity = require_safe("core.ui.utils.battery.capacity")
 local state = require_safe("core.ui.utils.battery.state")
 
