@@ -36,6 +36,7 @@ local M = {
 		commits_to_push = false,
 		commots_to_pull = false,
 		fetch = false,
+		reference_date = false,
 	},
 	_handle = {
 		timer = nil,
@@ -45,8 +46,10 @@ local M = {
 		commits_to_pull = nil,
 		commits_to_push = nil,
 		fetch = nil,
+		reference_date = nil,
 	},
 	fetch = false,
+	reference_date = nil,
 	reference = "",
 	modified = false,
 	changes = { NOFILE = { added = 0, deleted = 0 } },
