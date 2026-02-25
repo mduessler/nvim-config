@@ -12,16 +12,16 @@ end
 local LOCAL = {
 	hl = {
 		is = {
-			content = "StatuslineBranchIsModified",
-			separator = "StatuslineBranchIsModifiedSeperator",
+			content = "StatuslineReferenceIsModified",
+			separator = "StatuslineReferenceIsModifiedSeperator",
 		},
 		_not = {
-			content = "StatuslineBranchNotModified",
-			separator = "StatuslineBranchNotModifiedSeperator",
+			content = "StatuslineReferenceNotModified",
+			separator = "StatuslineReferenceNotModifiedSeperator",
 		},
 	},
 	signs = {
-		branch = signs.git.branch,
+		reference = signs.git.reference,
 		changes = {
 			added = signs.git.changes.added,
 			deleted = signs.git.changes.deleted,
@@ -41,11 +41,11 @@ LOCAL.length = {
 local M = {}
 
 M.get = function()
-	if not project.is_git_repo or not project.git.branch or project.git.branch == "" then
+	if not project.is_git_repo or not project.git.reference or project.git.reference == "" then
 		return { length = 0, component = "" }
 	end
 
-	local content = table.concat({ "", LOCAL.signs.branch, project.git.branch }, LOCAL.signs.padding)
+	local content = table.concat({ "", LOCAL.signs.reference, project.git.reference }, LOCAL.signs.padding)
 
 	local function update_sync_status()
 		if project.git.commits_to_pull and project.git.commits_to_push then

@@ -41,7 +41,7 @@ return {
 	},
 	git = {
 		add = "+",
-		branch = "",
+		reference = "",
 		change = "│",
 		changes = {
 			added = "+",

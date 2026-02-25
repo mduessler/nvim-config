@@ -7,20 +7,20 @@ if not (close_stream and close_process and handle_stream) then
 	return
 end
 
-local function branch(M)
-	if M._running.branch then
+local function reference(M)
+	if M._running.reference then
 		return
 	end
 
-	close_process(M._handle.branch)
-	M._running.branch = true
+	close_process(M._handle.reference)
+	M._running.reference = true
 
 	local stdout = vim.loop.new_pipe(false)
 	local stderr = vim.loop.new_pipe(false)
 
 	local output = {}
 
-	M._handle.branch = vim.loop.spawn("git", {
+	M._handle.reference = vim.loop.spawn("git", {
 		args = { "rev-parse", "--abbrev-ref", "HEAD" },
 		stdio = { nil, stdout, stderr },
 		cwd = M.cwd,
@@ -32,19 +32,19 @@ local function branch(M)
 		close_stream(stderr)
 
 		if code ~= 0 then
-			M.branch = nil
+			M.reference = nil
 		else
-			local current_branch = table.concat(output):match("^%s*(.-)%s*$")
-			M.branch = current_branch ~= "" and current_branch or nil
+			local current_reference = table.concat(output):match("^%s*(.-)%s*$")
+			M.reference = current_reference ~= "" and current_reference or nil
 		end
 
-		close_process(M._handle.branch)
-		M._running.branch = false
+		close_process(M._handle.reference)
+		M._running.reference = false
 	end)
 
-	if not M._handle.branch then
-		M._running.branch = false
-		M.branch = ""
+	if not M._handle.reference then
+		M._running.reference = false
+		M.reference = ""
 		return
 	end
 
@@ -52,4 +52,4 @@ local function branch(M)
 	handle_stream.stderr(stderr)
 end
 
-return branch
+return reference

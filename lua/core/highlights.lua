@@ -28,8 +28,8 @@ local function statuslineHL()
 		set(0, "StatuslineBatterySeperator", { bg = datetime_bg, fg = battery_color })
 	end
 
-	local function branch_hl()
-		local name = "StatuslineBranch"
+	local function reference_hl()
+		local name = "StatuslineReference"
 		set(0, name .. "IsModified", { bg = colors.ui.git.modified.bg.is, fg = colors.ui.git.fg })
 		set(0, name .. "NotModified", { bg = colors.ui.git.modified.bg._not, fg = colors.ui.git.fg })
 		set(0, name .. "IsModifiedSeperator", { bg = colors.ui.statusline.bg, fg = colors.ui.git.modified.bg.is })
@@ -115,7 +115,7 @@ local function statuslineHL()
 	set(0, "StatuslineInvisible", { bg = statusline_hl.bg, fg = statusline_hl.bg })
 
 	battery_hl()
-	branch_hl()
+	reference_hl()
 	datetime_hl()
 	dirname_hl()
 	diagnostics_hl()
