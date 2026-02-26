@@ -32,7 +32,7 @@ local function long(M)
 		close_stream(stderr)
 
 		if code ~= 0 then
-			M.commit.long = ""
+			M.commit.long = nil
 		else
 			local current_commit = table.concat(output):match("^%s*(.-)%s*$")
 			M.commit.long = current_commit ~= "" and current_commit or nil
@@ -44,7 +44,7 @@ local function long(M)
 
 	if not M._handle.commit.long then
 		M._running.commit.long = false
-		M.commit.long = ""
+		M.commit.long = nil
 		return
 	end
 
