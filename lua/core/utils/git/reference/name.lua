@@ -46,7 +46,7 @@ local function name(M)
 
 	if not M._handle.reference.name then
 		M._running.reference.name = false
-		M.reference.name.name = ""
+		M.reference.name = ""
 		return
 	end
 
