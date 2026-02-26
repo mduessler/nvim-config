@@ -3,6 +3,8 @@ local require_safe = require("utils.require_safe")
 local changes = require_safe("core.utils.git.changes")
 local close_process = require_safe("core.utils.async.close_process")
 local close_timer = require_safe("core.utils.async.close_timer")
+local commit_long = require_safe("core.utils.git.commit.long")
+local commit_short = require_safe("core.utils.git.commit.short")
 local commits_to_pull = require_safe("core.utils.git.commits_to_pull")
 local commits_to_push = require_safe("core.utils.git.commits_to_push")
 local fetch = require_safe("core.utils.git.fetch")
@@ -15,6 +17,8 @@ if
 		changes
 		and close_process
 		and close_timer
+		and commit_long
+		and commit_short
 		and commits_to_pull
 		and commits_to_push
 		and fetch
@@ -68,6 +72,9 @@ local M = {
 
 local function close_handles()
 	for _, handle in ipairs({
+		M._handle.commit.long,
+		M._handle.commit.short,
+		M._handle.commit.fetch,
 		M._handle.reference,
 		M._handle.status,
 		M._handle.changes,
@@ -92,6 +99,8 @@ M.run = function(cwd)
 		0,
 		1000,
 		vim.schedule_wrap(function()
+			commit_long(M)
+			commit_short(M)
 			reference(M)
 			status(M)
 			changes(M)
