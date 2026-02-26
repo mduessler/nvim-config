@@ -9,7 +9,7 @@ end
 
 --- Function to get the long commit hash of the nvim-config.
 ---@param M table Module table of the update module.
-local function long(M)
+local function commit(M)
 	if M.running.commit then
 		return
 	end
@@ -54,4 +54,4 @@ local function long(M)
 	handle_stream.stderr(stderr)
 end
 
-return long
+return commit
