@@ -5,8 +5,7 @@ local M = {
 	_handle = {
 		ls_remote = nil,
 	},
-	tags = {},
-	main = {},
+	references = {},
 }
 
 M.run = function() end
