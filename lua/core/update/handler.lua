@@ -16,6 +16,7 @@ local M = {
 		commit = {
 			long = false,
 			date = false,
+			remote = false,
 		},
 		reference = {
 			name = false,
@@ -27,6 +28,7 @@ local M = {
 		commit = {
 			long = nil,
 			date = nil,
+			remote = nil,
 		},
 		reference = {
 			name = nil,
@@ -36,6 +38,10 @@ local M = {
 	commit = {
 		long = nil,
 		date = nil,
+		remote = {
+			sha = nil,
+			date = nil,
+		},
 	},
 	reference = {
 		name = nil,
