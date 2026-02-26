@@ -7,24 +7,23 @@ if not (close_stream and close_process and handle_stream) then
 	return
 end
 
---- Function to get the commit date of the given reference.
+--- Function to get the commit date of the current active commit.
 ---@param M table Module table of the git module
----@param ref string Reference name of the commit
-local function reference_date(M, ref)
-	if M._running.reference_date then
+local function date(M)
+	if M._running.commit.date or M.commit.long == "" then
 		return
 	end
 
-	close_process(M._handle.reference_date)
-	M._running.reference_date = true
+	close_process(M._handle.commit.date)
+	M._running.commit.date = true
 
 	local stdout = vim.loop.new_pipe(false)
 	local stderr = vim.loop.new_pipe(false)
 
 	local output = {}
 
-	M._handle.reference_date = vim.loop.spawn("git", {
-		args = { "log", "-1", "--format=%at", ref },
+	M._handle.commit.date = vim.loop.spawn("git", {
+		args = { "log", "-1", "--format=%at", M.commit.long },
 		stdio = { nil, stdout, stderr },
 		cwd = M.cwd,
 	}, function(code, _)
@@ -35,19 +34,19 @@ local function reference_date(M, ref)
 		close_stream(stderr)
 
 		if code ~= 0 then
-			M.reference_date = nil
+			M.commit.date = nil
 		else
-			local current_reference_date = table.concat(output):match("(%d+)")
-			M.reference_date = current_reference_date ~= "" and tonumber(current_reference_date) or nil
+			local current_unix = table.concat(output):match("(%d+)")
+			M.commit.date = current_unix ~= "" and tonumber(current_unix) or nil
 		end
 
-		close_process(M._handle.reference_date)
-		M._running.reference_date = false
+		close_process(M._handle.commit.date)
+		M._running.commit.date = false
 	end)
 
-	if not M._handle.reference_date then
-		M._running.reference_date = false
-		M.reference_date = ""
+	if not M._handle.commit.date then
+		M._running.commit.date = false
+		M.commit.date = nil
 		return
 	end
 
@@ -55,4 +54,4 @@ local function reference_date(M, ref)
 	handle_stream.stderr(stderr)
 end
 
-return reference_date
+return date

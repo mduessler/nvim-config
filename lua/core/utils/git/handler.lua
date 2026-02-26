@@ -7,6 +7,7 @@ local commit_long = require_safe("core.utils.git.commit.long")
 local commit_short = require_safe("core.utils.git.commit.short")
 local commits_to_pull = require_safe("core.utils.git.commits_to_pull")
 local commits_to_push = require_safe("core.utils.git.commits_to_push")
+local date = require_safe("core.utils.git.commit.date")
 local fetch = require_safe("core.utils.git.fetch")
 local logger = require_safe("utils.logger")
 local status = require_safe("core.utils.git.status")
@@ -21,6 +22,7 @@ if
 		and commit_short
 		and commits_to_pull
 		and commits_to_push
+		and date
 		and fetch
 		and logger
 		and status
@@ -34,6 +36,7 @@ local M = {
 	cwd = nil,
 	_running = {
 		commit = {
+			date = false,
 			long = false,
 			short = false,
 		},
@@ -44,10 +47,13 @@ local M = {
 		commits_to_push = false,
 		commots_to_pull = false,
 		fetch = false,
-		reference_date = false,
 	},
 	_handle = {
-		commit = { long = nil, short = nil },
+		commit = {
+			date = nil,
+			long = nil,
+			short = nil,
+		},
 		timer = nil,
 		reference = nil,
 		status = nil,
@@ -55,14 +61,13 @@ local M = {
 		commits_to_pull = nil,
 		commits_to_push = nil,
 		fetch = nil,
-		reference_date = nil,
 	},
 	commit = {
+		date = nil,
 		long = "",
 		short = "",
 	},
 	fetch = false,
-	reference_date = nil,
 	reference = "",
 	modified = false,
 	changes = { NOFILE = { added = 0, deleted = 0 } },
@@ -73,6 +78,7 @@ local M = {
 local function close_handles()
 	for _, handle in ipairs({
 		M._handle.commit.long,
+		M._handle.commit.date,
 		M._handle.commit.short,
 		M._handle.fetch,
 		M._handle.reference,
@@ -101,6 +107,7 @@ M.run = function(cwd)
 		vim.schedule_wrap(function()
 			commit_long(M)
 			commit_short(M)
+			date(M)
 			reference(M)
 			status(M)
 			changes(M)
