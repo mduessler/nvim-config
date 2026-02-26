@@ -2,17 +2,21 @@ local require_safe = require("utils.require_safe")
 local close_process = require_safe("core.utils.async.close_process")
 local close_timer = require_safe("core.utils.async.close_timer")
 local commit = require_safe("core.utils.git.commit.long")
+local date = require_safe("core.utils.git.commit.date")
 local logger = require_safe("utils.logger")
 local ref_name = require_safe("core.utils.git.reference.type")
 local ref_type = require_safe("core.util.git.reference.name")
 
-if not (close_process and close_timer and commit and logger and ref_name and ref_type) then
+if not (close_process and close_timer and commit and date and logger and ref_name and ref_type) then
 	return
 end
 
 local M = {
 	_running = {
-		commit = { long = false },
+		commit = {
+			long = false,
+			date = false,
+		},
 		reference = {
 			name = false,
 			type = false,
@@ -20,13 +24,19 @@ local M = {
 		timer = false,
 	},
 	_handle = {
-		commit = { long = false },
+		commit = {
+			long = nil,
+			date = nil,
+		},
 		reference = {
 			name = nil,
 			type = nil,
 		},
 	},
-	commit = { long = nil },
+	commit = {
+		long = nil,
+		date = nil,
+	},
 	reference = {
 		name = nil,
 		type = nil,
@@ -36,7 +46,7 @@ local M = {
 local function closehandles()
 	for _, handle in ipairs({
 		M._handle.commit.long,
-		M._handle.name,
+		M._handle.reference.name,
 		M._handle.reference.type,
 	}) do
 		close_process(handle)
@@ -65,7 +75,10 @@ M.run = function()
 			if M.reference.type ~= nil and M.reference.name == nil then
 				ref_name(M)
 			end
-			if M.reference.name ~= nil then
+			if M.reference.type ~= nil and M.reference.date == nil then
+				date(M)
+			end
+			if M.reference.name ~= nil and M.commit.date ~= nil then
 				if M.reference.type == "branch" then
 					if M.reference.name == "main" then
 						logger.info("Download main")
