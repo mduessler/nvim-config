@@ -34,8 +34,8 @@ local M = {
 	cwd = nil,
 	_running = {
 		commit = {
-			long = "",
-			short = "",
+			long = false,
+			short = false,
 		},
 		timer = false,
 		reference = false,
@@ -47,7 +47,7 @@ local M = {
 		reference_date = false,
 	},
 	_handle = {
-		commit = { long = "", short = "" },
+		commit = { long = nil, short = nil },
 		timer = nil,
 		reference = nil,
 		status = nil,
@@ -74,7 +74,7 @@ local function close_handles()
 	for _, handle in ipairs({
 		M._handle.commit.long,
 		M._handle.commit.short,
-		M._handle.commit.fetch,
+		M._handle.fetch,
 		M._handle.reference,
 		M._handle.status,
 		M._handle.changes,

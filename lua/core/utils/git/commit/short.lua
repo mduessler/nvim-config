@@ -32,7 +32,7 @@ local function short(M)
 		close_stream(stderr)
 
 		if code ~= 0 then
-			M.commit.short = nil
+			M.commit.short = ""
 		else
 			local current_commit = table.concat(output):match("^%s*(.-)%s*$")
 			M.commit.short = current_commit ~= "" and current_commit or nil

@@ -7,8 +7,10 @@ if not (close_stream and close_process and handle_stream) then
 	return
 end
 
+--- Function to get the named reference, if a commit hash exists.
+---@param M table Module table of the git module
 local function reference(M)
-	if M._running.reference then
+	if M._running.reference or M.commit.long == "" then
 		return
 	end
 
@@ -21,7 +23,7 @@ local function reference(M)
 	local output = {}
 
 	M._handle.reference = vim.loop.spawn("git", {
-		args = { "rev-parse", "--abbrev-ref", "HEAD" },
+		args = { "name-rev", "--name-only", M.commit.long },
 		stdio = { nil, stdout, stderr },
 		cwd = M.cwd,
 	}, function(code, _)
@@ -35,6 +37,8 @@ local function reference(M)
 			M.reference = nil
 		else
 			local current_reference = table.concat(output):match("^%s*(.-)%s*$")
+			print("--")
+			print(current_reference)
 			M.reference = current_reference ~= "" and current_reference or nil
 		end
 
