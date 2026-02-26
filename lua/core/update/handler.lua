@@ -1,10 +1,10 @@
 local require_safe = require("utils.require_safe")
 local close_process = require_safe("core.utils.async.close_process")
 local close_timer = require_safe("core.utils.async.close_timer")
-local commit = require_safe("core.update.git.commit")
+local commit = require_safe("core.utils.git.commit.long")
 local logger = require_safe("utils.logger")
-local ref_name = require_safe("core.update.git.reference.type")
-local ref_type = require_safe("core.update.git.reference.name")
+local ref_name = require_safe("core.utils.git.reference.type")
+local ref_type = require_safe("core.util.git.reference.name")
 
 if not (close_process and close_timer and commit and logger and ref_name and ref_type) then
 	return
