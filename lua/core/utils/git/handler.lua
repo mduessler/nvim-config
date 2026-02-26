@@ -29,6 +29,10 @@ end
 local M = {
 	cwd = nil,
 	_running = {
+		commit = {
+			long = "",
+			short = "",
+		},
 		timer = false,
 		reference = false,
 		status = false,
@@ -39,6 +43,7 @@ local M = {
 		reference_date = false,
 	},
 	_handle = {
+		commit = { long = "", short = "" },
 		timer = nil,
 		reference = nil,
 		status = nil,
@@ -47,6 +52,10 @@ local M = {
 		commits_to_push = nil,
 		fetch = nil,
 		reference_date = nil,
+	},
+	commit = {
+		long = "",
+		short = "",
 	},
 	fetch = false,
 	reference_date = nil,
