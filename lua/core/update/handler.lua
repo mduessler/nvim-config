@@ -79,16 +79,16 @@ M.run = function()
 				date(M)
 			end
 			if M.reference.name ~= nil and M.commit.date ~= nil then
-				if M.reference.type == "branch" then
+				if M.reference.type == "ref" then
+					logger.INFO(
+						"TYPE ref detected. CHECK if installed nvim version is equal to ref version. Else check if version exists. Then notify user about that."
+					)
+				elseif M.reference.type == "branch" then
 					if M.reference.name == "main" then
 						logger.info("Download main")
 					end
 					logger.INFO(
 						"TYPE branch detected. Checking if it is main. If it is main, compare dates, if remote newer, than give update notification."
-					)
-				elseif M.reference.type == "ref" then
-					logger.INFO(
-						"TYPE ref detected. CHECK if installed nvim version is equal to ref version. Else check if version exists. Then notify user about that."
 					)
 				else
 					logger.INFO("On stale commit. notify that update is only possible on a stable ref or main.")
