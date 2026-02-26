@@ -97,7 +97,7 @@ M.run = function(cwd)
 	M._handle.timer = vim.loop.new_timer()
 	M._handle.timer:start(
 		0,
-		1000,
+		500,
 		vim.schedule_wrap(function()
 			commit_long(M)
 			commit_short(M)

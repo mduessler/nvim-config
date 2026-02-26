@@ -37,7 +37,6 @@ local function reference(M)
 			M.reference = nil
 		else
 			local current_reference = table.concat(output):match("^%s*(.-)%s*$")
-			print("--")
 			print(current_reference)
 			M.reference = current_reference ~= "" and current_reference or nil
 		end
