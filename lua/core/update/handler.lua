@@ -11,22 +11,22 @@ if not (close_process and close_timer and commit and logger and ref_name and ref
 end
 
 local M = {
-	running = {
-		commit = false,
+	_running = {
+		commit = { long = false },
 		reference = {
 			name = false,
 			type = false,
 		},
 		timer = false,
 	},
-	handle = {
-		commit = false,
+	_handle = {
+		commit = { long = false },
 		reference = {
 			name = nil,
 			type = nil,
 		},
 	},
-	commit = nil,
+	commit = { long = nil },
 	reference = {
 		name = nil,
 		type = nil,
@@ -35,28 +35,28 @@ local M = {
 
 local function closehandles()
 	for _, handle in ipairs({
-		M.handle.commit,
-		M.handle.name,
-		M.handle.reference.type,
+		M._handle.commit.long,
+		M._handle.name,
+		M._handle.reference.type,
 	}) do
 		close_process(handle)
 	end
-	close_timer(M.handle.timer)
+	close_timer(M._handle.timer)
 end
 
 M.run = function()
-	if M.running.timer then
+	if M._running.timer then
 		return
 	end
 
 	closehandles()
 
-	M.handle.timer = vim.loop.new_timer()
-	M.handle.timer:start(
+	M._handle.timer = vim.loop.new_timer()
+	M._handle.timer:start(
 		0,
 		500,
 		vim.schedule_wrap(function()
-			if M.commit == nil then
+			if M.commit.long == nil then
 				commit(M)
 			end
 			if M.commit ~= nil and M.reference.type == nil then
