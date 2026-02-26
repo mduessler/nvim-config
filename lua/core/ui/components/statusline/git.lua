@@ -41,11 +41,11 @@ LOCAL.length = {
 local M = {}
 
 M.get = function()
-	if not project.is_git_repo or not project.git.reference or project.git.reference == "" then
+	if not project.is_git_repo or not project.git.reference.name or project.git.reference.name == "" then
 		return { length = 0, component = "" }
 	end
 
-	local content = table.concat({ "", LOCAL.signs.reference, project.git.reference }, LOCAL.signs.padding)
+	local content = table.concat({ "", LOCAL.signs.reference, project.git.reference.name }, LOCAL.signs.padding)
 
 	local function update_sync_status()
 		if project.git.commits_to_pull and project.git.commits_to_push then

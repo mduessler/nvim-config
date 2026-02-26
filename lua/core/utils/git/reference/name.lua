@@ -9,20 +9,20 @@ end
 
 --- Function to get the named reference, if a commit hash exists.
 ---@param M table Module table of the git module
-local function reference(M)
-	if M._running.reference or M.commit.long == "" then
+local function name(M)
+	if M._running.reference.name or M.commit.long == "" then
 		return
 	end
 
-	close_process(M._handle.reference)
-	M._running.reference = true
+	close_process(M._handle.reference.name)
+	M._running.reference.name = true
 
 	local stdout = vim.loop.new_pipe(false)
 	local stderr = vim.loop.new_pipe(false)
 
 	local output = {}
 
-	M._handle.reference = vim.loop.spawn("git", {
+	M._handle.reference.name = vim.loop.spawn("git", {
 		args = { "name-rev", "--name-only", M.commit.long },
 		stdio = { nil, stdout, stderr },
 		cwd = M.cwd,
@@ -34,20 +34,19 @@ local function reference(M)
 		close_stream(stderr)
 
 		if code ~= 0 then
-			M.reference = nil
+			M.reference.name = nil
 		else
-			local current_reference = table.concat(output):match("^%s*(.-)%s*$")
-			print(current_reference)
-			M.reference = current_reference ~= "" and current_reference or nil
+			local current_name = table.concat(output):match("^%s*(.-)%s*$")
+			M.reference.name = current_name ~= "" and current_name or nil
 		end
 
-		close_process(M._handle.reference)
-		M._running.reference = false
+		close_process(M._handle.reference.name)
+		M._running.reference.name = false
 	end)
 
-	if not M._handle.reference then
-		M._running.reference = false
-		M.reference = ""
+	if not M._handle.reference.name then
+		M._running.reference.name = false
+		M.reference.name.name = ""
 		return
 	end
 
@@ -55,4 +54,4 @@ local function reference(M)
 	handle_stream.stderr(stderr)
 end
 
-return reference
+return name

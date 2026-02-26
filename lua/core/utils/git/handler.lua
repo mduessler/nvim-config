@@ -11,7 +11,7 @@ local date = require_safe("core.utils.git.commit.date")
 local fetch = require_safe("core.utils.git.fetch")
 local logger = require_safe("utils.logger")
 local status = require_safe("core.utils.git.status")
-local reference = require_safe("core.utils.git.reference")
+local ref_name = require_safe("core.utils.git.reference.name")
 
 if
 	not (
@@ -26,7 +26,7 @@ if
 		and fetch
 		and logger
 		and status
-		and reference
+		and ref_name
 	)
 then
 	return
@@ -41,7 +41,10 @@ local M = {
 			short = false,
 		},
 		timer = false,
-		reference = false,
+		reference = {
+			name = false,
+			type = false,
+		},
 		status = false,
 		changes = false,
 		commits_to_push = false,
@@ -55,7 +58,10 @@ local M = {
 			short = nil,
 		},
 		timer = nil,
-		reference = nil,
+		reference = {
+			name = nil,
+			type = nil,
+		},
 		status = nil,
 		changes = nil,
 		commits_to_pull = nil,
@@ -68,7 +74,10 @@ local M = {
 		short = "",
 	},
 	fetch = false,
-	reference = "",
+	reference = {
+		name = "",
+		type = "",
+	},
 	modified = false,
 	changes = { NOFILE = { added = 0, deleted = 0 } },
 	commits_to_pull = false,
@@ -108,7 +117,7 @@ M.run = function(cwd)
 			commit_long(M)
 			commit_short(M)
 			date(M)
-			reference(M)
+			ref_name(M)
 			status(M)
 			changes(M)
 			commits_to_pull(M)
