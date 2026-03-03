@@ -1,9 +1,9 @@
 local require_safe = require("utils.require_safe")
 
 local config = require_safe("utils.logger.config")
-local cmds = require_safe("lua.utils.logger.cmds")
+local cmds = require_safe("utils.logger.cmds")
 local file = require_safe("utils.logger.io.file")
-local hl = require_safe("lua.utils.logger.highlights")
+local hl = require_safe("utils.logger.highlights")
 local levels = require_safe("utils.logger.levels")
 local ui = require_safe("utils.logger.io.ui")
 
