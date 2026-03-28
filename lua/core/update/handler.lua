@@ -12,6 +12,8 @@ if not (close_process and close_timer and commit and date and logger and ref_nam
 end
 
 local M = {
+	cwd = vim.fn.stdpath("config"),
+	remote_repo = "https://api.github.com/repos/mduessler/nvim-config",
 	_running = {
 		commit = {
 			long = false,
@@ -39,7 +41,7 @@ local M = {
 		long = nil,
 		date = nil,
 		remote = {
-			sha = nil,
+			commit = nil,
 			date = nil,
 		},
 	},
