@@ -52,7 +52,7 @@ return {
 			formatters = {
 				black = {
 					prepend_args = function()
-						return { "--line-length", "120" }
+						return { "--line-length", "99" }
 					end,
 				},
 				cargo_fmt = {
@@ -67,7 +67,7 @@ return {
 				},
 				isort = {
 					prepend_args = function()
-						return { "--profile", "black", "--line-length", "120" }
+						return { "--profile", "black", "--line-length", "99" }
 					end,
 				},
 				mdformat = {
