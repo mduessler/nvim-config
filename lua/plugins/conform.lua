@@ -14,10 +14,6 @@ return {
 					async = false,
 					timeout_ms = 500,
 				})
-				local ft = vim.bo.filetype
-				if ft == "html" or ft == "css" or ft == "jinja" or ft == "htmldjango" then
-					vim.cmd("TailwindSort")
-				end
 			end,
 			noremap = true,
 			silent = true,
