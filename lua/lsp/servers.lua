@@ -23,5 +23,6 @@ return {
 	["cmake-language-server"] = "cmake", -- Cmake
 	["rust-analyzer"] = "rust_analyzer",
 	["jdtls"] = "jdtls", -- java
+	["terraformls"] = "terraformls",
 	-- "eslint",
 }

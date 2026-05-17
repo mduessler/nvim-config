@@ -16,4 +16,5 @@ return {
 	bacon = "bacon",
 	["sonarlint-language-server"] = "sonarlint-language-server",
 	checkstyle = "checkstyle",
+	terraform = "terraform",
 }

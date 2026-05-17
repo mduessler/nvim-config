@@ -14,4 +14,5 @@ return {
 	rustfmt = "rustfmt",
 	xmlformatter = "xmlformatter",
 	["google-java-format"] = "google-java-format",
+	terraform = "terraform",
 }
