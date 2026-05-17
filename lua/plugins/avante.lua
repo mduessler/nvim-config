@@ -16,6 +16,9 @@ return {
 				},
 			},
 		},
+		ui = {
+			border = "rounded", -- keep avante's own border contained
+		},
 		behaviour = {
 			auto_suggestions = false,
 			auto_set_highlight_group = true,
@@ -30,15 +33,15 @@ return {
 			},
 		},
 
-		windows = {
-			position = "right",
-			wrap = true,
-			width = 35,
-			sidebar_header = {
-				enabled = true,
-				align = "center",
-			},
-		},
+		-- windows = {
+		-- 	position = "right",
+		-- 	wrap = true,
+		-- 	width = 35,
+		-- 	sidebar_header = {
+		-- 		enabled = true,
+		-- 		align = "center",
+		-- 	},
+		-- },
 	},
 	dependencies = {
 		"nvim-lua/plenary.nvim",
@@ -46,9 +49,9 @@ return {
 		"nvim-tree/nvim-web-devicons",
 		{
 			"MeanderingProgrammer/render-markdown.nvim",
-			ft = { "markdown", "Avante" },
+			ft = { "Avante" },
 			opts = {
-				file_types = { "markdown", "Avante" },
+				file_types = { "Avante" },
 			},
 		},
 	},
