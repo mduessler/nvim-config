@@ -39,7 +39,9 @@ vim.api.nvim_create_user_command("InitNVIM", function()
 
 		print("Installing Formater")
 		for package, _ in pairs(formaters) do
-			install_packages(package)
+			if package ~= "rustfmt" then
+				install_packages(package)
+			end
 		end
 
 		print("Installing Linter")
