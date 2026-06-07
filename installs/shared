@@ -105,3 +105,26 @@ install_cargo_pkg() {
     success "Finished package installation."
     return 0
 }
+
+install_rustup_pkg() {
+    if ! check_command rustc || ! check_command rustup; then
+        warning "Rust is not installed or rustup not in '\$PATH'."
+        return 2
+    elif [ $# -eq 0 ]; then
+        warning "No package given. Please provide at least one packge."
+        return 3
+    fi
+
+    local packages=("$@")
+
+    for pkg in "${packages[@]}"; do
+        debug "Installing ${pkg} ..."
+        if ! rustup component add  "${pkg}"; then
+            error "Failed to install ${pkg}."
+            return 1
+        fi
+        info "Installed ${pkg}."
+    done
+    success "Finished package installation."
+    return 0
+}
