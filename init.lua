@@ -1,8 +1,5 @@
 vim.cmd("set encoding=UTF-8")
 
--- package.path = package.path .. ";" .. vim.fn.expand("~/.local/share/luarocks/share/lua/5.1/?.lua")
--- package.path = package.path .. ";" .. vim.fn.expand("~/.local/share/luarocks/share/lua/5.1/?/init.lua")
-
 -- Remove Neovim 0.10 default keymaps you don't want
 local status, utils = pcall(require, "utils.key")
 
@@ -16,6 +13,8 @@ end
 vim.g.mapleader = " "
 
 require("config")
+
+vim.notify = require("notify")
 
 require("core.keymaps")
 require("core")
