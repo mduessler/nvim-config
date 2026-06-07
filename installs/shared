@@ -119,7 +119,7 @@ install_rustup_pkg() {
 
     for pkg in "${packages[@]}"; do
         debug "Installing ${pkg} ..."
-        if ! rustup component add  "${pkg}"; then
+        if ! rustup component add "${pkg}"; then
             error "Failed to install ${pkg}."
             return 1
         fi
