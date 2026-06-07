@@ -16,18 +16,18 @@ vim.api.nvim_create_user_command("InitNVIM", function()
 		local function install_packages(package)
 			if not registry.has_package(package) then
 				print("Don't know package " .. package)
+			end
+			local pkg = registry.get_package(package)
+			if pkg:is_installed() then
+				print("Already installed: " .. package)
+				return
 			else
-				local pkg = registry.get_package(package)
-				if not pkg:is_installed() then
-					print("Installing " .. package .. " ...")
-					pkg:install()
-					vim.wait(120000, function()
-						return pkg:is_installed()
-					end, 500)
-					print("Installed: " .. package)
-				else
-					print("Already installed: " .. package)
-				end
+				print("Installing " .. package .. " ...")
+				pkg:install()
+				vim.wait(120000, function()
+					return pkg:is_installed()
+				end, 500)
+				print("Installed: " .. package)
 			end
 			print("Installed Language server: " .. package)
 		end
