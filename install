@@ -6,7 +6,7 @@ CONFIG_VERSION=latest
 NVIM_DEV=false
 INSTALL_NERD_FONTS=false
 
-[ -z "${SCRIPT_DIR}" ] && SCRIPT_DIR="$(pwd)/installs"
+[ -z "${SCRIPT_DIR}" ] && SCRIPT_DIR="$(pwd)/scripts"
 [ -z "${DEPENDENCIES}" ] && DEPENDENCIES=$(pwd)/dependencies
 
 source "${DEPENDENCIES}"
