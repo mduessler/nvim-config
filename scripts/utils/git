@@ -1,0 +1,64 @@
+#!/bin/sh
+
+set -eu
+
+if [ -z "${SCRIPT_DIR:-}" ]; then
+    SCRIPT_DIR=$(dirname "$(dirname "$PWD")")
+fi
+
+. "${SCRIPT_DIR}/utils/logger" || exit 1
+
+is_repo() {
+    if [ "$#" -ne 1 ]; then
+        error "Function needs exactly one 'path' argument." && return 1
+    fi
+
+    path=$1
+    if [ ! -d "${path}" ]; then
+        error "Path '${path}' does not exist or is not a directory." && return 1
+    fi
+
+    if ! git -C "${path}" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+        error "Path '${path}' is not a git repo." && return 1
+    fi
+
+    success "Path '${path}' is a git repo."
+    return 0
+}
+
+pull_repo() {
+    if [ "$#" -ne 1 ]; then
+        error "Function needs exactly one 'path' argument." && return 1
+    fi
+
+    path=$1
+    if [ ! -d "${path}" ]; then
+        error "Path '${path}' does not exist or is not a directory." && return 1
+    fi
+
+    git -C "${path}" checkout main 2>/dev/null \
+        || git -C "${path}" checkout master 2>/dev/null \
+        || true
+
+    if ! git -C "${path}" pull; then
+        error "Can not pull repo at '${path}'." && return 1
+    fi
+
+    success "Pulled repo at '${path}'." && return 0
+}
+
+clone_repo() {
+    if [ "$#" -ne 2 ]; then
+        error "Function needs exactly two arguments, 'repo-url' and 'dest-dir'." && return 1
+    fi
+
+    repo_url=$1
+    dest_dir=$2
+
+    info "Cloning '${repo_url}' into '${dest_dir}'..."
+    if ! git clone --depth=1 "${repo_url}" "${dest_dir}"; then
+        error "Can not clone '${repo_url}' into '${dest_dir}'." && return 1
+    fi
+
+    success "Cloned '${repo_url}' into '${dest_dir}'." && return 0
+}
