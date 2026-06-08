@@ -6,7 +6,7 @@ if [ -z "${SCRIPT_DIR:-}" ]; then
     SCRIPT_DIR=$(dirname "$(dirname "$PWD")")
 fi
 
-. "${SCRIPT_DIR}/utils" || exit 1
+. "${SCRIPT_DIR}/utils/logger" || exit 1
 
 install_rust() {
     if check_command rustc; then
@@ -35,5 +35,3 @@ install_rust() {
     success "Rust has been successfully installed."
     return 0
 }
-
-install_rust
