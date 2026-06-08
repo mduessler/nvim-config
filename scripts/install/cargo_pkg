@@ -1,0 +1,24 @@
+#!/bin/sh
+
+set -eu
+
+if [ -z "${SCRIPT_DIR:-}" ]; then
+    SCRIPT_DIR=$(dirname "$(dirname "$PWD")")
+fi
+
+. "${SCRIPT_DIR}/utils/logger" || exit 1
+. "${SCRIPT_DIR}/utils/check_command" || exit 1
+
+install_cargo_pkg() {
+    if ! check_command rustc || ! check_command cargo; then
+        error "Rust is not installed or rust and cargo not in '\$PATH'." && return 1
+    elif [ $# -eq 0 ]; then
+        error "No package given. Please provide at least one packge." && return 1
+    fi
+
+    if ! cargo install "$@"; then
+        error "Failed to installes packages." && return 1
+    fi
+
+    success "Finished package installation." && return 0
+}

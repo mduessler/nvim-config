@@ -1,0 +1,50 @@
+#!/bin/sh
+
+set -eu
+
+if [ -z "${SCRIPT_DIR:-}" ]; then
+    SCRIPT_DIR=$(dirname "$(dirname "$PWD")")
+fi
+
+. "${SCRIPT_DIR}/utils/logger" || exit 1
+. "${SCRIPT_DIR}/utils/check_command" || exit 1
+
+identify_system_pkg_mgr() {
+    if [ -z "${PKG_MGR}" ]; then
+        info "Identifing package manger."
+        if check_command apt-get; then
+            export PKG_MGR="apt-get"
+        elif check_command dnf; then
+            export PKG_MGR="dnf"
+        else
+            warning "No valid package manager found." && return 1
+        fi
+    else
+        debug "Package manager was already defined as '${PKG_MGR}'"
+    fi
+    success "Identified '${PKG_MGR}' as package manager." && return 0
+}
+
+install_packages_with_pkg_mgr() {
+    if [ $# -lt 0 ]; then
+        error "No package given. Please provide at least one packge." && return 1
+    fi
+
+    if [ "${PKG_MGR}" != "apt-get" ] && [ "${PKG_MGR}" != "dnf" ]; then
+        error "No valid package manager found." && return 1
+    fi
+
+    info "Installing: $* ..."
+    debug "Updating repositories."
+
+    if ! sudo "${PKG_MGR}" update -y; then
+        warning "Can not update the package repositories."
+    fi
+
+    debug "Installing package(s)."
+    if ! sudo "${PKG_MGR}" install -y "$@"; then
+        error "Can not install package(s)." && return 1
+    fi
+
+    success "Installed packages." && return 0
+}
