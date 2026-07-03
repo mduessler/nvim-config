@@ -24,6 +24,7 @@ return {
 		end
 
 		tree.setup({
+			filesystem_watchers = { enable = true },
 			disable_netrw = true,
 			hijack_netrw = false,
 			open_on_tab = true,
