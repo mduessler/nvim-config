@@ -23,7 +23,9 @@ return {
 
 		local linter_formater = {}
 		for _, value in pairs(formater) do
-			linter_formater[#linter_formater + 1] = value
+			if value ~= "rustfmt" then
+				linter_formater[#linter_formater + 1] = value
+			end
 		end
 		for _, value in pairs(linter) do
 			linter_formater[#linter_formater + 1] = value
