@@ -10,7 +10,9 @@ INSTALL_NERD_FONTS=false
 [ -z "${DEPENDENCIES}" ] && DEPENDENCIES=$(pwd)/dependencies
 
 source "${DEPENDENCIES}"
-source "${SCRIPT_DIR}/utils"
+source "${SCRIPT_DIR}/git_utils"
+source "${SCRIPT_DIR}/check_command"
+source "${SCRIPT_DIR}/logger"
 source "${SCRIPT_DIR}/prod"
 source "${SCRIPT_DIR}/nerd-fonts"
 source "${SCRIPT_DIR}/dev"
