@@ -21,15 +21,20 @@ vim.api.nvim_create_user_command("InitNVIM", function()
 			if pkg:is_installed() then
 				print("Already installed: " .. package)
 				return
-			else
-				print("Installing " .. package .. " ...")
-				pkg:install()
-				vim.wait(120000, function()
-					return pkg:is_installed()
-				end, 500)
-				print("Installed: " .. package)
 			end
-			print("Installed Language server: " .. package)
+			print("Installing " .. package .. " ...")
+			local done = false
+			pkg:install():once("closed", function()
+				done = true
+			end)
+			vim.wait(600000, function()
+				return done
+			end, 500)
+			if done then
+				print("Installed: " .. package)
+			else
+				print("Failed to install " .. package)
+			end
 		end
 
 		print("Installing Language Servers.")
@@ -52,7 +57,11 @@ vim.api.nvim_create_user_command("InitNVIM", function()
 		vim.wait(5000)
 
 		print("Installing Treesitter languages.")
-		vim.cmd("TSUpdateSync")
+		local ok, err = pcall(vim.cmd, "TSUpdateSync")
+		if not ok then
+			print("TSUpdateSync error: " .. tostring(err))
+			vim.wait(3000)
+		end
 		vim.cmd("qa!")
 	end
 end, { desc = "Initalize plugins, lsps and Treesitter" })
