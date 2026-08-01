@@ -1,12 +1,6 @@
-local require_safe = require("utils.require_safe")
-
-local buffer = require_safe("utils.logger.io.ui.buffer")
-local segments = require_safe("utils.logger.io.ui.segments")
-local window = require_safe("utils.logger.io.ui.window")
-
-if not (buffer and segments and window) then
-	return
-end
+local buffer = require("utils.logger.io.ui.buffer")
+local segments = require("utils.logger.io.ui.segments")
+local window = require("utils.logger.io.ui.window")
 
 ---
 --- Interface for the logging.ui module.

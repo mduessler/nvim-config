@@ -6,10 +6,7 @@ return {
 		overrides = {},
 	},
 	config = function()
-		local status, ayu = pcall(require, "ayu")
-		if not status then
-			return
-		end
+		local ayu = require("ayu")
 		ayu.setup({
 			mirage = true,
 			overrides = {

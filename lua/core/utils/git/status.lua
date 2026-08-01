@@ -1,11 +1,4 @@
-local require_safe = require("utils.require_safe")
-
-local close_process = require_safe("core.utils.async.close_process")
-local close_timer = require_safe("core.utils.async.close_timer")
-
-if not (close_process and close_timer) then
-	return
-end
+local close_process = require("core.utils.async.close_process")
 
 local function git_status(M)
 	if M._running.status then

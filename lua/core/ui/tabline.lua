@@ -1,17 +1,11 @@
-local require_safe = require("utils.require_safe")
+local buffers = require("core.ui.buffers.handler")
+local str = require("utils.str")
 
-local buffers = require_safe("core.ui.buffers.handler")
-local str = require_safe("utils.str")
-
-local boundaries = require_safe("core.ui.components.tabline.boundaries").get()
-local name = require_safe("core.ui.components.tabline.name")
-local modified = require_safe("core.ui.components.tabline.modified")
-local close = require_safe("core.ui.components.tabline.close")
-local signs = require_safe("config.signs")
-
-if not (str and buffers and boundaries and name and modified and close and signs) then
-	return
-end
+local boundaries = require("core.ui.components.tabline.boundaries").get()
+local name = require("core.ui.components.tabline.name")
+local modified = require("core.ui.components.tabline.modified")
+local close = require("core.ui.components.tabline.close")
+local signs = require("config.signs")
 
 local M = {}
 local sep_left = signs.ui.separator.left.line

@@ -1,12 +1,6 @@
-local require_safe = require("utils.require_safe")
-
-local colors = require_safe("core.colors")
-local signs = require_safe("config.signs")
-local str = require_safe("utils.str")
-
-if not (colors and signs and str) then
-	return
-end
+local colors = require("core.colors")
+local signs = require("config.signs")
+local str = require("utils.str")
 
 local set_hl = vim.api.nvim_set_hl
 

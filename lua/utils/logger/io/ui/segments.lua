@@ -1,10 +1,4 @@
-local require_safe = require("utils.require_safe")
-
-local config = require_safe("utils.logger.config")
-
-if not config then
-	return
-end
+local config = require("utils.logger.config")
 
 ---
 --- Helper function for the logging.ui.segments module

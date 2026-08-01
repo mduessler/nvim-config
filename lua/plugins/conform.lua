@@ -21,12 +21,7 @@ return {
 		},
 	},
 	config = function()
-		local require_safe = require("utils.require_safe")
-		local conform = require_safe("conform")
-
-		if not conform then
-			return
-		end
+		local conform = require("conform")
 
 		conform.setup({
 			formatters_by_ft = {

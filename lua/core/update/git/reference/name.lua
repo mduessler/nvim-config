@@ -1,11 +1,6 @@
-local require_safe = require("utils.require_safe")
-local close_stream = require_safe("core.utils.async.close_stream")
-local close_process = require_safe("core.utils.async.close_process")
-local handle_stream = require_safe("core.utils.async.handle_stream")
-
-if not (close_stream and close_process and handle_stream) then
-	return
-end
+local close_stream = require("core.utils.async.close_stream")
+local close_process = require("core.utils.async.close_process")
+local handle_stream = require("core.utils.async.handle_stream")
 
 --- Function to get the named reference, if a commit hash exists.
 ---@param M table Module table of the git module

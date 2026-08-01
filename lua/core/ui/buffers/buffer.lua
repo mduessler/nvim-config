@@ -1,16 +1,9 @@
-local require_safe = require("utils.require_safe")
-
-local changes = require_safe("core.ui.buffers.changes")
-local devicons = require_safe("nvim-web-devicons")
-local diagnostic = require_safe("core.ui.buffers.diagnostic")
-local dir = require_safe("core.ui.utils.directory")
-local modified = require_safe("core.ui.utils.modified")
-local project = require_safe("core.ui.utils.project")
+local changes = require("core.ui.buffers.changes")
+local devicons = require("nvim-web-devicons")
+local dir = require("core.ui.utils.directory")
+local modified = require("core.ui.utils.modified")
+local project = require("core.ui.utils.project")
 local signs = require("config.signs")
-
-if not (changes and devicons and diagnostic and dir and modified and project and signs) then
-	return
-end
 
 local function set_file(bufnr)
 	local path = vim.api.nvim_buf_get_name(bufnr)

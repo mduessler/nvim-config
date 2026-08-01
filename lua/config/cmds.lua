@@ -3,15 +3,10 @@ vim.api.nvim_create_user_command("InitNVIM", function()
 		vim.cmd("Lazy! sync")
 		vim.wait(5000)
 
-		local require_safe = require("utils.require_safe")
-		local formaters = require_safe("lsp.formater")
-		local linters = require_safe("lsp.linter")
-		local registry = require_safe("mason-registry")
-		local servers = require_safe("lsp.servers")
-
-		if not (formaters and linters and registry and servers) then
-			return
-		end
+		local formaters = require("lsp.formater")
+		local linters = require("lsp.linter")
+		local registry = require("mason-registry")
+		local servers = require("lsp.servers")
 
 		local function install_packages(package)
 			if not registry.has_package(package) then
@@ -57,19 +52,7 @@ vim.api.nvim_create_user_command("InitNVIM", function()
 		vim.wait(5000)
 
 		print("Installing Treesitter languages.")
-		local ts_ok, ts = pcall(require, "nvim-treesitter")
-		if ts_ok then
-			local install_ok, err = pcall(function()
-				ts.install({ "all" }):wait(1800000)
-			end)
-			if not install_ok then
-				print("Treesitter install error: " .. tostring(err))
-				vim.wait(3000)
-			end
-		else
-			print("Can not load nvim-treesitter: " .. tostring(ts))
-			vim.wait(3000)
-		end
+		require("nvim-treesitter").install({ "all" }):wait(1800000)
 		vim.cmd("qa!")
 	end
 end, { desc = "Initalize plugins, lsps and Treesitter" })

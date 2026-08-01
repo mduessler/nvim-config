@@ -1,9 +1,4 @@
-local require_safe = require("utils.require_safe")
-local close_process = require_safe("core.utils.async.close_process")
-
-if not close_process then
-	return
-end
+local close_process = require("core.utils.async.close_process")
 
 --- Function to fetch a gien reference from the remote server.
 ---@param M table Module table of the git module

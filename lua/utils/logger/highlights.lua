@@ -1,10 +1,4 @@
-local require_safe = require("utils.require_safe")
-
-local colors = require_safe("utils.logger.colors")
-
-if not colors then
-	return
-end
+local colors = require("utils.logger.colors")
 
 local set = vim.api.nvim_set_hl
 

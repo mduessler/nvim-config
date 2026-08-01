@@ -1,10 +1,7 @@
 return {
 	"akinsho/toggleterm.nvim",
 	config = function()
-		local status_ok, toggleterm = pcall(require, "toggleterm")
-		if not status_ok then
-			return
-		end
+		local toggleterm = require("toggleterm")
 		toggleterm.setup({
 			size = function(term)
 				if term.direction == "horizontal" then

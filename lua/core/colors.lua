@@ -1,13 +1,7 @@
-local require_safe = require("utils.require_safe")
-
-local colors = require_safe("config.colors")
+local colors = require("config.colors")
 
 local statusline_hl = vim.api.nvim_get_hl(0, { name = "StatusLine" })
 local tabline_hl = vim.api.nvim_get_hl(0, { name = "TabLine" })
-
-if not colors then
-	return
-end
 
 local colors_new = {
 	diagnostics = {

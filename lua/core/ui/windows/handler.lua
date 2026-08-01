@@ -1,10 +1,4 @@
-local require_safe = require("utils.require_safe")
-
-local window = require_safe("core.ui.windows.window")
-
-if not window then
-	return
-end
+local window = require("core.ui.windows.window")
 
 local M = { views = {} }
 

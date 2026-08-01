@@ -1,12 +1,6 @@
-local require_safe = require("utils.require_safe")
-
-local keymap = require_safe("utils.key")
-local mode = require_safe("core.ui.utils.mode")
-local window = require_safe("core.ui.windows.utils")
-
-if not (mode and keymap and window) then
-	return
-end
+local keymap = require("utils.key")
+local mode = require("core.ui.utils.mode")
+local window = require("core.ui.windows.utils")
 
 local M = {
 	text = {

@@ -1,12 +1,6 @@
-local require_safe = require("utils.require_safe")
-
-local battery = require_safe("core.ui.utils.battery.handler")
-local signs = require_safe("config.signs")
-local str = require_safe("utils.str")
-
-if not (battery and signs and str) then
-	return
-end
+local battery = require("core.ui.utils.battery.handler")
+local signs = require("config.signs")
+local str = require("utils.str")
 
 local LOCAL = {
 	hl = {

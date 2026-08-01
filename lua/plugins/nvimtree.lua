@@ -14,14 +14,8 @@ return {
 		{ "<leader>nr", "<cmd>NvimTreeRefresh<CR>", desc = "Refresh" },
 	},
 	config = function()
-		local require_safe = require("utils.require_safe")
-
-		local signs = require_safe("config.signs")
-		local tree = require_safe("nvim-tree")
-
-		if not (signs and tree) then
-			return
-		end
+		local signs = require("config.signs")
+		local tree = require("nvim-tree")
 
 		tree.setup({
 			filesystem_watchers = { enable = true },

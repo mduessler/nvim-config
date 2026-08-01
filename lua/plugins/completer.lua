@@ -17,16 +17,10 @@ return {
 	},
 	priority = 999,
 	config = function()
-		local require_safe = require("utils.require_safe")
-
-		local cmp = require_safe("cmp")
-		local luasnip = require_safe("luasnip")
-		local signs = require_safe("config.signs")
+		local cmp = require("cmp")
+		local luasnip = require("luasnip")
+		local signs = require("config.signs")
 		require("luasnip/loaders/from_vscode").lazy_load()
-
-		if not (cmp and luasnip and signs) then
-			return
-		end
 
 		local function next_item(fallback)
 			if cmp.visible() then

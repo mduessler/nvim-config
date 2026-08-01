@@ -1,15 +1,9 @@
-local require_safe = require("utils.require_safe")
-
-local config = require_safe("utils.logger.config")
-local cmds = require_safe("utils.logger.cmds")
-local file = require_safe("utils.logger.io.file")
-local hl = require_safe("utils.logger.highlights")
-local levels = require_safe("utils.logger.levels")
-local ui = require_safe("utils.logger.io.ui")
-
-if not (config and cmds and file and hl and levels and ui) then
-	return
-end
+local config = require("utils.logger.config")
+require("utils.logger.cmds") -- registers logger user commands
+local file = require("utils.logger.io.file")
+require("utils.logger.highlights") -- sets logger highlight groups
+local levels = require("utils.logger.levels")
+local ui = require("utils.logger.io.ui")
 
 local M = {}
 

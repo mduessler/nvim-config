@@ -1,12 +1,5 @@
-local require_safe = require("utils.require_safe")
-
-local modified = require_safe("core.ui.utils.modified")
-local signs = require_safe("config.signs")
-local str = require_safe("utils.str")
-
-if not (modified and str and signs) then
-	return
-end
+local modified = require("core.ui.utils.modified")
+local str = require("utils.str")
 
 local LOCAL = {
 	default = str.highlight("WinbarIsModified", modified.signs.default),

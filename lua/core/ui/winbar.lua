@@ -1,17 +1,15 @@
-local require_safe = require("utils.require_safe")
+local buffers = require("core.ui.buffers.handler")
+local windows = require("core.ui.windows.handler")
+local signs = require("config.signs")
+local str = require("utils.str")
 
-local buffers = require_safe("core.ui.buffers.handler")
-local windows = require_safe("core.ui.windows.handler")
-local signs = require_safe("config.signs")
-local str = require_safe("utils.str")
-
-local active = require_safe("core.ui.components.winbar.active")
-local changes = require_safe("core.ui.components.winbar.changes")
-local close_btn = require_safe("core.ui.components.winbar.close_button")
-local diagnostic = require_safe("core.ui.components.winbar.diagnostic")
-local modified = require_safe("core.ui.components.winbar.modified")
-local name = require_safe("core.ui.components.winbar.name")
-local position = require_safe("core.ui.components.winbar.position")
+local active = require("core.ui.components.winbar.active")
+local changes = require("core.ui.components.winbar.changes")
+local close_btn = require("core.ui.components.winbar.close_button")
+local diagnostic = require("core.ui.components.winbar.diagnostic")
+local modified = require("core.ui.components.winbar.modified")
+local name = require("core.ui.components.winbar.name")
+local position = require("core.ui.components.winbar.position")
 
 if
 	not (

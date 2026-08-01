@@ -1,15 +1,10 @@
-local require_safe = require("utils.require_safe")
-local close_process = require_safe("core.utils.async.close_process")
-local close_timer = require_safe("core.utils.async.close_timer")
-local commit = require_safe("core.utils.git.commit.long")
-local date = require_safe("core.utils.git.commit.date")
-local logger = require_safe("utils.logger")
-local ref_name = require_safe("core.utils.git.reference.type")
-local ref_type = require_safe("core.util.git.reference.name")
-
-if not (close_process and close_timer and commit and date and logger and ref_name and ref_type) then
-	return
-end
+local close_process = require("core.utils.async.close_process")
+local close_timer = require("core.utils.async.close_timer")
+local commit = require("core.utils.git.commit.long")
+local date = require("core.utils.git.commit.date")
+local logger = require("utils.logger")
+local ref_name = require("core.utils.git.reference.type")
+local ref_type = require("core.util.git.reference.name")
 
 local M = {
 	cwd = vim.fn.stdpath("config"),

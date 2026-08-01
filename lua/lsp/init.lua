@@ -86,11 +86,7 @@ M.setup = function()
 
 	local function lsp_keymaps(bufnr)
 		local function set(mode, keys, operation, desc)
-			local status, utils = pcall(require, "utils.key")
-			if not status then
-				print("Can not load utils.")
-				return
-			end
+			local utils = require("utils.key")
 			utils.set(mode, keys, operation, { noremap = true, silent = true, buffer = bufnr, desc = desc })
 		end
 
@@ -132,6 +128,8 @@ M.setup = function()
 			end,
 			capabilities = capabilities,
 		}
+		-- Intentionally optional: a server only has settings when a
+		-- matching lua/lsp/<server>.lua file exists.
 		local status_opts, conf_opts = pcall(require, "lsp." .. server)
 
 		if status_opts then

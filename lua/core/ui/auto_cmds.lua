@@ -1,12 +1,6 @@
-local require_safe = require("utils.require_safe")
-
-local buffers = require_safe("core.ui.buffers.handler")
-local tabline = require_safe("core.ui.tabline")
-local winbar = require_safe("core.ui.winbar")
-
-if not (buffers and tabline and winbar) then
-	return
-end
+local buffers = require("core.ui.buffers.handler")
+local tabline = require("core.ui.tabline")
+local winbar = require("core.ui.winbar")
 
 vim.api.nvim_create_autocmd("VimEnter", {
 	callback = function()

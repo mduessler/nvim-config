@@ -17,12 +17,7 @@ return {
 	},
 
 	config = function()
-		local require_safe = require("utils.require_safe")
-
-		local remote_nvim = require_safe("remote-nvim")
-		if not remote_nvim then
-			return
-		end
+		local remote_nvim = require("remote-nvim")
 
 		remote_nvim.setup({
 			ssh_config = {

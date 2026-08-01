@@ -1,13 +1,6 @@
-local require_safe = require("utils.require_safe")
-
-local mode = require_safe("core.ui.utils.mode")
-local signs = require_safe("config.signs")
-local str = require_safe("utils.str")
-local window = require_safe("core.ui.windows.utils")
-
-if not (mode and signs and str and window) then
-	return
-end
+local mode = require("core.ui.utils.mode")
+local signs = require("config.signs")
+local window = require("core.ui.windows.utils")
 
 local M = {
 	start_title = signs.ui.input.title .. signs.ui.padding,

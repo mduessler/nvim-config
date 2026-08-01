@@ -1,12 +1,7 @@
-local require_safe = require("utils.require_safe")
-local close_stream = require_safe("core.utils.async.close_stream")
-local close_process = require_safe("core.utils.async.close_process")
-local logger = require_safe("utils.logger")
-local _handle_stream = require_safe("core.utils.async.handle_stream")
-
-if not (close_stream and close_process and logger and _handle_stream) then
-	return
-end
+local close_stream = require("core.utils.async.close_stream")
+local close_process = require("core.utils.async.close_process")
+local logger = require("utils.logger")
+local _handle_stream = require("core.utils.async.handle_stream")
 
 --- Function to convert a iso string to unix time.
 ---@param iso_time string Iso time string.

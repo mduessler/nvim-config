@@ -1,9 +1,5 @@
-local require_safe = require("utils.require_safe")
-local signs = require_safe("config.signs")
+local signs = require("config.signs")
 
-if not signs then
-	return
-end
 ---@class LoggerConfig
 ---@field level string   "DEBUG", "INFO", "PASS","WARN", "ERROR"
 ---@field width number   Width in columns

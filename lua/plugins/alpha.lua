@@ -2,15 +2,9 @@ return {
 	"goolord/alpha-nvim",
 	dependencies = { "nvim-tree/nvim-web-devicons", "nvim-lua/plenary.nvim" },
 	config = function()
-		local require_safe = require("utils.require_safe")
-
-		local alpha = require_safe("alpha")
-		local dashboard = require_safe("alpha.themes.dashboard")
-		local signs = require_safe("config.signs")
-
-		if not (alpha and signs and dashboard) then
-			return
-		end
+		local alpha = require("alpha")
+		local dashboard = require("alpha.themes.dashboard")
+		local signs = require("config.signs")
 
 		local header = {
 			type = "text",

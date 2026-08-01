@@ -1,10 +1,4 @@
-local require_safe = require("utils.require_safe")
-
-local colors = require_safe("core.colors")
-
-if not colors then
-	return
-end
+local colors = require("core.colors")
 
 colors.logger = {
 	debug = "#FFFFFF",

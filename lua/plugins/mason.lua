@@ -5,15 +5,14 @@ return {
 		"WhoIsSethDaniel/mason-tool-installer.nvim",
 	},
 	config = function()
-		local require_safe = require("utils.require_safe")
-		local formater = require_safe("lsp.formater")
-		local linter = require_safe("lsp.linter")
-		local ls = require_safe("lsp.servers")
-		local mason = require_safe("mason")
-		local mason_lspconfig = require_safe("mason-lspconfig")
-		local mason_tool_installer = require_safe("mason-tool-installer")
-		local signs = require_safe("config.signs")
-		local tables = require_safe("utils.tables")
+		local formater = require("lsp.formater")
+		local linter = require("lsp.linter")
+		local ls = require("lsp.servers")
+		local mason = require("mason")
+		local mason_lspconfig = require("mason-lspconfig")
+		local mason_tool_installer = require("mason-tool-installer")
+		local signs = require("config.signs")
+		local tables = require("utils.tables")
 
 		if
 			not (formater and linter and ls and mason and mason_lspconfig and mason_tool_installer and signs and tables)

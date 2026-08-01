@@ -13,13 +13,8 @@ return {
 		},
 	},
 	config = function()
-		local require_safe = require("utils.require_safe")
-		local lint = require_safe("lint")
-		local tables = require_safe("utils.tables")
-
-		if not (lint and tables) then
-			return
-		end
+		local lint = require("lint")
+		local tables = require("utils.tables")
 
 		lint.linters_by_ft = {
 			sh = { "shellcheck" },

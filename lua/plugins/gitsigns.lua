@@ -2,12 +2,8 @@ return {
 	"lewis6991/gitsigns.nvim",
 	priority = 999,
 	config = function()
-		local require_safe = require("utils.require_safe")
-		local gitsigns = require_safe("gitsigns")
-		local signs = require_safe("config.signs").git
-		if not (gitsigns and signs) then
-			return
-		end
+		local gitsigns = require("gitsigns")
+		local signs = require("config.signs").git
 		gitsigns.setup({
 			signs = {
 				add = { text = signs.add },

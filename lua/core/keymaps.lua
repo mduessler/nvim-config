@@ -1,9 +1,7 @@
-local require_safe = require("utils.require_safe")
-
 local opts = { noremap = true, silent = true }
 local keymap = vim.keymap
 
-local tb = require_safe("core.ui.buffers.handler")
+local tb = require("core.ui.buffers.handler")
 if tb then
 	opts.desc = "Load next tabpage in buffer"
 	keymap.set("n", "<S-l>", function()

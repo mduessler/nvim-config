@@ -1,9 +1,7 @@
-local require_safe = require("utils.require_safe")
-
-local close_process = require_safe("core.utils.async.close_process")
-local close_timer = require_safe("core.utils.async.close_timer")
-local capacity = require_safe("core.ui.utils.battery.capacity")
-local state = require_safe("core.ui.utils.battery.state")
+local close_process = require("core.utils.async.close_process")
+local close_timer = require("core.utils.async.close_timer")
+local capacity = require("core.ui.utils.battery.capacity")
+local state = require("core.ui.utils.battery.state")
 
 if not (close_process and close_timer and capacity and state) then
 	vim.schedule(function()

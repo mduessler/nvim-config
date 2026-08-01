@@ -1,12 +1,6 @@
-local require_safe = require("utils.require_safe")
-
-local buffers = require_safe("core.ui.buffers.handler")
-local signs = require_safe("config.signs")
-local str = require_safe("utils.str")
-
-if not (buffers and signs and str) then
-	return
-end
+local buffers = require("core.ui.buffers.handler")
+local signs = require("config.signs")
+local str = require("utils.str")
 
 local LOCAL = {
 	hl = {
