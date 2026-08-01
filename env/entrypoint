@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
 
 RESET="\033[0m"
 BOLD="\033[1m"
