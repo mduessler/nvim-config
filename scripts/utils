@@ -126,10 +126,12 @@ wait_for_clone_process() {
 
     info "Waiting for clone process ${pid} to finish."
     if ! tail --pid="${pid}" -f "${tmpfile}"; then
+        rm -f "${tmpfile}"
         error "Can not tail ${tmpfile}." && return 3
     fi
 
     if ! wait "${pid}"; then
+        rm -f "${tmpfile}"
         error "Can not wait ${pid}." && return 1
     fi
 
