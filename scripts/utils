@@ -15,8 +15,9 @@ get_log_color() {
 }
 
 log() {
-    level="$1"
+    local level="$1"
     shift
+    local color
     color="$(get_log_color "${level}")"
     printf "%b[%s]%b %-7s| %b%s%b\n" \
         "\033[36m" "$(date +'%H:%M:%S')" "${color}" "${level}" \
@@ -43,7 +44,7 @@ is_repo() {
         error "Function needs exactly one 'path' argument." && return 1
     fi
 
-    path=$1
+    local path=$1
     if [ ! -d "${path}" ]; then
         error "Path '${path}' does not exist or is not a directory." && return 1
     fi
@@ -61,7 +62,7 @@ pull_repo() {
         error "Function needs exactly one 'path' argument." && return 1
     fi
 
-    path=$1
+    local path=$1
     if [ ! -d "${path}" ]; then
         error "Path '${path}' does not exist or is not a directory." && return 1
     fi
@@ -82,8 +83,9 @@ clone_repo() {
         error "Function needs exactly two arguments, 'repo-url' and 'dest-dir'." && return 2
     fi
 
-    repo_url=$1
-    dest_dir=$2
+    local repo_url=$1
+    local dest_dir=$2
+    local tmpfile
     tmpfile=$(mktemp)
 
     git clone --depth=1 "${repo_url}" "${dest_dir}" >"${tmpfile}" 2>&1 &
@@ -96,8 +98,8 @@ wait_for_clone_process() {
         error "Function needs exactly two arguments, 'pid' and 'tmpfile'." && return 2
     fi
 
-    pid=$1
-    tmpfile=$2
+    local pid=$1
+    local tmpfile=$2
 
     info "Waiting for clone process ${pid} to finish."
     if ! tail --pid="${pid}" -f "${tmpfile}"; then
@@ -117,7 +119,7 @@ kill_clone_process() {
         error "Function needs exactly one 'pid' argument." && return 2
     fi
 
-    pid=$1
+    local pid=$1
     if ! kill "${pid}"; then
         error "Can not kill nerd-fonts process '${pid}'." && return 1
     fi
