@@ -128,9 +128,9 @@ teardown() {
     cd() { return 1; }
 
     NERD_FONTS_DIR="${TEST_DATA}/success" run install_nerd_fonts
-    echo $status
 
-    [ ${status} -eq 4 ]
+    [ ${status} -eq 1 ]
+    [[ ${output} == *"Can not install nerd-fonts."* ]]
 }
 
 @test "install_nerd_fonts: Can not make file executable" {
