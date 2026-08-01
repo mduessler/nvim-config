@@ -2,6 +2,13 @@
 #
 # Shared utility functions: logging, command checks and git helpers.
 
+# Colorize only when writing to a terminal and NO_COLOR is not set
+# (https://no-color.org/).
+if [ -t 1 ] && [ -z "${NO_COLOR:-}" ]; then
+    UTILS_COLORS_ENABLED=true
+else
+    UTILS_COLORS_ENABLED=false
+fi
 
 get_log_color() {
     case "$1" in
@@ -17,6 +24,12 @@ get_log_color() {
 log() {
     local level="$1"
     shift
+
+    if [ "${UTILS_COLORS_ENABLED}" != "true" ]; then
+        printf "[%s] %-7s| %s\n" "$(date +'%H:%M:%S')" "${level}" "$*"
+        return 0
+    fi
+
     local color
     color="$(get_log_color "${level}")"
     printf "%b[%s]%b %-7s| %b%s%b\n" \
