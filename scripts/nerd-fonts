@@ -38,7 +38,10 @@ kill_nerd_fonts_process() {
 
 install_nerd_fonts() {
     wait_for_clone_process "${NERD_FONTS_PID}" "${TMPFILE}" || return 2
-    [ -z "${NERD_FONTS_DIR}" ] && warning "Not Nerd-fonts directory defined." && return 3
+    if [ -z "${NERD_FONTS_DIR}" ]; then
+        warning "Not Nerd-fonts directory defined."
+        return 3
+    fi
     cd "${NERD_FONTS_DIR}" && chmod +x install.sh || return 4
 
     local output status

@@ -9,9 +9,11 @@ fi
 
 install_cargo_pkg() {
     if ! check_command rustc || ! check_command cargo; then
-        error "Rust is not installed or rust and cargo not in '\$PATH'." && return 2
+        error "Rust is not installed or rust and cargo not in '\$PATH'."
+        return 2
     elif [ $# -eq 0 ]; then
-        error "No package given. Please provide at least one packge." && return 3
+        error "No package given. Please provide at least one packge."
+        return 3
     fi
 
     local pkg
@@ -23,10 +25,12 @@ install_cargo_pkg() {
 
         info "Installing ${pkg} ..."
         if ! cargo install "${pkg}"; then
-            error "Failed to install ${pkg}." && return 1
+            error "Failed to install ${pkg}."
+            return 1
         fi
         success "Installed ${pkg}."
     done
 
-    success "Finished package installation." && return 0
+    success "Finished package installation."
+    return 0
 }

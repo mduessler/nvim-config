@@ -24,7 +24,8 @@ install_prod() {
 
 install_rust() {
     if check_command rustc; then
-        info "Rust is already installed." && return 0
+        info "Rust is already installed."
+        return 0
     fi
     CARGO_HOME="${CARGO_HOME:-$HOME/.cargo}"
     debug "CARGO_HOME is set to '${CARGO_HOME}'."
