@@ -22,6 +22,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     libc6 \
     libc6-dev \
+    libclang-dev \
     libgcc1 \
     libstdc++6 \
     make \
