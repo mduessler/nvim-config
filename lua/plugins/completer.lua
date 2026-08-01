@@ -14,7 +14,6 @@ return {
 		"saadparwaiz1/cmp_luasnip",
 		"luckasRanarison/tailwind-tools.nvim",
 		"onsails/lspkind-nvim",
-		"olimorris/codecompanion.nvim",
 	},
 	priority = 999,
 	config = function()
@@ -95,7 +94,6 @@ return {
 						luasnip = "[Snippet]",
 						buffer = "[Buffer]",
 						path = "[Path]",
-						codecompanion = "[AI]",
 					})[entry.source.name]
 
 					return vim_item
@@ -107,7 +105,6 @@ return {
 				{ name = "luasnip" },
 				{ name = "buffer" },
 				{ name = "path" },
-				{ name = "codecompanion", priority = 10 },
 			},
 			confirm_opts = {
 				behavior = cmp.ConfirmBehavior.Replace,

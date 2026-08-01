@@ -220,7 +220,6 @@ return {
 	whichkey = {
 		break_line = "󰘌",
 		close = "",
-		copilot = "",
 		deleted = "",
 		focus = "",
 		help = "󰋖",

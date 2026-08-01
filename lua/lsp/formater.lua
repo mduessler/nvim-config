@@ -6,7 +6,6 @@ return {
 	black = "black",
 	isort = "isort",
 	djlint = "djlint",
-	docformatter = "docformatter",
 	["clang-format"] = "clang-format",
 	cmakelang = "cmakelang",
 	yamlfmt = "yamlfmt",

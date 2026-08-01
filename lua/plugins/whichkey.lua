@@ -266,33 +266,6 @@ local function generel_devel()
 	}
 end
 
-local function ai_keys()
-	return {
-		{ "<leader>c", mode = "n", desc = "Copilot", icon = { icon = signs.whichkey.copilot, hl = "MyOrange" } },
-		{ "<leader>ce", mode = "n", desc = "Enable Copilot", icon = LOCAL.login },
-		{ "<leader>cd", mode = "n", desc = "Disable Copilot", icon = LOCAL.logout },
-		{
-			"<leader>ca",
-			mode = "n",
-			desc = "Authenticate Copilot",
-			icon = { icon = signs.whichkey.copilot, hl = "MyCyan" },
-		},
-		{ "<leader>cm", mode = "n", desc = "Status Copilot", icon = LOCAL.status },
-		{ "<leader>ch", mode = "n", desc = "Copilot Help", icon = LOCAL.help },
-		{
-			"<leader>cp",
-			mode = "n",
-			desc = "Suggest output with Copilot",
-			icon = { icon = signs.whichkey.list, hl = "MyOrange" },
-		},
-		{ "<leader>co", mode = "n", desc = "Open copilot chat window", icon = LOCAL.open },
-		{ "<leader>cq", mode = "n", desc = "Close copilot chat window", icon = LOCAL.quit },
-		{ "<leader>ct", mode = "n", desc = "Toggle copilot chat window", icon = LOCAL.toggle },
-		{ "<leader>cs", mode = "n", desc = "Stops copilot chat window", icon = LOCAL.close },
-		{ "<leader>cr", mode = "n", desc = "Restart copilot chat window", icon = LOCAL.referesh },
-	}
-end
-
 local function ssh_keys()
 	return {
 		{ "<leader>s", mode = "n", desc = "SSH", icon = { icon = signs.whichkey.ssh.icon, hl = "MyPurple" } },
@@ -356,7 +329,6 @@ return {
 		config = merge(config, telescope_keys())
 		config = merge(config, lsp_keys())
 		config = merge(config, generel_devel())
-		config = merge(config, ai_keys())
 		config = merge(config, ssh_keys())
 		wk.add(config)
 	end,
