@@ -68,7 +68,7 @@ COPY ./init.lua .
 COPY ./lua ./lua
 COPY ./lazy-lock.json ./lazy-lock.json
 
-RUN timeout 15m nvim --headless || true
+RUN timeout 25m nvim --headless "+InitNVIM"
 
 # Image that serves as the basis for creating environment images for remote
 # and local unit tests.
