@@ -26,7 +26,7 @@ install_rust() {
         info "Rust is already installed."
         return 0
     fi
-    CARGO_HOME="${CARGO_HOME:-$HOME/.cargo}"
+    export CARGO_HOME="${CARGO_HOME:-$HOME/.cargo}"
     debug "CARGO_HOME is set to '${CARGO_HOME}'."
     info "Downloading and installing rust..."
 
