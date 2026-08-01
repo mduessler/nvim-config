@@ -1,7 +1,9 @@
-./git
-./pre-commit-config.yaml
-./env
-!env/entrypoint
-!env/entrypoint-install
+# Kept in the build context on purpose:
+#   .git             -- entrypoint-install checks out the branch under test
+#   env/entrypoint*  -- container entrypoints
+
+.pre-commit-config.yaml
 LICENSE
 README.md
+env/Dockerfile.fedora
+env/Dockerfile.ubuntu
