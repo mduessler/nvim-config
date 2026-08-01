@@ -123,15 +123,13 @@ function main() {
 
     char="-"
     string=$(printf '%.0s'"${char}" $(seq 1 $((width + 34))))
+    local first=true
     for i in "${!BASH_TEST_FILES[@]}"; do
-        if ! ${failures} && [[ ${BASH_STATUS_TESTS[${i}]} -ne 0 ]]; then
-            printf "%s\n" "${string}"
-        fi
-        if [[ ${BASH_STATUS_TESTS[${i}]} -ne 0 ]]; then
-            failures=true
-            printf "%b[FILE]%b %s\n" "${CYAN}" "${BOLD}" "${BASH_TEST_FILES[${i}]}"
-            print_wrong_output "${BASH_OUTPUT_TESTS[$i]}"
-        fi
+        [[ ${BASH_STATUS_TESTS[${i}]} -eq 0 ]] && continue
+        ${first} || printf "%s\n" "${string}"
+        first=false
+        printf "%b[FILE]%b %s\n" "${CYAN}" "${BOLD}" "${BASH_TEST_FILES[${i}]}"
+        print_wrong_output "${BASH_OUTPUT_TESTS[$i]}"
     done
     return 1
 }
