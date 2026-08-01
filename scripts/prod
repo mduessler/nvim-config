@@ -42,8 +42,12 @@ install_rust() {
     if ! output=$(sh /tmp/rust.sh -y 2>&1); then
         error "Rust installation failed. Output: ${output}"
         debug "Deleting rust install script."
+        rm -f /tmp/rust.sh
         return 1
     fi
+
+    debug "Deleting rust install script."
+    rm -f /tmp/rust.sh
 
     echo ":$PATH:" | grep -q ":${CARGO_HOME}/bin:" || export PATH="${CARGO_HOME}/bin:${PATH}"
 
