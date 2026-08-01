@@ -1,7 +1,6 @@
 # My NVIM config
 
-This is my NVIM config which uses lazy as plugin manager. This config was
-developed with NVIM v0.11.4.
+This is my NVIM config which uses lazy as plugin manager.
 
 ## Goals
 
@@ -14,7 +13,8 @@ developed with NVIM v0.11.4.
 
 ## Requirement
 
-- NVIM v0.11.4
+- NVIM (current stable release, installed via package manager or built by the
+  install script)
 - [Nerd Fonts](https://github.com/ryanoasis/nerd-fonts) -- Need for UI
 
 ## Installation

@@ -1,8 +1,3 @@
-# NVIM v0.11.4 <==> NVIM v${MAJRO_REQ}.${MINOR_REQ}.${PATCH_REQ}
-major-req=0
-minor-req=11
-patch-req=4
-
 env-fedora="./env/fedora/Dockerfile"
 env-ubuntu="./env/ubuntu/Dockerfile"
 
@@ -24,9 +19,6 @@ remote-login:
 fedora-unit-tests-local:
 	docker build -f $(env-fedora) \
 		--target=local \
-		--build-arg MAJOR_REQ=$(major-req) \
-		--build-arg MINOR_REQ=$(minor-req) \
-		--build-arg PATCH_REQ=$(patch-req) \
 		-t fedora-nvim:unit-test .
 	docker run --rm fedora-nvim:unit-test
 
@@ -45,9 +37,6 @@ fedora-build-remote: remote-login
 	docker build -f $(env-fedora) \
 		--pull=false \
 		--target=remote \
-		--build-arg MAJOR_REQ=$(major-req) \
-		--build-arg MINOR_REQ=$(minor-req) \
-		--build-arg PATCH_REQ=$(patch-req) \
 		-t ghcr.io/mduessler/fedora-nvim:unit-test .
 	docker build -f $(env-fedora)\
 		--target=install \
@@ -58,9 +47,6 @@ fedora-build-remote: remote-login
 ubuntu-unit-tests-local:
 	docker build -f $(env-ubuntu) \
 		--target=local \
-		--build-arg MAJOR_REQ=$(major-req) \
-		--build-arg MINOR_REQ=$(minor-req) \
-		--build-arg PATCH_REQ=$(patch-req) \
 		-t ubuntu-nvim:unit-test .
 	docker run --rm ubuntu-nvim:unit-test
 
@@ -79,9 +65,6 @@ ubuntu-build-remote: remote-login
 	docker build -f $(env-ubuntu) \
 		--pull=false \
 		--target=remote \
-		--build-arg MAJOR_REQ=$(major-req) \
-		--build-arg MINOR_REQ=$(minor-req) \
-		--build-arg PATCH_REQ=$(patch-req) \
 		-t ghcr.io/mduessler/ubuntu-nvim:unit-test .
 	docker build -f $(env-ubuntu)\
 		--target=install \

@@ -87,7 +87,7 @@ setup() {
     identify_system_pkg_mgr() { return 0; }
     install_packages_with_pkg_mgr() { return 0; }
     install_dependencies_independent_of_pkg_mgr() { return 0; }
-    check_nvim_version() { return 0; }
+    check_command() { return 0; }
 
     PKG_MGR="apt-get" run install_prod_dependencies
 
@@ -104,7 +104,7 @@ setup() {
     identify_system_pkg_mgr() { return 0; }
     install_packages_with_pkg_mgr() { return 0; }
     install_dependencies_independent_of_pkg_mgr() { return 1; }
-    check_nvim_version() { return 0; }
+    check_command() { return 0; }
 
     PKG_MGR="apt-get" run install_prod_dependencies
 
@@ -121,7 +121,7 @@ setup() {
     identify_system_pkg_mgr() { return 1; }
     install_packages_with_pkg_mgr() { return 0; }
     install_dependencies_independent_of_pkg_mgr() { return 0; }
-    check_nvim_version() { return 0; }
+    check_command() { return 0; }
 
     run install_prod_dependencies
 
@@ -133,7 +133,7 @@ setup() {
     identify_system_pkg_mgr() { return 0; }
     install_packages_with_pkg_mgr() { return 0; }
     install_dependencies_independent_of_pkg_mgr() { return 0; }
-    check_nvim_version() { return 0; }
+    check_command() { return 0; }
 
     PKG_MGR="pacman" run install_prod_dependencies
 
@@ -145,7 +145,7 @@ setup() {
     identify_system_pkg_mgr() { return 0; }
     install_packages_with_pkg_mgr() { return 0; }
     install_dependencies_independent_of_pkg_mgr() { return 0; }
-    check_nvim_version() { return 1; }
+    check_command() { return 1; }
     install_nvim() { return 1; }
 
     PKG_MGR="apt-get" run install_prod_dependencies

@@ -22,7 +22,7 @@ setup() {
     run install_nvim
 
     [ ${status} -eq 0 ]
-    [[ ${output} == *"Installed NVIM v${NVIM_MAJOR_REQ}.${NVIM_MINOR_REQ}.${NVIM_PATCH_REQ}."* ]]
+    [[ ${output} == *"Installed"* ]]
 }
 
 @test "install_nvim: Can not install neovim - directory exists and is not a git repo." {
@@ -97,39 +97,4 @@ setup() {
     run install_nvim
 
     [ ${status} -eq 6 ]
-}
-
-@test "check_nvim_version: Function executed successfully." {
-    nvim() { echo "NVIM v${NVIM_MAJOR_REQ}.${NVIM_MINOR_REQ}.${NVIM_PATCH_REQ}" && return 0; }
-
-    run check_nvim_version
-
-    [ ${status} -eq 0 ]
-    [[ ${output} == *"Installed nvim version is v${NVIM_MAJOR_REQ}.${NVIM_MINOR_REQ}.${NVIM_PATCH_REQ}."* ]]
-}
-
-@test "check_nvim_version: Invalid version number." {
-    nvim() { echo "NVIM v${NVIM_MAJOR_REQ}.${NVIM_MINOR_REQ}" && return 0; }
-
-    run check_nvim_version
-
-    [ ${status} -eq 1 ]
-    [[ ${output} == *"Invalid version format."* ]]
-}
-
-@test "check_nvim_version: Can not execute neovim." {
-    PATH="" run check_nvim_version
-
-    [ ${status} -eq 2 ]
-    [[ ${output} == *"Can not execute neovim."* ]]
-}
-
-@test "check_nvim_version: Neovim version is to low." {
-    local minor_patch=$((NVIM_MINOR_REQ - 1))
-    nvim() { echo "NVIM v${NVIM_MAJOR_REQ}.${minor_patch}.${NVIM_PATCH_REQ}" && return 0; }
-
-    run check_nvim_version
-
-    [ ${status} -eq 3 ]
-    [[ ${output} == *"Neovim version is v${NVIM_MAJOR_REQ}.${minor_patch}.${NVIM_PATCH_REQ}. But v${NVIM_MAJOR_REQ}.${NVIM_MINOR_REQ}.${NVIM_PATCH_REQ} is needed."* ]]
 }

@@ -70,7 +70,7 @@ install_prod_dependencies() {
         return 1
     fi
 
-    if ! check_nvim_version; then
+    if ! check_command nvim; then
         if ! install_nvim; then
             error "Can not install neovim."
             return 4

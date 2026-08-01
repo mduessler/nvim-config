@@ -10,10 +10,6 @@
 # Production dependencies
 #
 
-export NVIM_MAJOR_REQ=0
-export NVIM_MINOR_REQ=11
-export NVIM_PATCH_REQ=4
-
 DEPS=(
     rust
 )

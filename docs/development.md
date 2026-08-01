@@ -43,10 +43,8 @@ simply run `make install-dev`. This will execute `./install dev`.
 All dependencies are stored in the file `dependencies` in the root of the
 project. In this file exists **production** dependencies and requirements.
 These dependencies are always needed to run the NVIM configuration.
-The variables `NVIM_MAJOR_REQ`, `NVIM_MINOR_REQ` and `NVIM_PATCH_REQ`
-are combined, representing the required NVIM version to run this config.
-The 3 variables represent a NVIM version like this
-`v${NVIM_MAJOR_REQ}.{$NVIM_MINOR_REQ}.${NVIM_PATCH_REQ}`.
+NVIM itself is expected from the system package manager; if it is missing,
+the install script builds the current `stable` tag from source.
 
 The **development** dependencies only needed to run tests or to run the
 development environment.

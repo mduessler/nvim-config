@@ -3,10 +3,6 @@ FROM fedora:42 AS builder
 
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
-ARG MAJOR_REQ
-ARG MINOR_REQ
-ARG PATCH_REQ
-
 # Installing all necessary dependencies.
 RUN dnf install -y --setopt=install_weak_deps=False \
     bash \
@@ -68,7 +64,7 @@ ENV NVIM_GIT_DIR=/root/.local/share/src/neovim
 RUN git clone https://github.com/neovim/neovim ${NVIM_GIT_DIR}
 WORKDIR ${NVIM_GIT_DIR}
 
-RUN git checkout "v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ}" \
+RUN git checkout stable \
     && make CMAKE_BUILD_TYPE=Release \
     && make install
 
@@ -109,9 +105,6 @@ FROM fedora:42 AS base
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
 ARG USER_TEST=tester
-ARG MAJOR_REQ
-ARG MINOR_REQ
-ARG PATCH_REQ
 
 # Create test user
 RUN mkdir -p "/home/${USER_TEST}" && groupadd "${USER_TEST}" \
@@ -121,9 +114,6 @@ RUN mkdir -p "/home/${USER_TEST}" && groupadd "${USER_TEST}" \
     && chmod 0440 "/etc/sudoers.d/${USER_TEST}"
 
 ENV USER_TEST=${USER_TEST}
-ENV MAJOR_REQ=${MAJOR_REQ}
-ENV MINOR_REQ=${MINOR_REQ}
-ENV PATCH_REQ=${PATCH_REQ}
 ENV HOME="/home/${USER_TEST}"
 ENV XDG_CONFIG_HOME="${HOME}/.config"
 ENV XDG_CACHE_HOME="${HOME}/.cache"
