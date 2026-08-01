@@ -5,8 +5,7 @@ if [ -z "${SCRIPT_DIR:-}" ]; then
     SCRIPT_DIR=$(dirname "$(dirname "$PWD")")
 fi
 
-. "${SCRIPT_DIR}/utils/logger" || exit 1
-. "${SCRIPT_DIR}/utils/check_command" || exit 1
+. "${SCRIPT_DIR}/utils" || exit 1
 
 install_cargo_pkg() {
     if ! check_command rustc || ! check_command cargo; then

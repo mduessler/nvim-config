@@ -1,11 +1,11 @@
 #!/usr/bin/env bats
 
-@test "Test if script '${NVIM_CONFIG}/scripts/shared' exists." {
-    [ -f "${NVIM_CONFIG}"/scripts/shared ]
+@test "Test if script '${NVIM_CONFIG}/scripts/utils' exists." {
+    [ -f "${NVIM_CONFIG}"/scripts/utils ]
 }
 
 setup() {
-    source "${NVIM_CONFIG}/scripts/shared"
+    source "${NVIM_CONFIG}/scripts/utils"
 }
 
 @test "get_log_color: Verify that the debug colour is correct." {

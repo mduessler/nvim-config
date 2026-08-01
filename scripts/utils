@@ -1,11 +1,42 @@
-#!/bin/sh
+#!/usr/bin/env bash
+#
+# Shared utility functions: logging, command checks and git helpers.
 
 
-if [ -z "${SCRIPT_DIR:-}" ]; then
-    SCRIPT_DIR=$(dirname "$(dirname "$PWD")")
-fi
+get_log_color() {
+    case "$1" in
+        DEBUG) printf "\033[37m" ;;
+        INFO) printf "\033[34m" ;;
+        SUCCESS) printf "\033[32m" ;;
+        WARNING) printf "\033[33m" ;;
+        ERROR) printf "\033[31m" ;;
+        *) printf "\033[0m" ;;
+    esac
+}
 
-. "${SCRIPT_DIR}/utils/logger" || exit 1
+log() {
+    level="$1"
+    shift
+    color="$(get_log_color "${level}")"
+    printf "%b[%s]%b %-7s| %b%s%b\n" \
+        "\033[36m" "$(date +'%H:%M:%S')" "${color}" "${level}" \
+        "\033[37m" "$*" "\033[0m" >&2
+}
+
+debug() {
+    if [ "${NVIM_DEV:-false}" = "true" ]; then
+        log "DEBUG" "$*"
+    fi
+}
+info() { log "INFO" "$*"; }
+success() { log "SUCCESS" "$*"; }
+warning() { log "WARNING" "$*"; }
+error() { log "ERROR" "$*"; }
+
+
+check_command() {
+    command -v "$1" >/dev/null 2>&1
+}
 
 is_repo() {
     if [ "$#" -ne 1 ]; then
