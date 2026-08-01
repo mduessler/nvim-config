@@ -2,12 +2,23 @@
 
 : "${NVIM_CONFIG:?NVIM_CONFIG must be set to the nvim config directory}"
 
-RESET="\033[0m"
-BOLD="\033[1m"
-RED="\033[91m"
-GREEN="\033[92m"
-ORANGE="\033[33m"
-CYAN="\033[94m"
+# Colorize only when writing to a terminal and NO_COLOR is not set
+# (https://no-color.org/).
+if [ -t 1 ] && [ -z "${NO_COLOR:-}" ]; then
+    RESET="\033[0m"
+    BOLD="\033[1m"
+    RED="\033[91m"
+    GREEN="\033[92m"
+    ORANGE="\033[33m"
+    CYAN="\033[94m"
+else
+    RESET=""
+    BOLD=""
+    RED=""
+    GREEN=""
+    ORANGE=""
+    CYAN=""
+fi
 
 BASH_TESTS_DIR="${NVIM_CONFIG}/tests/bash"
 
