@@ -1,6 +1,5 @@
 #!/bin/sh
 
-set -eu
 
 if [ -z "${SCRIPT_DIR:-}" ]; then
     SCRIPT_DIR=$(dirname "$(dirname "$PWD")")
@@ -49,16 +48,48 @@ pull_repo() {
 
 clone_repo() {
     if [ "$#" -ne 2 ]; then
-        error "Function needs exactly two arguments, 'repo-url' and 'dest-dir'." && return 1
+        error "Function needs exactly two arguments, 'repo-url' and 'dest-dir'." && return 2
     fi
 
     repo_url=$1
     dest_dir=$2
+    tmpfile=$(mktemp)
 
-    info "Cloning '${repo_url}' into '${dest_dir}'..."
-    if ! git clone --depth=1 "${repo_url}" "${dest_dir}"; then
-        error "Can not clone '${repo_url}' into '${dest_dir}'." && return 1
+    git clone --depth=1 "${repo_url}" "${dest_dir}" >"${tmpfile}" 2>&1 &
+    echo "$! ${tmpfile}"
+    return 0
+}
+
+wait_for_clone_process() {
+    if [ "$#" -ne 2 ]; then
+        error "Function needs exactly two arguments, 'pid' and 'tmpfile'." && return 2
     fi
 
-    success "Cloned '${repo_url}' into '${dest_dir}'." && return 0
+    pid=$1
+    tmpfile=$2
+
+    info "Waiting for clone process ${pid} to finish."
+    if ! tail --pid="${pid}" -f "${tmpfile}"; then
+        error "Can not tail ${tmpfile}." && return 3
+    fi
+
+    if ! wait "${pid}"; then
+        error "Can not wait ${pid}." && return 1
+    fi
+
+    rm -f "${tmpfile}"
+    success "Clone process ${pid} finished." && return 0
+}
+
+kill_clone_process() {
+    if [ "$#" -ne 1 ]; then
+        error "Function needs exactly one 'pid' argument." && return 2
+    fi
+
+    pid=$1
+    if ! kill "${pid}"; then
+        error "Can not kill nerd-fonts process '${pid}'." && return 1
+    fi
+
+    success "Killed process ${pid}." && return 0
 }

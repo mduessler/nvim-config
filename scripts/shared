@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+#
+# Sources all shared helper functions used by the install scripts.
+
+SCRIPT_DIR="${SCRIPT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
+
+source "${SCRIPT_DIR}/utils/logger" || exit 1
+source "${SCRIPT_DIR}/utils/check_command" || exit 1
+source "${SCRIPT_DIR}/utils/git_utils" || exit 1
+source "${SCRIPT_DIR}/install/pkg_manager" || exit 1
+source "${SCRIPT_DIR}/install/cargo_pkg" || exit 1

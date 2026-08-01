@@ -1,6 +1,5 @@
 #!/bin/sh
 
-set -eu
 
 get_log_color() {
     case "$1" in

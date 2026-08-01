@@ -1,11 +1,11 @@
 #!/usr/bin/env bats
 
-@test "Test if script '${NVIM_CONFIG}/installs/prod' exists." {
-    [ -f "${NVIM_CONFIG}/installs/prod" ]
+@test "Test if script '${NVIM_CONFIG}/scripts/prod' exists." {
+    [ -f "${NVIM_CONFIG}/scripts/prod" ]
 }
 
 setup() {
-    source "${NVIM_CONFIG}/installs/prod"
+    source "${NVIM_CONFIG}/scripts/prod"
     source "${NVIM_CONFIG}/dependencies"
 }
 
@@ -69,7 +69,7 @@ setup() {
     run install_rust
 
     [ ${status} -eq 1 ]
-    [[ ${output} == *"Curl exited with 1 and sh exited with 1."* ]]
+    [[ ${output} == *"Curl failed. Output:"* ]]
 }
 
 @test "rust_installer: Function can not execute rustup.rs with sh.." {
@@ -80,14 +80,14 @@ setup() {
     run install_rust
 
     [ ${status} -eq 1 ]
-    [[ ${output} == *"Curl exited with 0 and sh exited with 1."* ]]
+    [[ ${output} == *"Rust installation failed. Output:"* ]]
 }
 
 @test "install_prod_dependencies: Function executed successfully." {
     identify_system_pkg_mgr() { return 0; }
     install_packages_with_pkg_mgr() { return 0; }
     install_dependencies_independent_of_pkg_mgr() { return 0; }
-    check_command() { return 0; }
+    add_neovim_ppa() { return 0; }
 
     PKG_MGR="apt-get" run install_prod_dependencies
 
@@ -104,7 +104,7 @@ setup() {
     identify_system_pkg_mgr() { return 0; }
     install_packages_with_pkg_mgr() { return 0; }
     install_dependencies_independent_of_pkg_mgr() { return 1; }
-    check_command() { return 0; }
+    add_neovim_ppa() { return 0; }
 
     PKG_MGR="apt-get" run install_prod_dependencies
 
@@ -141,22 +141,16 @@ setup() {
     [[ ${output} == *"Unsupported package manager: pacman"* ]]
 }
 
-@test "install_prod_dependencies: Function can not install neovim.." {
+@test "install_prod_dependencies: Function can not add neovim PPA.." {
     identify_system_pkg_mgr() { return 0; }
     install_packages_with_pkg_mgr() { return 0; }
     install_dependencies_independent_of_pkg_mgr() { return 0; }
-    check_command() { return 1; }
-    install_nvim() { return 1; }
+    add_neovim_ppa() { return 1; }
 
     PKG_MGR="apt-get" run install_prod_dependencies
 
     [ ${status} -eq 4 ]
-    [[ ${output} == *"Can not install neovim."* ]]
-
-    PKG_MGR="dnf" run install_prod_dependencies
-
-    [ ${status} -eq 4 ]
-    [[ ${output} == *"Can not install neovim."* ]]
+    [[ ${output} == *"Can not add neovim PPA."* ]]
 }
 
 @test "install_dependencies_independent_of_pkg_mgr: Function executed successfully." {
@@ -193,36 +187,20 @@ setup() {
 }
 
 @test "install_prod_requirements: Function executed successfully." {
-    install_lua_pkg() { return 0; }
     install_cargo_pkg() { return 0; }
     rust_req=(selene)
-    lua_req=(selene)
 
-    RUST_REQ=${rust_req[*]} LUA_REQ=${lua_req[*]} run install_prod_requirements
+    RUST_REQ=${rust_req[*]} run install_prod_requirements
 
     [ ${status} -eq 0 ]
     [[ ${output} == *"Requirements have been successfully installed."* ]]
 }
 
-@test "install_prod_requirements: Installation of lua requirements fail." {
-    install_lua_pkg() { return 1; }
-    install_cargo_pkg() { return 0; }
-    rust_req=(selene)
-    lua_req=(selene)
-
-    RUST_REQ=${rust_req[*]} LUA_REQ=${lua_req[*]} run install_prod_requirements
-
-    [ ${status} -eq 2 ]
-    [[ ${output} == *"Can not install lua requirements."* ]]
-}
-
 @test "install_prod_requirements: Installation of rust requirements fail." {
-    install_lua_pkg() { return 0; }
     install_cargo_pkg() { return 1; }
     rust_req=(selene)
-    lua_req=(selene)
 
-    RUST_REQ=${rust_req[*]} LUA_REQ=${lua_req[*]} run install_prod_requirements
+    RUST_REQ=${rust_req[*]} run install_prod_requirements
 
     [ ${status} -eq 3 ]
     [[ ${output} == *"Can not install rust requirements."* ]]

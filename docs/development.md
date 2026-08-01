@@ -43,8 +43,9 @@ simply run `make install-dev`. This will execute `./install dev`.
 All dependencies are stored in the file `dependencies` in the root of the
 project. In this file exists **production** dependencies and requirements.
 These dependencies are always needed to run the NVIM configuration.
-NVIM itself is expected from the system package manager; if it is missing,
-the install script builds the current `stable` tag from source.
+NVIM itself is always installed via the system package manager; on apt-based
+systems the `ppa:neovim-ppa/stable` PPA is added first to provide a current
+version.
 
 The **development** dependencies only needed to run tests or to run the
 development environment.
@@ -56,12 +57,10 @@ dependencies:
    - **DEPS** -- Dependencies independent of the systems package manager.
    - **APT_DEPS** -- Dependencies installed by apt-get package manager.
    - **DNF_DEPS** -- Dependencies installed by dnf package manger.
-   - **LUA_REQ** -- Requirements installed with luarocks.
    - **RUST_REQ** -- Requirements installed with cargo.
 2. *development*
    - **APT_DEPS** -- Dependencies installed by apt-get package manager.
    - **DNF_DEV_DEPS** -- Dependencies installed by dnf package manger.
-   - **LUA_DEV_REQ** -- Requirements installed with luarocks.
 
 ## Tests
 

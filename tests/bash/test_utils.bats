@@ -1,11 +1,11 @@
 #!/usr/bin/env bats
 
-@test "Test if script '${NVIM_CONFIG}/installs/utils' exists." {
-    [ -f "${NVIM_CONFIG}"/installs/utils ]
+@test "Test if script '${NVIM_CONFIG}/scripts/shared' exists." {
+    [ -f "${NVIM_CONFIG}"/scripts/shared ]
 }
 
 setup() {
-    source "${NVIM_CONFIG}/installs/utils"
+    source "${NVIM_CONFIG}/scripts/shared"
 }
 
 @test "get_log_color: Verify that the debug colour is correct." {
@@ -121,81 +121,81 @@ setup() {
     [ ${status} -eq 1 ]
 }
 
-@test "dir_is_git_repo: Function executed successfully." {
+@test "is_repo: Function executed successfully." {
     git() { return 0; }
 
-    run dir_is_git_repo "${HOME}"
+    run is_repo "${HOME}"
 
     [ ${status} -eq 0 ]
     [[ ${output} == *"Path '${HOME}' is a git repo."* ]]
 }
 
-@test "dir_is_git_repo: Given path is not a git repo." {
-    run dir_is_git_repo "${HOME}"
+@test "is_repo: Given path is not a git repo." {
+    run is_repo "${HOME}"
 
     [ ${status} -eq 1 ]
     [[ ${output} == *"Path '${HOME}' is not a git repo."* ]]
 }
 
-@test "dir_is_git_repo: Function arguments do not match - no argument is given." {
-    run dir_is_git_repo
+@test "is_repo: Function arguments do not match - no argument is given." {
+    run is_repo
 
-    [ ${status} -eq 2 ]
+    [ ${status} -eq 1 ]
     [[ ${output} == *"Function needs exactly one 'path' argument."* ]]
 }
 
-@test "dir_is_git_repo: Function arguments do not match - two arguments are given." {
-    run dir_is_git_repo "${HOME}" "test"
+@test "is_repo: Function arguments do not match - two arguments are given." {
+    run is_repo "${HOME}" "test"
 
-    [ ${status} -eq 2 ]
+    [ ${status} -eq 1 ]
     [[ ${output} == *"Function needs exactly one 'path' argument."* ]]
 }
 
-@test "dir_is_git_repo: Given path does not exist." {
-    run dir_is_git_repo "fake/pater/aasd"
+@test "is_repo: Given path does not exist." {
+    run is_repo "fake/pater/aasd"
 
-    [ ${status} -eq 3 ]
-    [[ ${output} == *"Path 'fake/pater/aasd' does not exist."* ]]
+    [ ${status} -eq 1 ]
+    [[ ${output} == *"Path 'fake/pater/aasd' does not exist or is not a directory."* ]]
 }
 
-@test "pull_git_dir: Function executed successfully." {
+@test "pull_repo: Function executed successfully." {
     git() { return 0; }
     cd() { return 0; }
 
-    run pull_git_dir "${HOME}"
+    run pull_repo "${HOME}"
 
     [ ${status} -eq 0 ]
     [[ ${output} == *"Pulled repo at '${HOME}'."* ]]
 }
 
-@test "pull_git_dir: The pull of the repository failed." {
+@test "pull_repo: The pull of the repository failed." {
     git() { return 1; }
     cd() { return 0; }
 
-    run pull_git_dir "${HOME}"
+    run pull_repo "${HOME}"
 
     [ ${status} -eq 1 ]
     [[ ${output} == *"Can not pull repo at '${HOME}'."* ]]
 }
 
-@test "pull_git_dir: Function arguments do not match - no argument is given." {
-    run pull_git_dir
+@test "pull_repo: Function arguments do not match - no argument is given." {
+    run pull_repo
 
-    [ ${status} -eq 2 ]
+    [ ${status} -eq 1 ]
     [[ ${output} == *"Function needs exactly one 'path' argument."* ]]
 }
 
-@test "pull_git_dir: Function arguments do not match - two argument are given." {
-    run pull_git_dir "fake" "fake2"
+@test "pull_repo: Function arguments do not match - two argument are given." {
+    run pull_repo "fake" "fake2"
 
-    [ ${status} -eq 2 ]
+    [ ${status} -eq 1 ]
     [[ ${output} == *"Function needs exactly one 'path' argument."* ]]
 }
 
-@test "pull_git_dir: Given path does not exist." {
-    run pull_git_dir "fake/pater/aasd"
+@test "pull_repo: Given path does not exist." {
+    run pull_repo "fake/pater/aasd"
 
-    [ ${status} -eq 3 ]
+    [ ${status} -eq 1 ]
 }
 
 @test "clone_repo: Function executed successfully." {

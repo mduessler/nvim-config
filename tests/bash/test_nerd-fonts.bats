@@ -2,13 +2,13 @@
 
 TEST_DATA=${NVIM_CONFIG}/tests/bash/data
 
-@test "Test if script '${NVIM_CONFIG}/installs/nerd-fonts' exists." {
-    [ -f "${NVIM_CONFIG}"/installs/nerd-fonts ]
+@test "Test if script '${NVIM_CONFIG}/scripts/nerd-fonts' exists." {
+    [ -f "${NVIM_CONFIG}"/scripts/nerd-fonts ]
 }
 
 setup() {
     source "${NVIM_CONFIG}/dependencies"
-    source "${NVIM_CONFIG}/installs/nerd-fonts"
+    source "${NVIM_CONFIG}/scripts/nerd-fonts"
     unset XDG_DATA_HOME
     mkdir -p "${HOME}/.local/share/src"
 }
@@ -19,10 +19,10 @@ teardown() {
 
 @test "init_nerd_process: Function executed successfully - repo is pulled." {
     mkdir -p "${HOME}/.local/share/src/nerd-fonts"
-    dir_is_git_repo() { return 0; }
-    pull_git_dir() { return 0; }
+    is_repo() { return 0; }
+    pull_repo() { return 0; }
 
-    run init_nerd_process
+    NVIM_DEV=true run init_nerd_process
 
     [ ${status} -eq 0 ]
     [[ ${output} == *"Nerd-fonts git repo exists. Pulling ..."* ]]
@@ -33,7 +33,7 @@ teardown() {
     read() { return 0; }
     clone_repo() { return 0; }
 
-    run init_nerd_process
+    NVIM_DEV=true run init_nerd_process
 
     [ ${status} -eq 0 ]
     [[ ${output} == *"Nerd-fonts git repo not exists. Cloning ..."* ]]
@@ -41,8 +41,8 @@ teardown() {
 
 @test "init_nerd_process: Can not pull the git repo." {
     mkdir -p "${HOME}/.local/share/src/nerd-fonts"
-    dir_is_git_repo() { return 0; }
-    pull_git_dir() { return 1; }
+    is_repo() { return 0; }
+    pull_repo() { return 1; }
 
     run init_nerd_process
 
@@ -61,7 +61,7 @@ teardown() {
 
 @test "init_nerd_process: Given directory is not a git repo." {
     mkdir -p "${HOME}/.local/share/src/nerd-fonts"
-    dir_is_git_repo() { return 1; }
+    is_repo() { return 1; }
 
     run init_nerd_process
 
@@ -99,7 +99,7 @@ teardown() {
     wait_for_clone_process() { return 0; }
     chmod() { return 0; }
 
-    NERD_FONTS_DIR="${TEST_DATA}/fail" run install_nerd_fonts
+    NERD_FONTS_DIR="${TEST_DATA}/fail" NVIM_DEV=true run install_nerd_fonts
 
     [ ${status} -eq 1 ]
     [[ ${output} == *"Install nerd-fonts (instal.sh) exited (1) with: This test will fail.."* ]]

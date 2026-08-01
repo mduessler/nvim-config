@@ -1,17 +1,16 @@
 #!/usr/bin/env bats
 
-@test "Test if script '${NVIM_CONFIG}/installs/dev' exists." {
-    [ -f "${NVIM_CONFIG}/installs/dev" ]
+@test "Test if script '${NVIM_CONFIG}/scripts/dev' exists." {
+    [ -f "${NVIM_CONFIG}/scripts/dev" ]
 }
 
 setup() {
-    source "${NVIM_CONFIG}/installs/dev"
+    source "${NVIM_CONFIG}/scripts/dev"
     source "${NVIM_CONFIG}/dependencies"
 }
 
 @test "install_dev: Function executed successfully." {
     install_dev_dependencies() { return 0; }
-    install_dev_requirements() { return 0; }
 
     run install_dev
 
@@ -21,22 +20,11 @@ setup() {
 
 @test "install_dev: Function cannot install development dependencies." {
     install_dev_dependencies() { return 1; }
-    install_dev_requirements() { return 0; }
 
     run install_dev
 
     [ ${status} -eq 2 ]
     [[ ${output} == *"Can not install development dependencies."* ]]
-}
-
-@test "install_dev: Function cannot install development requirements." {
-    install_dev_dependencies() { return 0; }
-    install_dev_requirements() { return 1; }
-
-    run install_dev
-
-    [ ${status} -eq 3 ]
-    [[ ${output} == *"Can not install development requirements."* ]]
 }
 
 @test "install_dev_dependencies: Function executed successfully." {
@@ -88,22 +76,4 @@ setup() {
 
     [ ${status} -eq 3 ]
     [[ ${output} == *"Unsupported package manager: ${pkg_mgr}"* ]]
-}
-
-@test "install_dev_requirements: Function executed successfully." {
-    install_lua_pkg() { return 0; }
-
-    run install_dev_requirements
-
-    [ ${status} -eq 0 ]
-    [[ ${output} == *"Installed development requirements successfully."* ]]
-}
-
-@test "install_dev_requirements: Can not install lua requirements." {
-    install_lua_pkg() { return 1; }
-
-    run install_dev_requirements
-
-    [ ${status} -eq 1 ]
-    [[ ${output} == *"Can not install lua requirements."* ]]
 }

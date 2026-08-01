@@ -1,6 +1,5 @@
 #!/bin/sh
 
-set -eu
 
 if [ -z "${SCRIPT_DIR:-}" ]; then
     SCRIPT_DIR=$(dirname "$(dirname "$PWD")")
@@ -26,12 +25,12 @@ identify_system_pkg_mgr() {
 }
 
 install_packages_with_pkg_mgr() {
-    if [ $# -lt 0 ]; then
-        error "No package given. Please provide at least one packge." && return 1
+    if [ -z "${PKG_MGR:-}" ]; then
+        error "Need to set 'PKG_MGR', or call 'identify_system_pkg_mgr'." && return 2
     fi
 
-    if [ "${PKG_MGR}" != "apt-get" ] && [ "${PKG_MGR}" != "dnf" ]; then
-        error "No valid package manager found." && return 1
+    if [ $# -eq 0 ]; then
+        error "No package given. Please provide at least one packge." && return 3
     fi
 
     info "Installing: $* ..."
@@ -46,5 +45,5 @@ install_packages_with_pkg_mgr() {
         error "Can not install package(s)." && return 1
     fi
 
-    success "Installed packages." && return 0
+    success "Installed packages: $*" && return 0
 }

@@ -5,9 +5,7 @@ set -e
 SCRIPT_DIR="${SCRIPT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
 DEPENDENCIES="${DEPENDENCIES:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../dependencies}"
 
-source "${SCRIPT_DIR}/utils" || exit 1
 source "${DEPENDENCIES}" || exit 1
-source "${SCRIPT_DIR}/neovim" || exit 1
 source "${SCRIPT_DIR}/shared" || exit 1
 
 install_prod() {
@@ -26,22 +24,28 @@ install_prod() {
 
 install_rust() {
     if check_command rustc; then
-        info "Rust is already installed."
-        return 0
+        info "Rust is already installed." && return 0
     fi
-
     CARGO_HOME="${CARGO_HOME:-$HOME/.cargo}"
     debug "CARGO_HOME is set to '${CARGO_HOME}'."
+    info "Downloading and installing rust..."
 
-    debug "Downloading and install rust..."
-    if ! curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y; then
-        debug "Curl exited with ${PIPESTATUS[0]} and sh exited with ${PIPESTATUS[1]}."
-        error "Installation of rust failed."
+    debug "Download rust ..."
+    if ! output=$(curl -o /tmp/rust.sh --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs 2>&1); then
+        error "Curl failed. Output: ${output}"
         return 1
     fi
-    echo ":$PATH:" | grep -q ":${CARGO_HOME}/bin:" || export PATH="${CARGO_HOME}/bin:${PATH}"
-    debug "Added '${CARGO_HOME}/bin' to PATH $"
 
+    debug "Installing rust ... "
+    if ! output=$(sh /tmp/rust.sh -y 2>&1); then
+        error "Rust installation failed. Output: ${output}"
+        debug "Deleting rust install script."
+        return 1
+    fi
+
+    echo ":$PATH:" | grep -q ":${CARGO_HOME}/bin:" || export PATH="${CARGO_HOME}/bin:${PATH}"
+
+    debug "Added '${CARGO_HOME}/bin' to PATH"
     success "Rust has been successfully installed."
     return 0
 }
@@ -57,7 +61,13 @@ install_prod_dependencies() {
     fi
 
     case "${PKG_MGR}" in
-        "apt-get") install_packages_with_pkg_mgr "${APT_DEPS[@]}" ;;
+        "apt-get")
+            if ! add_neovim_ppa; then
+                error "Can not add neovim PPA."
+                return 4
+            fi
+            install_packages_with_pkg_mgr "${APT_DEPS[@]}"
+            ;;
         "dnf") install_packages_with_pkg_mgr "${DNF_DEPS[@]}" ;;
         *)
             error "Unsupported package manager: ${PKG_MGR}"
@@ -70,14 +80,21 @@ install_prod_dependencies() {
         return 1
     fi
 
-    if ! check_command nvim; then
-        if ! install_nvim; then
-            error "Can not install neovim."
-            return 4
-        fi
-    fi
-
     success "Dependencies have been successfully installed."
+    return 0
+}
+
+add_neovim_ppa() {
+    info "Adding neovim PPA to provide a current neovim via apt ..."
+    if ! sudo apt-get install -y software-properties-common; then
+        error "Can not install software-properties-common."
+        return 1
+    fi
+    if ! sudo add-apt-repository -y ppa:neovim-ppa/stable; then
+        error "Can not add ppa:neovim-ppa/stable."
+        return 1
+    fi
+    success "Added neovim PPA."
     return 0
 }
 
@@ -111,11 +128,6 @@ install_dependencies_independent_of_pkg_mgr() {
 }
 
 install_prod_requirements() {
-    if ! install_lua_pkg "${LUA_REQ[@]}"; then
-        error "Can not install lua requirements."
-        return 2
-    fi
-
     if ! install_cargo_pkg "${RUST_REQ[@]}"; then
         error "Can not install rust requirements."
         return 3

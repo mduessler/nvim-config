@@ -21,11 +21,9 @@ RUN dnf install -y --setopt=install_weak_deps=False \
     libstdc++ \
     libtermkey \
     libvterm \
-    lua \
-    lua-devel \
-    luarocks \
     make \
     ncurses-libs \
+    neovim \
     ninja-build \
     nodejs \
     npm \
@@ -58,16 +56,6 @@ RUN rm -rf "./registry" "./git" \
     && (rustup component remove rust-docs rust-src || true) \
     && (find "./bin" -type f -exec strip {} \; || true)
 
-# Install neovim
-WORKDIR /root/.local/share/src
-ENV NVIM_GIT_DIR=/root/.local/share/src/neovim
-RUN git clone https://github.com/neovim/neovim ${NVIM_GIT_DIR}
-WORKDIR ${NVIM_GIT_DIR}
-
-RUN git checkout stable \
-    && make CMAKE_BUILD_TYPE=Release \
-    && make install
-
 # Install bats
 WORKDIR /root/.local/share/src
 ENV BATS_GIT_DIR=/root/.local/share/src/bats-core
@@ -79,10 +67,6 @@ RUN ./install.sh /usr/local
 RUN (find "/usr/local/libexec/bats-core" -type f -exec strip {} \; || true) \
     && (find "/usr/local/lib/bats-core/" -type f -exec strip {} \; || true) \
     && (strip --strip-unneeded /usr/local/bats || true)
-
-# Install lua libraries
-RUN luarocks install lpeglabel && \
-    luarocks install luaunit
 
 # Install pre-commit for linting
 RUN python3 -m pip install --no-cache-dir pre-commit==4.2.0
@@ -124,18 +108,15 @@ ENV NVIM_CONFIG="${HOME}/.config/nvim"
 # Copy selene
 COPY --from=builder /usr/local/cargo/bin/selene /usr/local/bin/selene
 
-# Copy nvim
-COPY --from=builder /usr/local/bin/nvim /usr/local/bin/nvim
-COPY --from=builder /usr/local/share/nvim /usr/local/share/nvim
+# Install nvim from the package manager
+RUN dnf install -y --setopt=install_weak_deps=False neovim \
+    && dnf clean all \
+    && rm -rf /var/cache/dnf
 
 # Copy bats
 COPY --from=builder /usr/local/bin/bats /usr/local/bin/bats
 COPY --from=builder /usr/local/libexec/bats-core /usr/local/libexec/bats-core
 COPY --from=builder /usr/local/lib/bats-core/ /usr/local/lib/bats-core/
-
-# Copy from lua
-COPY --from=builder /usr/share/lua/5.4/luaunit.lua /usr/share/lua/5.4/luaunit.lua
-COPY --from=builder /usr/lib64/lua/5.4/lpeglabel.so /usr/lib64/lua/5.4/lpeglabel.so
 
 # Copy nvim downloads
 COPY --from=builder /root/.local/share/nvim ${XDG_DATA_HOME}/nvim

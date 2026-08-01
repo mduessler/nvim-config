@@ -26,8 +26,6 @@ APT_DEPS=(
     golang
     libssl-dev
     libstdc++-14-dev
-    lua5.4
-    luarocks
     maven
     neovim
     ninja-build
@@ -53,8 +51,6 @@ DNF_DEPS=(
     golang
     java-latest-openjdk-devel
     libstdc++-static
-    lua
-    luarocks
     make
     maven
     neovim
@@ -70,12 +66,6 @@ DNF_DEPS=(
 #
 # Production requirements
 #
-
-LUA_REQ=(
-    lpeglabel
-    luasocket
-    lua-cjson
-)
 
 RUST_REQ=(
     selene
@@ -98,11 +88,4 @@ DNF_DEV_DEPS=(
     docker-ce-cli
     containerd.io
     docker-buildx-plugin
-)
-
-#
-# Development requirements
-#
-LUA_DEV_REQ=(
-    luaunit
 )

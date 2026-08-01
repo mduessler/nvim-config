@@ -2,7 +2,7 @@
 
 SCRIPT_DIR="${SCRIPT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
 
-source "${SCRIPT_DIR}/utils" || exit 1
+source "${SCRIPT_DIR}/shared" || exit 1
 
 TMPFILE=""
 NERD_FONTS_PID=""
@@ -11,9 +11,9 @@ init_nerd_process() {
     local git_dest_dir="${XDG_DATA_HOME:-$HOME/.local/share}/src"
     [ -z "${NERD_FONTS_DIR}" ] && NERD_FONTS_DIR="${git_dest_dir}/nerd-fonts"
 
-    if [ -d "${NERD_FONTS_DIR}" ] && dir_is_git_repo "${NERD_FONTS_DIR}"; then
+    if [ -d "${NERD_FONTS_DIR}" ] && is_repo "${NERD_FONTS_DIR}"; then
         debug "Nerd-fonts git repo exists. Pulling ..."
-        pull_git_dir "${NERD_FONTS_DIR}" || return 2
+        pull_repo "${NERD_FONTS_DIR}" || return 2
         return 0
     elif [ ! -d "${NERD_FONTS_DIR}" ]; then
         debug "Nerd-fonts git repo not exists. Cloning ..."
@@ -33,11 +33,7 @@ init_nerd_process() {
 }
 
 kill_nerd_fonts_process() {
-    if ! kill "${NERD_FONTS_PID}"; then
-        warning "Can not kill nerd-fonts process '${NERD_FONTS_PID}'."
-        return 1
-    fi
-    return 0
+    kill_clone_process "${NERD_FONTS_PID}"
 }
 
 install_nerd_fonts() {
@@ -45,7 +41,7 @@ install_nerd_fonts() {
     [ -z "${NERD_FONTS_DIR}" ] && warning "Not Nerd-fonts directory defined." && return 3
     cd "${NERD_FONTS_DIR}" && chmod +x install.sh || return 4
 
-    local output, status
+    local output status
     output="$(./install.sh 2>&1)"
     status=$?
     if [ "${status}" -ne 0 ]; then

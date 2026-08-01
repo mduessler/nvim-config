@@ -1,6 +1,6 @@
 #!/usr/bin/env bats
 
-SCRIPT_DIR="${NVIM_CONFIG}/installs"
+SCRIPT_DIR="${NVIM_CONFIG}/scripts"
 DEPENDENCIES=${NVIM_CONFIG}/dependencies
 
 @test "Test if script '${NVIM_CONFIG}/install' exists." {
@@ -15,8 +15,8 @@ DEPENDENCIES=${NVIM_CONFIG}/dependencies
     [ -f "${DEPENDENCIES}" ]
 }
 
-@test "Test if script '${SCRIPT_DIR}/utils' exists." {
-    [ -f "${SCRIPT_DIR}/utils" ]
+@test "Test if script ${SCRIPT_DIR}/shared exists." {
+    [ -f "${SCRIPT_DIR}/shared" ]
 }
 
 @test "Test if script '${SCRIPT_DIR}/prod' exists." {

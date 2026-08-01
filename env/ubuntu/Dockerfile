@@ -3,6 +3,14 @@ FROM ubuntu:24.04 AS builder
 
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
+# Add neovim PPA to provide a current neovim via apt.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    gpg-agent \
+    software-properties-common \
+    && add-apt-repository -y ppa:neovim-ppa/stable \
+    && rm -rf /var/lib/apt/lists/*
+
 # Installing all necessary dependencies.
 RUN apt-get update && apt-get install -y --no-install-recommends \
     bash \
@@ -20,12 +28,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libstdc++6 \
     libtermkey-dev \
     libvterm-dev \
-    lua5.4 \
-    liblua5.4-dev \
-    luarocks \
     make \
     libncurses5-dev \
     libncursesw5-dev \
+    neovim \
     ninja-build \
     nodejs \
     npm \
@@ -55,16 +61,6 @@ RUN rm -rf "./registry" "./git" \
     && (rustup component remove rust-docs rust-src || true) \
     && (find "./bin" -type f -exec strip {} \; || true)
 
-# Install neovim
-WORKDIR /root/.local/share/src
-ENV NVIM_GIT_DIR=/root/.local/share/src/neovim
-RUN git clone https://github.com/neovim/neovim ${NVIM_GIT_DIR}
-WORKDIR ${NVIM_GIT_DIR}
-
-RUN git checkout stable \
-    && make CMAKE_BUILD_TYPE=Release \
-    && make install
-
 # Install bats
 WORKDIR /root/.local/share/src
 ENV BATS_GIT_DIR=/root/.local/share/src/bats-core
@@ -76,10 +72,6 @@ RUN ./install.sh /usr/local
 RUN (find "/usr/local/libexec/bats-core" -type f -exec strip {} \; || true) \
     && (find "/usr/local/lib/bats-core/" -type f -exec strip {} \; || true) \
     && (strip --strip-unneeded /usr/local/bats || true)
-
-# Install lua libraries
-RUN luarocks install lpeglabel && \
-    luarocks install luaunit
 
 # Install nvim plugins and set them up.
 WORKDIR /root/.config/nvim
@@ -120,18 +112,19 @@ ENV NVIM_CONFIG="${HOME}/.config/nvim"
 # Copy selene
 COPY --from=builder /usr/local/cargo/bin/selene /usr/local/bin/selene
 
-# Copy nvim
-COPY --from=builder /usr/local/bin/nvim /usr/local/bin/nvim
-COPY --from=builder /usr/local/share/nvim /usr/local/share/nvim
+# Install nvim from the package manager (via neovim PPA)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    gpg-agent \
+    software-properties-common \
+    && add-apt-repository -y ppa:neovim-ppa/stable \
+    && apt-get update && apt-get install -y --no-install-recommends neovim \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy bats
 COPY --from=builder /usr/local/bin/bats /usr/local/bin/bats
 COPY --from=builder /usr/local/libexec/bats-core /usr/local/libexec/bats-core
 COPY --from=builder /usr/local/lib/bats-core/ /usr/local/lib/bats-core/
-
-# Copy from lua
-COPY --from=builder /usr/local/share/lua/5.1/luaunit.lua /usr/local/share/lua/5.1/luaunit.lua
-COPY --from=builder /usr/local/lib/luarocks/rocks-5.1/lpeglabel /usr/local/lib/luarocks/rocks-5.1/lpeglabel
 
 # Copy nvim downloads
 COPY --from=builder /root/.local/share/nvim ${XDG_DATA_HOME}/nvim
@@ -155,7 +148,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     curl \
     git \
-    lua5.4 \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR ${HOME}

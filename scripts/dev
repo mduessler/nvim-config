@@ -5,7 +5,6 @@ set -e
 SCRIPT_DIR="${SCRIPT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
 DEPENDENCIES="${DEPENDENCIES:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../dependencies}"
 
-source "${SCRIPT_DIR}/utils" || exit 1
 source "${DEPENDENCIES}" || exit 1
 source "${SCRIPT_DIR}/shared" || exit 1
 
@@ -15,10 +14,6 @@ install_dev() {
         return 2
     fi
 
-    if ! install_dev_requirements; then
-        error "Can not install development requirements."
-        return 3
-    fi
     success "Installed development dependencies and requirements."
     return 0
 }
@@ -79,13 +74,4 @@ install_dnf_dependencies() {
 
     success "Installed docker for development environments."
 
-}
-
-install_dev_requirements() {
-    if ! install_lua_pkg "${LUA_DEV_REQ[@]}"; then
-        error "Can not install lua requirements."
-        return 1
-    fi
-    success "Installed development requirements successfully."
-    return 0
 }

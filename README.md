@@ -13,8 +13,9 @@ This is my NVIM config which uses lazy as plugin manager.
 
 ## Requirement
 
-- NVIM (current stable release, installed via package manager or built by the
-  install script)
+- NVIM (installed via the system package manager; on apt-based systems the
+  [neovim PPA](https://launchpad.net/~neovim-ppa/+archive/ubuntu/stable) is
+  added to provide a current version)
 - [Nerd Fonts](https://github.com/ryanoasis/nerd-fonts) -- Need for UI
 
 ## Installation

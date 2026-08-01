@@ -1,6 +1,5 @@
 #!/bin/sh
 
-set -eu
 
 if [ -z "${SCRIPT_DIR:-}" ]; then
     SCRIPT_DIR=$(dirname "$(dirname "$PWD")")
@@ -11,14 +10,23 @@ fi
 
 install_cargo_pkg() {
     if ! check_command rustc || ! check_command cargo; then
-        error "Rust is not installed or rust and cargo not in '\$PATH'." && return 1
+        error "Rust is not installed or rust and cargo not in '\$PATH'." && return 2
     elif [ $# -eq 0 ]; then
-        error "No package given. Please provide at least one packge." && return 1
+        error "No package given. Please provide at least one packge." && return 3
     fi
 
-    if ! cargo install "$@"; then
-        error "Failed to installes packages." && return 1
-    fi
+    for pkg in "$@"; do
+        if cargo install --list | grep -q "^${pkg} "; then
+            info "${pkg} is already installed, skipping ..."
+            continue
+        fi
+
+        info "Installing ${pkg} ..."
+        if ! cargo install "${pkg}"; then
+            error "Failed to install ${pkg}." && return 1
+        fi
+        success "Installed ${pkg}."
+    done
 
     success "Finished package installation." && return 0
 }
