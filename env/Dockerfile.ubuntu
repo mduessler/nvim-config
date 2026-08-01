@@ -1,42 +1,36 @@
 # Image to build all dependencies.
-FROM fedora:42 AS builder
+FROM ubuntu:24.04 AS builder
 
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
+# Add neovim PPA to provide a current neovim via apt.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    gpg-agent \
+    software-properties-common \
+    && add-apt-repository -y ppa:neovim-ppa/stable \
+    && rm -rf /var/lib/apt/lists/*
+
 # Installing all necessary dependencies.
-RUN dnf install -y --setopt=install_weak_deps=False \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     bash \
     binutils \
-    cmake \
     coreutils \
     curl \
     gcc \
-    gcc-c++ \
+    g++ \
     git \
-    gettext \
-    glibc \
-    glibc-gconv-extra \
-    hadolint \
-    libgcc \
-    libstdc++ \
-    libtermkey \
-    libvterm \
+    libc6 \
+    libc6-dev \
+    libgcc1 \
+    libstdc++6 \
     make \
-    ncurses-libs \
     neovim \
-    ninja-build \
     nodejs \
     npm \
-    openssl-devel \
-    openssl-libs \
-    pkg-config \
-    python \
+    python3 \
     python3-pip \
-    unibilium \
-    zlib-devel \
-    && dnf clean all \
-    && rm -rf /var/cache/dnf /var/lib/dnf /usr/share/doc/* /usr/share/man/* /usr/share/locale/* \
-    && dnf autoremove -y
+    && rm -rf /var/lib/apt/lists/*
 
 # Creating directory structure
 RUN mkdir -p /root/.local/share/src /root/.config/nvim
@@ -47,8 +41,8 @@ ENV RUSTUP_HOME="/usr/local/rustup"
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y || exit 1
 ENV PATH="${CARGO_HOME}/bin:${PATH}"
 
-# Install rust requirements
-RUN cargo install selene
+# Install rust requirements (tree-sitter-cli has no apt package)
+RUN cargo install selene tree-sitter-cli
 
 # Clean rust overhead - clean build cache, remove toolchain and strip installed binaries
 WORKDIR ${CARGO_HOME}
@@ -68,9 +62,6 @@ RUN (find "/usr/local/libexec/bats-core" -type f -exec strip {} \; || true) \
     && (find "/usr/local/lib/bats-core/" -type f -exec strip {} \; || true) \
     && (strip --strip-unneeded /usr/local/bats || true)
 
-# Install pre-commit for linting
-RUN python3 -m pip install --no-cache-dir pre-commit==4.2.0
-
 # Install nvim plugins and set them up.
 WORKDIR /root/.config/nvim
 COPY ./init.lua .
@@ -84,11 +75,13 @@ RUN timeout 15m nvim --headless || true
 
 # Image that serves as the basis for creating environment images for remote
 # and local unit tests.
-FROM fedora:42 AS base
+FROM ubuntu:24.04 AS base
 
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
 ARG USER_TEST=tester
+
+RUN apt-get update && apt-get install -y --no-install-recommends sudo && rm -rf /var/lib/apt/lists/*
 
 # Create test user
 RUN mkdir -p "/home/${USER_TEST}" && groupadd "${USER_TEST}" \
@@ -108,10 +101,14 @@ ENV NVIM_CONFIG="${HOME}/.config/nvim"
 # Copy selene
 COPY --from=builder /usr/local/cargo/bin/selene /usr/local/bin/selene
 
-# Install nvim from the package manager
-RUN dnf install -y --setopt=install_weak_deps=False neovim \
-    && dnf clean all \
-    && rm -rf /var/cache/dnf
+# Install nvim from the package manager (via neovim PPA)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    gpg-agent \
+    software-properties-common \
+    && add-apt-repository -y ppa:neovim-ppa/stable \
+    && apt-get update && apt-get install -y --no-install-recommends neovim \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy bats
 COPY --from=builder /usr/local/bin/bats /usr/local/bin/bats
@@ -123,6 +120,7 @@ COPY --from=builder /root/.local/share/nvim ${XDG_DATA_HOME}/nvim
 
 # Image from which the environment for local unit test is build.
 FROM base AS local
+SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
 WORKDIR "${NVIM_CONFIG}"
 COPY . .
@@ -131,67 +129,37 @@ ENTRYPOINT ["./env/entrypoint"]
 
 # Image from which the environment for remote unit test and linting is build.
 FROM base AS remote
-
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
-# Install dependencies to execute pre-commit and run tests
-RUN dnf install -y --setopt=install_weak_deps=False \
+# Install dependencies to execute unit tests
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    bash \
     ca-certificates \
     curl \
     git \
-    gcc \
-    libatomic \
-    openssl-libs \
-    python \
-    && dnf clean all \
-    && rm -rf /var/cache/dnf /var/lib/dnf /var/log/dnf* /var/log/yum.* \
-    && dnf autoremove -y
+    && rm -rf /var/lib/apt/lists/*
 
-# Copy hadolint for pre-commit
-COPY --from=builder /usr/bin/hadolint /usr/bin/hadolint
-
-# Copy python pre-commit libraries
-# Move the python site-package libraries from /usr/local/lib to /usr/lib
-COPY --from=builder /usr/local/lib/python3.*/site-packages/ /tmp/site-packages/
-RUN regex="^Python ([0-9]\.[0-9]+)." \
-    && if [[ $(python --version) =~ ${regex} ]]; then \
-        mkdir -p "/usr/lib/python${BASH_REMATCH[1]}"; \
-        cp -r /tmp/site-packages "/usr/lib/python${BASH_REMATCH[1]}"; \
-        rm -rf /tmp/site-packages; \
-    fi
-
-COPY --from=builder /usr/local/lib64/python3.*/site-packages/ /tmp/site-packages/
-RUN regex="^Python ([0-9]\.[0-9]+)." \
-    && if [[ $(python --version) =~ ${regex} ]]; then \
-        mkdir -p "/usr/lib64/python${BASH_REMATCH[1]}"; \
-        cp -r /tmp/site-packages "/usr/lib64/python${BASH_REMATCH[1]}"; \
-        rm -rf /tmp/site-packages; \
-    fi
-
-# Copy pre-commit and dependencies
-COPY --from=builder /usr/local/bin/pre-commit /usr/local/bin/pre-commit
-COPY --from=builder /usr/local/sbin/pre-commit /usr/local/sbin/pre-commit
-
-WORKDIR ${NVIM_CONFIG}
+WORKDIR ${HOME}
 
 # Image that serves as the basis for creating environment images for remote
 # and local testing of the installation script.
-FROM fedora:42 AS install
-
+FROM ubuntu:24.04 AS install
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
 ARG USER_TEST=tester
 
-RUN dnf install -y git \
-    && dnf clean all \
-    && rm -rf /var/cache/dnf /var/lib/dnf /var/log/dnf* /var/log/yum.* \
-    && dnf autoremove -y
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    git \
+    sudo \
+    && rm -rf /var/lib/apt/lists/*
 
+# Create test user
 RUN mkdir -p "/home/${USER_TEST}" && groupadd "${USER_TEST}" \
     && useradd -m -g "${USER_TEST}" "${USER_TEST}" \
     && echo "${USER_TEST} ALL=(ALL) NOPASSWD:ALL" > "/etc/sudoers.d/${USER_TEST}" \
     && echo "Defaults:${USER_TEST} !requiretty" >> "/etc/sudoers.d/${USER_TEST}" \
-    && chmod 0440 "/etc/sudoers.d/${USER_TEST}"   && dnf autoremove -y
+    && chmod 0440 "/etc/sudoers.d/${USER_TEST}"
 
 ENV HOME=/home/${USER_TEST}
 ENV NVIM_CONFIG=$HOME/.config/nvim

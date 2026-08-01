@@ -1,5 +1,5 @@
-env-fedora="./env/fedora/Dockerfile"
-env-ubuntu="./env/ubuntu/Dockerfile"
+env-fedora="./env/Dockerfile.fedora"
+env-ubuntu="./env/Dockerfile.ubuntu"
 
 .SILENT:
 .ONESHELL:
