@@ -16,15 +16,11 @@ BASH_COUNTER_SUCCESS_TESTS=()
 BASH_COUNTER_FAILURE_TESTS=()
 
 function get_bash_test_files() {
-    local content=""
-    local regex=""
-    content="$(cd "${BASH_TESTS_DIR}" && ls -l test_*.bats)"
-    regex="^.*(test_.*\.bats)$"
-    while IFS= read -r line; do
-        if [[ ${line} =~ ${regex} ]]; then
-            BASH_TEST_FILES+=("${BASH_REMATCH[1]}")
-        fi
-    done <<<"${content}"
+    local file
+    for file in "${BASH_TESTS_DIR}"/test_*.bats; do
+        [ -f "${file}" ] || continue
+        BASH_TEST_FILES+=("$(basename "${file}")")
+    done
 }
 
 function execute_bash_test() {
