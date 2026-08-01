@@ -95,8 +95,10 @@ ENV NVIM_CONFIG="${HOME}/.config/nvim"
 # Copy selene
 COPY --from=builder /usr/local/cargo/bin/selene /usr/local/bin/selene
 
-# Install nvim from the package manager
-RUN dnf install -y --setopt=install_weak_deps=False neovim \
+# Install nvim and git from the package manager
+RUN dnf install -y --setopt=install_weak_deps=False \
+    git \
+    neovim \
     && dnf clean all \
     && rm -rf /var/cache/dnf
 
