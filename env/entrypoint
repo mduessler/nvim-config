@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+: "${NVIM_CONFIG:?NVIM_CONFIG must be set to the nvim config directory}"
+
 RESET="\033[0m"
 BOLD="\033[1m"
 RED="\033[91m"
