@@ -14,6 +14,7 @@ install_cargo_pkg() {
         error "No package given. Please provide at least one packge." && return 3
     fi
 
+    local pkg
     for pkg in "$@"; do
         if cargo install --list | grep -q "^${pkg} "; then
             info "${pkg} is already installed, skipping ..."

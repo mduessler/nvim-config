@@ -30,6 +30,7 @@ install_rust() {
     debug "CARGO_HOME is set to '${CARGO_HOME}'."
     info "Downloading and installing rust..."
 
+    local output
     debug "Download rust ..."
     if ! output=$(curl -o /tmp/rust.sh --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs 2>&1); then
         error "Curl failed. Output: ${output}"
@@ -101,6 +102,7 @@ add_neovim_ppa() {
 install_dependencies_independent_of_pkg_mgr() {
     local installed=()
     local status=0
+    local dep func
     for dep in "${DEPS[@]}"; do
         func="install_${dep}"
         if declare -f "$func" >/dev/null; then
