@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 
 
-if [ -z "${SCRIPT_DIR:-}" ]; then
-    SCRIPT_DIR=$(dirname "$(dirname "$PWD")")
-fi
+SCRIPT_DIR="${SCRIPT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 
 . "${SCRIPT_DIR}/utils" || exit 1
 
