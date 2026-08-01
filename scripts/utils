@@ -64,16 +64,19 @@ check_command() {
 
 is_repo() {
     if [ "$#" -ne 1 ]; then
-        error "Function needs exactly one 'path' argument." && return 2
+        error "Function needs exactly one 'path' argument."
+        return 2
     fi
 
     local path=$1
     if [ ! -d "${path}" ]; then
-        error "Path '${path}' does not exist or is not a directory." && return 1
+        error "Path '${path}' does not exist or is not a directory."
+        return 1
     fi
 
     if ! git -C "${path}" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-        error "Path '${path}' is not a git repo." && return 1
+        error "Path '${path}' is not a git repo."
+        return 1
     fi
 
     success "Path '${path}' is a git repo."
@@ -82,12 +85,14 @@ is_repo() {
 
 pull_repo() {
     if [ "$#" -ne 1 ]; then
-        error "Function needs exactly one 'path' argument." && return 2
+        error "Function needs exactly one 'path' argument."
+        return 2
     fi
 
     local path=$1
     if [ ! -d "${path}" ]; then
-        error "Path '${path}' does not exist or is not a directory." && return 1
+        error "Path '${path}' does not exist or is not a directory."
+        return 1
     fi
 
     git -C "${path}" checkout main 2>/dev/null \
@@ -95,15 +100,18 @@ pull_repo() {
         || true
 
     if ! git -C "${path}" pull; then
-        error "Can not pull repo at '${path}'." && return 1
+        error "Can not pull repo at '${path}'."
+        return 1
     fi
 
-    success "Pulled repo at '${path}'." && return 0
+    success "Pulled repo at '${path}'."
+    return 0
 }
 
 clone_repo() {
     if [ "$#" -ne 2 ]; then
-        error "Function needs exactly two arguments, 'repo-url' and 'dest-dir'." && return 2
+        error "Function needs exactly two arguments, 'repo-url' and 'dest-dir'."
+        return 2
     fi
 
     local repo_url=$1
@@ -118,7 +126,8 @@ clone_repo() {
 
 wait_for_clone_process() {
     if [ "$#" -ne 2 ]; then
-        error "Function needs exactly two arguments, 'pid' and 'tmpfile'." && return 2
+        error "Function needs exactly two arguments, 'pid' and 'tmpfile'."
+        return 2
     fi
 
     local pid=$1
@@ -127,27 +136,33 @@ wait_for_clone_process() {
     info "Waiting for clone process ${pid} to finish."
     if ! tail --pid="${pid}" -f "${tmpfile}"; then
         rm -f "${tmpfile}"
-        error "Can not tail ${tmpfile}." && return 3
+        error "Can not tail ${tmpfile}."
+        return 3
     fi
 
     if ! wait "${pid}"; then
         rm -f "${tmpfile}"
-        error "Can not wait ${pid}." && return 1
+        error "Can not wait ${pid}."
+        return 1
     fi
 
     rm -f "${tmpfile}"
-    success "Clone process ${pid} finished." && return 0
+    success "Clone process ${pid} finished."
+    return 0
 }
 
 kill_clone_process() {
     if [ "$#" -ne 1 ]; then
-        error "Function needs exactly one 'pid' argument." && return 2
+        error "Function needs exactly one 'pid' argument."
+        return 2
     fi
 
     local pid=$1
     if ! kill "${pid}"; then
-        error "Can not kill process '${pid}'." && return 1
+        error "Can not kill process '${pid}'."
+        return 1
     fi
 
-    success "Killed process ${pid}." && return 0
+    success "Killed process ${pid}."
+    return 0
 }
