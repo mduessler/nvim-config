@@ -47,19 +47,22 @@ install_dev_dependencies() {
 }
 
 install_apt_get_dependencies() {
-    sudo apt-get remove -y docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc
-    install_packages_with_pkg_mgr ca-certificates
-    sudo install -m 0755 -d /etc/apt/keyrings
-    sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-    sudo chmod a+r /etc/apt/keyrings/docker.asc
+    # Best effort: none of these packages may be installed at all.
+    sudo apt-get remove -y docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc \
+        || warning "Can not remove pre-existing docker packages."
+
+    install_packages_with_pkg_mgr ca-certificates || return 1
+    sudo install -m 0755 -d /etc/apt/keyrings || return 1
+    sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc || return 1
+    sudo chmod a+r /etc/apt/keyrings/docker.asc || return 1
 
     # Add the repository to Apt sources:
     echo \
         "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
   $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" \
-        | sudo tee /etc/apt/sources.list.d/docker.list >/dev/null
-    sudo apt-get update
-    install_packages_with_pkg_mgr "${APT_DEV_DEPS[@]}"
+        | sudo tee /etc/apt/sources.list.d/docker.list >/dev/null || return 1
+    sudo apt-get update || return 1
+    install_packages_with_pkg_mgr "${APT_DEV_DEPS[@]}" || return 1
 }
 
 install_dnf_dependencies() {
