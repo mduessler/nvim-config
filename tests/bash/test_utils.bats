@@ -140,14 +140,14 @@ setup() {
 @test "is_repo: Function arguments do not match - no argument is given." {
     run is_repo
 
-    [ ${status} -eq 1 ]
+    [ ${status} -eq 2 ]
     [[ ${output} == *"Function needs exactly one 'path' argument."* ]]
 }
 
 @test "is_repo: Function arguments do not match - two arguments are given." {
     run is_repo "${HOME}" "test"
 
-    [ ${status} -eq 1 ]
+    [ ${status} -eq 2 ]
     [[ ${output} == *"Function needs exactly one 'path' argument."* ]]
 }
 
@@ -181,14 +181,14 @@ setup() {
 @test "pull_repo: Function arguments do not match - no argument is given." {
     run pull_repo
 
-    [ ${status} -eq 1 ]
+    [ ${status} -eq 2 ]
     [[ ${output} == *"Function needs exactly one 'path' argument."* ]]
 }
 
 @test "pull_repo: Function arguments do not match - two argument are given." {
     run pull_repo "fake" "fake2"
 
-    [ ${status} -eq 1 ]
+    [ ${status} -eq 2 ]
     [[ ${output} == *"Function needs exactly one 'path' argument."* ]]
 }
 
