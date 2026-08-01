@@ -24,7 +24,6 @@ init_nerd_process() {
             warning "Error occured during clone repo."
             return 3
         fi
-        printf pid
         return 0
     else
         error "Directory ${NERD_FONTS_DIR} already exists and is no git repo."
