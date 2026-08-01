@@ -57,9 +57,17 @@ vim.api.nvim_create_user_command("InitNVIM", function()
 		vim.wait(5000)
 
 		print("Installing Treesitter languages.")
-		local ok, err = pcall(vim.cmd, "TSUpdateSync")
-		if not ok then
-			print("TSUpdateSync error: " .. tostring(err))
+		local ts_ok, ts = pcall(require, "nvim-treesitter")
+		if ts_ok then
+			local install_ok, err = pcall(function()
+				ts.install({ "all" }):wait(1800000)
+			end)
+			if not install_ok then
+				print("Treesitter install error: " .. tostring(err))
+				vim.wait(3000)
+			end
+		else
+			print("Can not load nvim-treesitter: " .. tostring(ts))
 			vim.wait(3000)
 		end
 		vim.cmd("qa!")
