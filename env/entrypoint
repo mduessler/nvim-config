@@ -28,7 +28,7 @@ BASH_OUTPUT_TESTS=()
 BASH_COUNTER_SUCCESS_TESTS=()
 BASH_COUNTER_FAILURE_TESTS=()
 
-function get_bash_test_files() {
+get_bash_test_files() {
     local file
     for file in "${BASH_TESTS_DIR}"/test_*.bats; do
         [ -f "${file}" ] || continue
@@ -36,7 +36,7 @@ function get_bash_test_files() {
     done
 }
 
-function execute_bash_test() {
+execute_bash_test() {
     local output status
     output=$(bats --tap "${BASH_TESTS_DIR}/$1")
     status="$?"
@@ -45,7 +45,7 @@ function execute_bash_test() {
     count_tests "${output}"
 }
 
-function count_tests() {
+count_tests() {
     local output=$1
     local regex_success="^(ok [0-9]+ ).*$"
     local regex_failure="^(not ok [0-9]+ ).*$"
@@ -62,7 +62,7 @@ function count_tests() {
     BASH_COUNTER_FAILURE_TESTS+=("${counter_failure}")
 }
 
-function print_wrong_output() {
+print_wrong_output() {
     local output="$1"
     local print_next=0
     while IFS= read -r line; do
@@ -77,11 +77,11 @@ function print_wrong_output() {
     done <<<"$output"
 }
 
-function get_test_counter() {
+get_test_counter() {
     bats -c "${BASH_TESTS_DIR}"
 }
 
-function main() {
+main() {
     get_bash_test_files
 
     local failures=false
