@@ -1,44 +1,33 @@
 return {
 	"nvim-treesitter/nvim-treesitter",
-	event = { "BufReadPre", "BufNewFile" },
+	branch = "main",
+	lazy = false, -- der main-Branch unterstützt kein Lazy-Loading
 	priority = 999,
 	build = ":TSUpdate",
 	dependencies = {
-		"nvim-treesitter/nvim-treesitter-textobjects",
 		"windwp/nvim-ts-autotag",
 		"JoosepAlviste/nvim-ts-context-commentstring",
 	},
 	config = function()
-		local status_ok, configs = pcall(require, "nvim-treesitter.configs")
-		if not status_ok then
-			return
-		end
-		vim.g.skip_ts_context_commentstring_module = true
+		local ts = require("nvim-treesitter")
 
-		configs.setup({
-			ensure_installed = "all", -- one of "all" or a list of languages
-			ignore_install = { "wing", "hoon", "ipkg" }, -- List of parsers to ignore installing
-			highlight = {
-				enable = true, -- false will disable the whole extension
-			},
-			autopairs = {
-				enable = true,
-			},
-			indent = { enable = true },
-			incremental_selection = {
-				enable = true,
-				keymaps = {
-					init_selection = "<C-space>",
-					node_incremental = "<C-space>",
-					scope_incremental = false,
-					node_decremental = "<bs>",
-				},
-			},
-			-- enable nvim-ts-context-commentstring plugin for commenting tsx and jsx
-			context_commentstring = {
-				enable = true,
-				enable_autocmd = false,
-			},
+		ts.setup({})
+
+		-- Installiert alle verfügbaren Parser; no-op für bereits installierte
+		ts.install({ "all" })
+
+		-- Highlighting + Indent macht Neovim selbst, pro Buffer aktiviert,
+		-- sobald ein Parser für den Filetype existiert
+		vim.api.nvim_create_autocmd("FileType", {
+			group = vim.api.nvim_create_augroup("treesitter_features", { clear = true }),
+			callback = function(args)
+				local started = pcall(vim.treesitter.start, args.buf)
+				if started then
+					vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+				end
+			end,
 		})
+
+		require("nvim-ts-autotag").setup()
 	end,
 }
