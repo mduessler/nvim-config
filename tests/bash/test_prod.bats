@@ -141,6 +141,23 @@ setup() {
     [[ ${output} == *"Unsupported package manager: pacman"* ]]
 }
 
+@test "install_prod_dependencies: Function can not install packages." {
+    identify_system_pkg_mgr() { return 0; }
+    install_packages_with_pkg_mgr() { return 1; }
+    install_dependencies_independent_of_pkg_mgr() { return 0; }
+    add_neovim_ppa() { return 0; }
+
+    PKG_MGR="apt-get" run install_prod_dependencies
+
+    [ ${status} -eq 5 ]
+    [[ ${output} == *"Can not install packages with the package manager."* ]]
+
+    PKG_MGR="dnf" run install_prod_dependencies
+
+    [ ${status} -eq 5 ]
+    [[ ${output} == *"Can not install packages with the package manager."* ]]
+}
+
 @test "install_prod_dependencies: Function can not add neovim PPA.." {
     identify_system_pkg_mgr() { return 0; }
     install_packages_with_pkg_mgr() { return 0; }

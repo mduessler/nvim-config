@@ -72,9 +72,17 @@ install_prod_dependencies() {
                 error "Can not add neovim PPA."
                 return 4
             fi
-            install_packages_with_pkg_mgr "${APT_DEPS[@]}"
+            if ! install_packages_with_pkg_mgr "${APT_DEPS[@]}"; then
+                error "Can not install packages with the package manager."
+                return 5
+            fi
             ;;
-        "dnf") install_packages_with_pkg_mgr "${DNF_DEPS[@]}" ;;
+        "dnf")
+            if ! install_packages_with_pkg_mgr "${DNF_DEPS[@]}"; then
+                error "Can not install packages with the package manager."
+                return 5
+            fi
+            ;;
         *)
             error "Unsupported package manager: ${PKG_MGR}"
             return 3
