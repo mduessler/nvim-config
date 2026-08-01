@@ -340,7 +340,7 @@ setup() {
     run kill_clone_process ${pid}
 
     [ ${status} -eq 1 ]
-    [[ ${output} == *"Can not kill nerd-fonts process '${pid}'."* ]]
+    [[ ${output} == *"Can not kill process '${pid}'."* ]]
 }
 
 @test "kill_clone_process: Function arguments do not match - no argument is given." {
