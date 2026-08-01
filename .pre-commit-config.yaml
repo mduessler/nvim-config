@@ -47,8 +47,6 @@ repos:
           - "--ignore=DL3041"
         files: |
           (?x)^(
-            env/fedora/Dockerfile |
-            env/ubuntu/Dockerfile |
-            env/Dockerfile.dev-ubuntu |
-            env/Dockerfile.ubuntu-install |
+            env/Dockerfile\.fedora |
+            env/Dockerfile\.ubuntu |
           )
