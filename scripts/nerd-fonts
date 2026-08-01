@@ -41,10 +41,10 @@ install_nerd_fonts() {
         warning "Not Nerd-fonts directory defined."
         return 3
     fi
-    cd "${NERD_FONTS_DIR}" && chmod +x install.sh || return 4
+    chmod +x "${NERD_FONTS_DIR}/install.sh" || return 4
 
     local output status
-    output="$(./install.sh 2>&1)"
+    output="$(cd "${NERD_FONTS_DIR}" && ./install.sh 2>&1)"
     status=$?
     if [ "${status}" -ne 0 ]; then
         debug "Install nerd-fonts (instal.sh) exited (${status}) with: ${output}."
