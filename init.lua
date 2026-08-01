@@ -1,11 +1,14 @@
 vim.cmd("set encoding=UTF-8")
 
--- Remove Neovim 0.10 default keymaps you don't want
+-- Remove Neovim 0.10 default keymaps you don't want. Which of them exist
+-- depends on the nvim version, so only delete the ones that are present.
 local utils = require("utils.key")
 
 local default_keys = { "gcc", "gc", "Y", "gx" }
 for _, key in ipairs(default_keys) do
-	utils.del("n", key)
+	if vim.fn.maparg(key, "n") ~= "" then
+		utils.del("n", key)
+	end
 end
 
 vim.g.mapleader = " "
