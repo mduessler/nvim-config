@@ -39,7 +39,12 @@ install_packages_with_pkg_mgr() {
     info "Installing: $* ..."
     debug "Updating repositories."
 
-    if ! sudo "${PKG_MGR}" update -y; then
+    # 'dnf update' would upgrade the whole system; 'makecache' only
+    # refreshes the repository metadata (what 'apt-get update' does).
+    local update_cmd="update"
+    [ "${PKG_MGR}" = "dnf" ] && update_cmd="makecache"
+
+    if ! sudo "${PKG_MGR}" "${update_cmd}" -y; then
         warning "Can not update the package repositories."
     fi
 
