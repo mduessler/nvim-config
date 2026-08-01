@@ -20,7 +20,7 @@ log() {
     color="$(get_log_color "${level}")"
     printf "%b[%s]%b %-7s| %b%s%b\n" \
         "\033[36m" "$(date +'%H:%M:%S')" "${color}" "${level}" \
-        "\033[37m" "$*" "\033[0m" >&2
+        "\033[37m" "$*" "\033[0m"
 }
 
 debug() {
@@ -30,8 +30,8 @@ debug() {
 }
 info() { log "INFO" "$*"; }
 success() { log "SUCCESS" "$*"; }
-warning() { log "WARNING" "$*"; }
-error() { log "ERROR" "$*"; }
+warning() { log "WARNING" "$*" >&2; }
+error() { log "ERROR" "$*" >&2; }
 
 
 check_command() {
