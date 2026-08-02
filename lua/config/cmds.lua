@@ -72,6 +72,22 @@ vim.api.nvim_create_user_command("InitNVIM", function()
 	log("Installing Treesitter languages.")
 	require("nvim-treesitter").install({ "all" }):wait(1800000)
 
+	log("Installing the kubectl client binary.")
+	if require("lazy.core.config").plugins["kubectl.nvim"] then
+		require("lazy").load({ plugins = { "kubectl.nvim" }, wait = true })
+		local ready = vim.wait(300000, function()
+			return (pcall(require, "kubectl_client"))
+		end, 2000)
+		if ready then
+			log("Installed: kubectl client binary")
+		else
+			log("Failed to install the kubectl client binary")
+			failures = failures + 1
+		end
+	else
+		log("kubectl.nvim is not part of the plugin spec, skipping.")
+	end
+
 	local warnings = require("config.warnings").collected
 	if #warnings > 0 then
 		log("Collected " .. #warnings .. " warning(s) during the bootstrap:")
