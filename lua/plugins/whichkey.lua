@@ -74,12 +74,12 @@ local function refacor_keys()
 		{
 			"<leader>rn",
 			mode = { "n", "x" },
-			desc = "Create variable of selection",
+			desc = "Rename symbol",
 			icon = { icon = signs.refactor.selection_to_variable, hl = "MyPurple" },
 		},
 		{
 			"<leader>rq",
-			mode = { "n", "x" },
+			mode = "n",
 			desc = "Format current buffer",
 			icon = { icon = signs.refactor.format, hl = "MyOrange" },
 		},
@@ -101,18 +101,6 @@ local function refacor_keys()
 			desc = "Extract block to file",
 			icon = { icon = signs.refactor.block_to_file, hl = "MyWhite" },
 		},
-		{
-			"<leader>rc",
-			mode = "n",
-			desc = "Conceal classes",
-			icon = { icon = signs.refactor.conceal, hl = "MyGreenLight" },
-		},
-		{
-			"<leader>rv",
-			mode = "n",
-			desc = "TailwindColorToggle",
-			icon = { icon = signs.refactor.color, hl = "MyPink" },
-		},
 	}
 end
 
@@ -121,8 +109,7 @@ local function telescope_keys()
 		{
 			"<leader>t",
 			mode = "n",
-			group = "whichkey.telescope",
-			desc = "whichkey.telescope",
+			group = "Telescope",
 			icon = { icon = signs.whichkey.telescope.icon, hl = "MyGreen" },
 		},
 		{
@@ -179,6 +166,12 @@ local function telescope_keys()
 			desc = "Browse docker",
 			icon = { icon = signs.whichkey.telescope.docker, hl = "MyBlueLight" },
 		},
+		{
+			"<leader>tm",
+			mode = "n",
+			desc = "Import modules",
+			icon = { icon = signs.whichkey.telescope.find_file, hl = "MyOrange" },
+		},
 	}
 end
 
@@ -188,7 +181,12 @@ local function lsp_keys()
 		{ "<leader>lr", mode = "n", desc = "Show references", icon = { icon = signs.lsp.reference, hl = "MyBlue" } },
 		{ "<leader>lg", mode = "n", desc = "Go to declaration", icon = { icon = signs.lsp._goto, hl = "MyYellow" } },
 		{ "<leader>ld", mode = "n", desc = "Show definitions", icon = { icon = signs.lsp.show_def, hl = "MyOrange" } },
-		{ "<leader>lu", mode = "n", desc = "Show usage", icon = { icon = signs.lsp.show_def, hl = "MyPurple" } },
+		{
+			"<leader>li",
+			mode = "n",
+			desc = "Show LSP implementations",
+			icon = { icon = signs.lsp.show_def, hl = "MyPurple" },
+		},
 		{ "<leader>lt", mode = "n", desc = "Show type definitions", icon = { icon = signs.lsp.def, hl = "MyTeal" } },
 		{
 			"<leader>lb",
@@ -202,30 +200,30 @@ local function lsp_keys()
 			desc = "Show line diagnostics",
 			icon = { icon = signs.diagnostics.icon, hl = "MyGreenLight" },
 		},
-		{ "<leader>lp", mode = "n", desc = "Go to previous diagnostics", icon = LOCAL.previous },
-		{ "<leader>ln", mode = "n", desc = "Go to next diagnostics", icon = LOCAL.next },
+		{ "<leader>lp", mode = "n", desc = "Go to previous diagnostic", icon = LOCAL.previous },
+		{ "<leader>ln", mode = "n", desc = "Go to next diagnostic", icon = LOCAL.next },
 		{
-			"<leader>lC",
+			"<leader>lc",
 			mode = "n",
 			desc = "Show documentation of word under the cursor",
 			icon = { icon = "󱘞 ", color = "green" },
 		},
 		{
 			"<leader>la",
-			mode = "n",
+			mode = { "n", "v" },
 			desc = "See available code actions",
 			icon = { icon = signs.lsp.def, hl = "MyWhite" },
 		},
+		{ "<leader>ls", mode = "n", desc = "Restart LSP", icon = LOCAL.referesh },
 	}
 end
 
 local function generel_devel()
 	return {
-		{ "<leader>d", mode = "n", desc = "General devel", icon = { icon = signs.system.file.md, hl = "MyYellow" } },
+		{ "<leader>d", mode = "n", group = "General devel", icon = { icon = signs.system.file.md, hl = "MyYellow" } },
 		{ "<leader>db", mode = "n", desc = "Lazy git", icon = LOCAL.break_line },
-		{ "<leader>do", mode = "n", desc = "Open MarkdownPreview", icon = LOCAL.open },
-		{ "<leader>dq", mode = "n", desc = "Close MarkdownPreview", icon = LOCAL.quit },
-		{ "<leader>dm", mode = "n", desc = "Toggle MarkdownPreview", icon = LOCAL.toggle },
+		{ "<leader>do", mode = "n", desc = "Open markdown preview", icon = LOCAL.open },
+		{ "<leader>dq", mode = "n", desc = "Close markdown preview", icon = LOCAL.quit },
 		{
 			"<leader>df",
 			mode = "n",
@@ -245,7 +243,7 @@ local function generel_devel()
 			icon = { icon = signs.development.type_parameter, hl = "MyCyan" },
 		},
 		{
-			"<leader>df",
+			"<leader>dF",
 			mode = "n",
 			desc = "Neogen file",
 			icon = { icon = signs.development.file, hl = "MyGrey" },

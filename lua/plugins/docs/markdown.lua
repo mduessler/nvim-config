@@ -16,9 +16,9 @@ return {
 		end
 	end,
 	keys = {
-		{ "<leader>dt", ft = "markdown", "<cmd>MarkdownPreviewToggle<cr>", desc = "Markdown Preview" },
-		{ "<leader>do", ft = "markdown", "<cmd>MarkdownPreview<cr>", desc = "Markdown Preview" },
-		{ "<leader>dq", ft = "markdown", "<cmd>MarkdownPreviewStop<cr>", desc = "Markdown Preview" },
+		{ "<leader>dt", ft = "markdown", "<cmd>MarkdownPreviewToggle<cr>", desc = "Toggle markdown preview" },
+		{ "<leader>do", ft = "markdown", "<cmd>MarkdownPreview<cr>", desc = "Open markdown preview" },
+		{ "<leader>dq", ft = "markdown", "<cmd>MarkdownPreviewStop<cr>", desc = "Close markdown preview" },
 	},
 	config = function()
 		local function select_browser()
