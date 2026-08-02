@@ -93,8 +93,7 @@ Ubuntu.
    exist beforehand. The images workflow warms the shared build cache and
    pushes the images whenever the image definition changes on main. On
    macos the install test runs natively on a macos runner instead of a
-   container. The macos workflow is triggered by pull requests that change
-   the install scripts and can be started manually.
+   container, as part of the same test suite as the other tests.
 
 ### Naming
 
