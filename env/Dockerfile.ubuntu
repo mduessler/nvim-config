@@ -1,17 +1,26 @@
-# Image to build all dependencies.
-FROM ubuntu:24.04 AS builder
+# Shared neovim base: every stage that needs a working editor inherits
+# from here. The neovim PPA is added exactly once. The install stages stay
+# on the bare distro image on purpose, so the install script proves that
+# it can set up the PPA and neovim itself.
+FROM ubuntu:24.04 AS nvim
 
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
-# Add neovim PPA to provide a current neovim via apt.
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     gpg-agent \
     software-properties-common \
     && add-apt-repository -y ppa:neovim-ppa/unstable \
+    && apt-get update && apt-get install -y --no-install-recommends \
+    git \
+    neovim \
     && rm -rf /var/lib/apt/lists/*
 
-# Installing all necessary dependencies.
+# Image to build all dependencies.
+FROM nvim AS builder
+
+SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
     bash \
     binutils \
@@ -19,23 +28,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     gcc \
     g++ \
-    git \
     libc6 \
     libc6-dev \
     libclang-dev \
     libgcc1 \
     libstdc++6 \
     make \
-    neovim \
     nodejs \
     npm \
     python3 \
     python3-pip \
     unzip \
     && rm -rf /var/lib/apt/lists/*
-
-# Creating directory structure
-RUN mkdir -p /root/.local/share/src /root/.config/nvim
 
 # Install rust dependency
 ENV CARGO_HOME="/usr/local/cargo"
@@ -53,44 +57,35 @@ RUN rm -rf "./registry" "./git" \
     && (find "./bin" -type f -exec strip {} \; || true)
 
 # Install bats
-WORKDIR /root/.local/share/src
-ENV BATS_GIT_DIR=/root/.local/share/src/bats-core
 RUN git clone --depth=1 --branch v1.12.0 https://github.com/bats-core/bats-core /root/.local/share/src/bats-core
 WORKDIR /root/.local/share/src/bats-core
-RUN ./install.sh /usr/local
-
-# Strip bats.
-RUN (find "/usr/local/libexec/bats-core" -type f -exec strip {} \; || true) \
+RUN ./install.sh /usr/local \
+    && (find "/usr/local/libexec/bats-core" -type f -exec strip {} \; || true) \
     && (find "/usr/local/lib/bats-core/" -type f -exec strip {} \; || true) \
     && (strip --strip-unneeded /usr/local/bats || true)
 
-# Install nvim plugins and set them up.
+# Install nvim plugins and set them up. This validates that the editor
+# bootstrap works; the produced data is not shipped in the test images.
 WORKDIR /root/.config/nvim
-COPY ./init.lua .
+COPY ./init.lua ./lazy-lock.json ./
 COPY ./lua ./lua
-COPY ./lazy-lock.json ./lazy-lock.json
 
 RUN timeout 60m nvim --headless "+InitNVIM"
 
 # Image that serves as the basis for creating environment images for remote
 # and local unit tests.
-FROM ubuntu:24.04 AS base
+FROM nvim AS base
 
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
 ARG USER_TEST=tester
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    git \
     sudo \
     && rm -rf /var/lib/apt/lists/*
 
-# Create test user
-RUN mkdir -p "/home/${USER_TEST}" && groupadd "${USER_TEST}" \
-    && useradd -m -g "${USER_TEST}" "${USER_TEST}" \
-    && echo "${USER_TEST} ALL=(ALL) NOPASSWD:ALL" > "/etc/sudoers.d/${USER_TEST}" \
-    && echo "Defaults:${USER_TEST} !requiretty" >> "/etc/sudoers.d/${USER_TEST}" \
-    && chmod 0440 "/etc/sudoers.d/${USER_TEST}"
+COPY env/create-user /usr/local/bin/create-user
+RUN create-user "${USER_TEST}"
 
 ENV USER_TEST=${USER_TEST}
 ENV HOME="/home/${USER_TEST}"
@@ -103,26 +98,13 @@ ENV NVIM_CONFIG="${HOME}/.config/nvim"
 # Copy selene
 COPY --from=builder /usr/local/cargo/bin/selene /usr/local/bin/selene
 
-# Install nvim from the package manager (via neovim PPA)
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates \
-    gpg-agent \
-    software-properties-common \
-    && add-apt-repository -y ppa:neovim-ppa/unstable \
-    && apt-get update && apt-get install -y --no-install-recommends neovim \
-    && rm -rf /var/lib/apt/lists/*
-
 # Copy bats
 COPY --from=builder /usr/local/bin/bats /usr/local/bin/bats
 COPY --from=builder /usr/local/libexec/bats-core /usr/local/libexec/bats-core
 COPY --from=builder /usr/local/lib/bats-core/ /usr/local/lib/bats-core/
 
-# Copy nvim downloads
-COPY --from=builder /root/.local/share/nvim ${XDG_DATA_HOME}/nvim
-
 # Image from which the environment for local unit test is build.
 FROM base AS local
-SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
 WORKDIR "${NVIM_CONFIG}"
 COPY . .
@@ -131,21 +113,21 @@ ENTRYPOINT ["./env/entrypoint"]
 
 # Image from which the environment for remote unit test and linting is build.
 FROM base AS remote
+
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
 # Install dependencies to execute unit tests
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    bash \
-    ca-certificates \
     curl \
-    git \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR ${HOME}
 
 # Image that serves as the basis for creating environment images for remote
-# and local testing of the installation script.
+# and local testing of the installation script. Stays on the bare distro
+# image on purpose (see above).
 FROM ubuntu:24.04 AS install
+
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
 ARG USER_TEST=tester
@@ -156,12 +138,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     sudo \
     && rm -rf /var/lib/apt/lists/*
 
-# Create test user
-RUN mkdir -p "/home/${USER_TEST}" && groupadd "${USER_TEST}" \
-    && useradd -m -g "${USER_TEST}" "${USER_TEST}" \
-    && echo "${USER_TEST} ALL=(ALL) NOPASSWD:ALL" > "/etc/sudoers.d/${USER_TEST}" \
-    && echo "Defaults:${USER_TEST} !requiretty" >> "/etc/sudoers.d/${USER_TEST}" \
-    && chmod 0440 "/etc/sudoers.d/${USER_TEST}"
+COPY env/create-user /usr/local/bin/create-user
+RUN create-user "${USER_TEST}"
 
 ENV HOME=/home/${USER_TEST}
 ENV NVIM_CONFIG=$HOME/.config/nvim

@@ -1,9 +1,21 @@
-# Image to build all dependencies.
-FROM fedora:44 AS builder
+# Shared neovim base: every stage that needs a working editor inherits
+# from here. The install stages stay on the bare distro image on purpose,
+# so the install script proves that it can set up neovim itself.
+FROM fedora:44 AS nvim
 
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
-# Installing all necessary dependencies.
+RUN dnf install -y --setopt=install_weak_deps=False \
+    git \
+    neovim \
+    && dnf clean all \
+    && rm -rf /var/cache/dnf
+
+# Image to build all dependencies.
+FROM nvim AS builder
+
+SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
+
 RUN dnf install -y --setopt=install_weak_deps=False \
     bash \
     binutils \
@@ -11,13 +23,11 @@ RUN dnf install -y --setopt=install_weak_deps=False \
     curl \
     gcc \
     gcc-c++ \
-    git \
     glibc \
     hadolint \
     libgcc \
     libstdc++ \
     make \
-    neovim \
     nodejs \
     npm \
     openssl-libs \
@@ -26,11 +36,7 @@ RUN dnf install -y --setopt=install_weak_deps=False \
     tree-sitter-cli \
     unzip \
     && dnf clean all \
-    && rm -rf /var/cache/dnf /var/lib/dnf /usr/share/doc/* /usr/share/man/* /usr/share/locale/* \
-    && dnf autoremove -y
-
-# Creating directory structure
-RUN mkdir -p /root/.local/share/src /root/.config/nvim
+    && rm -rf /var/cache/dnf /usr/share/doc/* /usr/share/man/* /usr/share/locale/*
 
 # Install rust dependency
 ENV CARGO_HOME="/usr/local/cargo"
@@ -48,42 +54,31 @@ RUN rm -rf "./registry" "./git" \
     && (find "./bin" -type f -exec strip {} \; || true)
 
 # Install bats
-WORKDIR /root/.local/share/src
-ENV BATS_GIT_DIR=/root/.local/share/src/bats-core
 RUN git clone --depth=1 --branch v1.12.0 https://github.com/bats-core/bats-core /root/.local/share/src/bats-core
 WORKDIR /root/.local/share/src/bats-core
-RUN ./install.sh /usr/local
-
-# Strip bats.
-RUN (find "/usr/local/libexec/bats-core" -type f -exec strip {} \; || true) \
+RUN ./install.sh /usr/local \
+    && (find "/usr/local/libexec/bats-core" -type f -exec strip {} \; || true) \
     && (find "/usr/local/lib/bats-core/" -type f -exec strip {} \; || true) \
     && (strip --strip-unneeded /usr/local/bats || true)
 
-# Install pre-commit for linting
-RUN python3 -m pip install --no-cache-dir pre-commit==4.2.0
-
-# Install nvim plugins and set them up.
+# Install nvim plugins and set them up. This validates that the editor
+# bootstrap works; the produced data is not shipped in the test images.
 WORKDIR /root/.config/nvim
-COPY ./init.lua .
+COPY ./init.lua ./lazy-lock.json ./
 COPY ./lua ./lua
-COPY ./lazy-lock.json ./lazy-lock.json
 
 RUN timeout 60m nvim --headless "+InitNVIM"
 
 # Image that serves as the basis for creating environment images for remote
 # and local unit tests.
-FROM fedora:44 AS base
+FROM nvim AS base
 
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
 ARG USER_TEST=tester
 
-# Create test user
-RUN mkdir -p "/home/${USER_TEST}" && groupadd "${USER_TEST}" \
-    && useradd -m -g "${USER_TEST}" "${USER_TEST}" \
-    && echo "${USER_TEST} ALL=(ALL) NOPASSWD:ALL" > "/etc/sudoers.d/${USER_TEST}" \
-    && echo "Defaults:${USER_TEST} !requiretty" >> "/etc/sudoers.d/${USER_TEST}" \
-    && chmod 0440 "/etc/sudoers.d/${USER_TEST}"
+COPY env/create-user /usr/local/bin/create-user
+RUN create-user "${USER_TEST}"
 
 ENV USER_TEST=${USER_TEST}
 ENV HOME="/home/${USER_TEST}"
@@ -96,20 +91,10 @@ ENV NVIM_CONFIG="${HOME}/.config/nvim"
 # Copy selene
 COPY --from=builder /usr/local/cargo/bin/selene /usr/local/bin/selene
 
-# Install nvim and git from the package manager
-RUN dnf install -y --setopt=install_weak_deps=False \
-    git \
-    neovim \
-    && dnf clean all \
-    && rm -rf /var/cache/dnf
-
 # Copy bats
 COPY --from=builder /usr/local/bin/bats /usr/local/bin/bats
 COPY --from=builder /usr/local/libexec/bats-core /usr/local/libexec/bats-core
 COPY --from=builder /usr/local/lib/bats-core/ /usr/local/lib/bats-core/
-
-# Copy nvim downloads
-COPY --from=builder /root/.local/share/nvim ${XDG_DATA_HOME}/nvim
 
 # Image from which the environment for local unit test is build.
 FROM base AS local
@@ -128,44 +113,25 @@ SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 RUN dnf install -y --setopt=install_weak_deps=False \
     ca-certificates \
     curl \
-    git \
     gcc \
     libatomic \
     openssl-libs \
     python \
+    python3-pip \
     && dnf clean all \
-    && rm -rf /var/cache/dnf /var/lib/dnf /var/log/dnf* /var/log/yum.* \
-    && dnf autoremove -y
+    && rm -rf /var/cache/dnf /var/log/dnf* /var/log/yum.*
 
 # Copy hadolint for pre-commit
 COPY --from=builder /usr/bin/hadolint /usr/bin/hadolint
 
-# Copy python pre-commit libraries
-# Move the python site-package libraries from /usr/local/lib to /usr/lib
-COPY --from=builder /usr/local/lib/python3.*/site-packages/ /tmp/site-packages/
-RUN regex="^Python ([0-9]\.[0-9]+)." \
-    && if [[ $(python --version) =~ ${regex} ]]; then \
-        mkdir -p "/usr/lib/python${BASH_REMATCH[1]}"; \
-        cp -r /tmp/site-packages "/usr/lib/python${BASH_REMATCH[1]}"; \
-        rm -rf /tmp/site-packages; \
-    fi
-
-COPY --from=builder /usr/local/lib64/python3.*/site-packages/ /tmp/site-packages/
-RUN regex="^Python ([0-9]\.[0-9]+)." \
-    && if [[ $(python --version) =~ ${regex} ]]; then \
-        mkdir -p "/usr/lib64/python${BASH_REMATCH[1]}"; \
-        cp -r /tmp/site-packages "/usr/lib64/python${BASH_REMATCH[1]}"; \
-        rm -rf /tmp/site-packages; \
-    fi
-
-# Copy pre-commit and dependencies
-COPY --from=builder /usr/local/bin/pre-commit /usr/local/bin/pre-commit
-COPY --from=builder /usr/local/sbin/pre-commit /usr/local/sbin/pre-commit
+# Install pre-commit for linting
+RUN python3 -m pip install --no-cache-dir pre-commit==4.2.0
 
 WORKDIR ${NVIM_CONFIG}
 
 # Image that serves as the basis for creating environment images for remote
-# and local testing of the installation script.
+# and local testing of the installation script. Stays on the bare distro
+# image on purpose (see above).
 FROM fedora:44 AS install
 
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
@@ -174,14 +140,10 @@ ARG USER_TEST=tester
 
 RUN dnf install -y git \
     && dnf clean all \
-    && rm -rf /var/cache/dnf /var/lib/dnf /var/log/dnf* /var/log/yum.* \
-    && dnf autoremove -y
+    && rm -rf /var/cache/dnf /var/log/dnf* /var/log/yum.*
 
-RUN mkdir -p "/home/${USER_TEST}" && groupadd "${USER_TEST}" \
-    && useradd -m -g "${USER_TEST}" "${USER_TEST}" \
-    && echo "${USER_TEST} ALL=(ALL) NOPASSWD:ALL" > "/etc/sudoers.d/${USER_TEST}" \
-    && echo "Defaults:${USER_TEST} !requiretty" >> "/etc/sudoers.d/${USER_TEST}" \
-    && chmod 0440 "/etc/sudoers.d/${USER_TEST}"   && dnf autoremove -y
+COPY env/create-user /usr/local/bin/create-user
+RUN create-user "${USER_TEST}"
 
 ENV HOME=/home/${USER_TEST}
 ENV NVIM_CONFIG=$HOME/.config/nvim
