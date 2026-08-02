@@ -17,7 +17,7 @@ return {
 	["html-lsp"] = "html", -- Html
 	["htmx-lsp"] = "htmx", --Htmx
 	["clangd"] = "clangd", -- C, c++ ...,
-	["cmake-language-server"] = "cmake", -- Cmake
+	["neocmakelsp"] = "neocmake", -- Cmake
 	["rust-analyzer"] = "rust_analyzer",
 	["jdtls"] = "jdtls", -- java
 	["terraform-ls"] = "terraformls",
