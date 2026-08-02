@@ -75,7 +75,7 @@ return {
 			require("refactoring").refactor("Inline Variable")
 		end, opts)
 		opts.desc = "Rename"
-		vim.keymap.set({ "n", "x" }, "<leader>en", vim.lsp.buf.rename, opts)
+		vim.keymap.set({ "n", "x" }, "<leader>er", vim.lsp.buf.rename, opts)
 
 		-- opts.desc = "Format current buffer"
 		-- keymap.set({ "n", "x" }, "<leader>eq", function()

@@ -73,7 +73,7 @@ local function refacor_keys()
 			icon = { icon = signs.refactor.inline_variable, hl = "MyRed" },
 		},
 		{
-			"<leader>en",
+			"<leader>er",
 			mode = { "n", "x" },
 			desc = "Rename symbol",
 			icon = { icon = signs.refactor.selection_to_variable, hl = "MyPurple" },
