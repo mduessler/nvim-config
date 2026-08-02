@@ -24,6 +24,11 @@ jobs:
           key: lint-${{ runner.os }}-${{ hashFiles('.pre-commit-config.yaml') }}
       - name: Install selene
         run: command -v selene || cargo install selene
+      - name: Install hadolint
+        run: |
+          sudo curl -sSL -o /usr/local/bin/hadolint \
+            https://github.com/hadolint/hadolint/releases/download/v2.14.0/hadolint-Linux-x86_64
+          sudo chmod +x /usr/local/bin/hadolint
       - name: Install pre-commit
         run: pipx install pre-commit
       - name: Run the linting pre-commit
