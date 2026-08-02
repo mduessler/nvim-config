@@ -221,7 +221,19 @@ local function vim_ui_hl()
 	vim.api.nvim_set_hl(0, "VimUiInputStartIcon", { fg = colors.default.green.light })
 end
 
+--- The dialog floats blend into the editor: border and title keep their
+--- theme foreground but run on the normal editor background.
+local function dialogs_hl()
+	local normal = vim.api.nvim_get_hl(0, { name = "Normal", link = false })
+	local border = vim.api.nvim_get_hl(0, { name = "FloatBorder", link = false })
+	local title = vim.api.nvim_get_hl(0, { name = "FloatTitle", link = false })
+
+	set(0, "DialogBorder", { fg = border.fg, bg = normal.bg })
+	set(0, "DialogTitle", { fg = title.fg, bg = normal.bg, bold = true })
+end
+
 statuslineHL()
 tablineHL()
 winbar_hl()
 vim_ui_hl()
+dialogs_hl()

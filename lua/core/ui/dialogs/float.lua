@@ -5,19 +5,8 @@ local window = require("core.ui.windows.utils")
 
 local M = {}
 
---- Floats get a theme specific background by default. The dialogs should
---- blend into the editor, so border and title keep their foreground but
---- run on the normal editor background.
-local function editor_background_groups()
-	local normal = vim.api.nvim_get_hl(0, { name = "Normal", link = false })
-	local border = vim.api.nvim_get_hl(0, { name = "FloatBorder", link = false })
-	local title = vim.api.nvim_get_hl(0, { name = "FloatTitle", link = false })
-
-	vim.api.nvim_set_hl(0, "DialogBorder", { fg = border.fg, bg = normal.bg })
-	vim.api.nvim_set_hl(0, "DialogTitle", { fg = title.fg, bg = normal.bg, bold = true })
-
-	return "NormalFloat:Normal,FloatBorder:DialogBorder,FloatTitle:DialogTitle"
-end
+--- The Dialog* groups are defined centrally in core/highlights.lua.
+local winhighlight = "NormalFloat:Normal,FloatBorder:DialogBorder,FloatTitle:DialogTitle"
 
 --- Centered editor overlay used by the list dialogs.
 M.editor_config = function(width, height, title)
@@ -55,7 +44,7 @@ M.open = function(config, opts)
 	vim.bo[bufnr].modifiable = true
 	vim.bo[bufnr].filetype = "nofile"
 	vim.b[bufnr].cmp_enabled = false
-	vim.api.nvim_set_option_value("winhighlight", editor_background_groups(), { win = winid })
+	vim.api.nvim_set_option_value("winhighlight", winhighlight, { win = winid })
 
 	local guicursor = vim.o.guicursor
 	if opts.hide_cursor then
