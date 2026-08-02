@@ -47,7 +47,7 @@ return {
 		end
 
 		opts.desc = "Toggle terminal"
-		keymap.set("n", "<leader>dt", ":ToggleTerm<CR>", opts)
+		keymap.set("n", "<leader>tt", ":ToggleTerm<CR>", opts)
 
 		vim.cmd("autocmd! TermOpen term://* lua set_terminal_keymaps()")
 
@@ -73,7 +73,7 @@ return {
 		function _LAZYGIT_TOGGLE()
 			lazygit:toggle()
 		end
-		keymap.set({ "n" }, "<leader>db", "<cmd>lua _LAZYGIT_TOGGLE()<CR>", opts)
+		keymap.set({ "n" }, "<leader>gl", "<cmd>lua _LAZYGIT_TOGGLE()<CR>", opts)
 
 		local node = Terminal:new({ cmd = "node", hidden = true })
 

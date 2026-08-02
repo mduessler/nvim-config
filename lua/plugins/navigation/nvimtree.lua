@@ -5,13 +5,13 @@ return {
 		"nvim-tree/nvim-web-devicons",
 	},
 	keys = {
-		{ "<leader>n", "<NOP>", desc = "NvimTree" },
+		{ "<leader>n", "<NOP>", desc = "Navigation" },
 		{ "<leader>nt", "<cmd>NvimTreeToggle<CR>", desc = "Toggle" },
-		{ "<leader>no", "<cmd>NvimTreeOpen<CR>", desc = "Open" },
-		{ "<leader>nc", "<cmd>NvimTreeClose<CR>", desc = "Close" },
-		{ "<leader>nf", "<cmd>NvimTreeFocus<CR>", desc = "Focus" },
-		{ "<leader>nz", "<cmd>NvimTreeCollapse<CR>", desc = "Fold to root" },
-		{ "<leader>nr", "<cmd>NvimTreeRefresh<CR>", desc = "Refresh" },
+		{ "<leader>neo", "<cmd>NvimTreeOpen<CR>", desc = "Open" },
+		{ "<leader>nec", "<cmd>NvimTreeClose<CR>", desc = "Close" },
+		{ "<leader>nef", "<cmd>NvimTreeFocus<CR>", desc = "Focus" },
+		{ "<leader>nez", "<cmd>NvimTreeCollapse<CR>", desc = "Fold to root" },
+		{ "<leader>ner", "<cmd>NvimTreeRefresh<CR>", desc = "Refresh" },
 	},
 	config = function()
 		local signs = require("config.signs")

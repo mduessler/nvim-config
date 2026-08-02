@@ -3,7 +3,7 @@ return {
 	event = { "BufReadPre", "BufNewFile" },
 	keys = {
 		{
-			"<leader>w",
+			"<leader>iw",
 			function()
 				local lint = require("lint")
 				local toggle = require("core.toggle")

@@ -7,13 +7,13 @@ return {
 		"nvim-telescope/telescope.nvim",
 	},
 	keys = {
-		{ "<leader>s", "<NOP>", desc = "SSH" },
-		{ "<leader>sg", "<cmd>RemoteStart<CR>", desc = "Start ssh" },
-		{ "<leader>sq", "<cmd>RemoteStop<CR>", desc = "Quit ssh" },
-		{ "<leader>si", "<cmd>RemoteInfo<CR>", desc = "Ssh info" },
-		{ "<leader>sc", "<cmd>RemoteCleanup<CR>", desc = "Cleanup workspace and config of remote nvim" },
-		{ "<leader>sd", "<cmd>RemoteConfigDel<CR>", desc = "Delete record or remote instance" },
-		{ "<leader>sl", "<cmd>RemoteLog<CR>", desc = "Open ssh logs." },
+		{ "<leader>ts", "<NOP>", desc = "SSH" },
+		{ "<leader>tsg", "<cmd>RemoteStart<CR>", desc = "Start ssh" },
+		{ "<leader>tsq", "<cmd>RemoteStop<CR>", desc = "Quit ssh" },
+		{ "<leader>tsi", "<cmd>RemoteInfo<CR>", desc = "Ssh info" },
+		{ "<leader>tsc", "<cmd>RemoteCleanup<CR>", desc = "Cleanup workspace and config of remote nvim" },
+		{ "<leader>tsd", "<cmd>RemoteConfigDel<CR>", desc = "Delete record or remote instance" },
+		{ "<leader>tsl", "<cmd>RemoteLog<CR>", desc = "Open ssh logs." },
 	},
 
 	config = function()

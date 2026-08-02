@@ -1,7 +1,7 @@
 return {
 	"mbbill/undotree",
 	keys = {
-		{ "<leader><F5>", vim.cmd.UndotreeToggle, desc = "Toggle UndoTree." },
+		{ "<leader>tu", vim.cmd.UndotreeToggle, desc = "Toggle UndoTree." },
 		{ "j", "<Plug>UndotreePreviousState", desc = "Undo previous state.", buffer = true },
 		{ "k", "<Plug>UndotreeNextState", desc = "Undo next state.", buffer = true },
 	},
