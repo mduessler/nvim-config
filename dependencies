@@ -71,6 +71,7 @@ DNF_DEPS=(
 
 RUST_REQ=(
     selene
+    tree-sitter-cli
 )
 
 #
