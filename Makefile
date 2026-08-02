@@ -1,9 +1,6 @@
-env-fedora="./env/Dockerfile.fedora"
-env-ubuntu="./env/Dockerfile.ubuntu"
-
 .SILENT:
 .ONESHELL:
-.PHONY: install
+.PHONY: install install-dev remote-login build-remote-environments test-fedora
 
 install:
 	./install
@@ -12,66 +9,27 @@ install-dev:
 	./install dev
 
 remote-login:
-	[ -z $${GITHUB_USERNAME} ] && read -p "Enter your GitHub username: " GITHUB_USERNAME
-	[ -z $${GITHUB_TOKEN} ] && read -p "Enter your GitHub PAT: " GITHUB_TOKEN
-	echo "$${GITHUB_TOKEN}" | docker login ghcr.io -u "$${GITHUB_USERNAME}" --password-stdin
+	scripts/containers login
 
 fedora-unit-tests-local:
-	docker build -f $(env-fedora) \
-		--target=local \
-		-t fedora-nvim:unit-test .
-	docker run --rm fedora-nvim:unit-test
+	scripts/containers unit-test fedora
 
 fedora-install-test-local:
-	docker build -f $(env-fedora)\
-		--target=install-local \
-		-t fedora-nvim:install-test .
-	@regex="^On branch (.*)"; \
-	if [[ $$(git status 2>/dev/null | head -1) =~ $${regex} ]]; then \
-		docker run --rm \
-			-e BRANCH_TO_TEST="$${BASH_REMATCH[1]}" \
-			fedora-nvim:install-test
-	fi
+	scripts/containers install-test fedora
 
-fedora-build-remote: remote-login
-	docker build -f $(env-fedora) \
-		--pull=false \
-		--target=remote \
-		-t ghcr.io/mduessler/fedora-nvim:unit-test .
-	docker build -f $(env-fedora)\
-		--target=install \
-		-t ghcr.io/mduessler/fedora-nvim:install-test .
-	docker push ghcr.io/mduessler/fedora-nvim:unit-test
-	docker push ghcr.io/mduessler/fedora-nvim:install-test
+fedora-build-remote:
+	scripts/containers build-remote fedora
 
 ubuntu-unit-tests-local:
-	docker build -f $(env-ubuntu) \
-		--target=local \
-		-t ubuntu-nvim:unit-test .
-	docker run --rm ubuntu-nvim:unit-test
+	scripts/containers unit-test ubuntu
 
 ubuntu-install-test-local:
-	docker build -f $(env-ubuntu) \
-		--target=install-local \
-		-t ubuntu-nvim:install-test .
-	@regex="^On branch (.*)"; \
-	if [[ $$(git status 2>/dev/null | head -1) =~ $${regex} ]]; then \
-		docker run --rm \
-			-e BRANCH_TO_TEST="$${BASH_REMATCH[1]}" \
-			ubuntu-nvim:install-test
-	fi
+	scripts/containers install-test ubuntu
 
-ubuntu-build-remote: remote-login
-	docker build -f $(env-ubuntu) \
-		--pull=false \
-		--target=remote \
-		-t ghcr.io/mduessler/ubuntu-nvim:unit-test .
-	docker build -f $(env-ubuntu)\
-		--target=install \
-		-t ghcr.io/mduessler/ubuntu-nvim:install-test .
-	docker push ghcr.io/mduessler/ubuntu-nvim:unit-test
-	docker push ghcr.io/mduessler/ubuntu-nvim:install-test
+ubuntu-build-remote:
+	scripts/containers build-remote ubuntu
 
-build-remote-environments: fedora-build-remote ubuntu-build-remote
+build-remote-environments:
+	scripts/containers build-remote
 
 test-fedora: fedora-install-test-local fedora-unit-tests-local
