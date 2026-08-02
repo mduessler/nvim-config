@@ -18,7 +18,7 @@ return {
 		},
 	},
 	config = function()
-		require("plugins.mason")
+		require("plugins.ide.mason")
 		require("lsp.init").setup()
 	end,
 }
