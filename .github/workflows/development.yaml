@@ -11,22 +11,23 @@ concurrency:
 jobs:
   lint:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
-    container:
-      image: ghcr.io/mduessler/fedora-nvim:unit-test
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.PACKAGES_PAT }}
-    env:
-      HOME: /home/tester
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v7
-      - name: Trust the checkout directo
-        run: git config --global --add safe.directory "${GITHUB_WORKSPACE}"
+      - name: Cache the linter environments
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/pre-commit
+            ~/.cargo/bin/selene
+          key: lint-${{ runner.os }}-${{ hashFiles('.pre-commit-config.yaml') }}
+      - name: Install selene
+        run: command -v selene || cargo install selene
+      - name: Install pre-commit
+        run: pipx install pre-commit
       - name: Run the linting pre-commit
         run: pre-commit run --all-files
   tests:
     needs: lint
     uses: ./.github/workflows/tests.yaml
-    secrets: inherit

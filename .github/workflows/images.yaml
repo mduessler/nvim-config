@@ -1,7 +1,8 @@
 name: Images
-# Builds and pushes the test environment images. Runs when the image
-# definition changes on main, weekly before the canary run to pick up new
-# neovim and package versions, and on demand.
+# Builds and pushes the test environment images and warms the layer cache
+# that the test jobs build from. Runs when the image definition changes on
+# main, weekly before the canary run to pick up new neovim and package
+# versions, and on demand.
 on:
   push:
     branches:

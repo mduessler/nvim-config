@@ -86,11 +86,10 @@ Ubuntu.
    - `make ubuntu-unit-tests-local` -- Runs unit tests in a ubuntu
      environment.
 3. **Remote tests** -- *Environment test* and *unit tests* are also executed
-   with github actions during a pull request to main or dev. The test
-   environment images are built and pushed automatically by the images
-   workflow whenever the image definition changes on main. A pull request
-   that changes the image definition builds and tests the images freshly
-   with the image validation workflow instead of using the registry images.
+   with github actions during a pull request to main or dev. Every test job
+   builds its own image from the checkout, so no registry image has to
+   exist beforehand. The images workflow warms the shared build cache and
+   pushes the images whenever the image definition changes on main.
 
 ### Naming
 
