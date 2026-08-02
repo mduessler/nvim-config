@@ -14,7 +14,7 @@ local ns = vim.api.nvim_create_namespace("core_ui_toggle")
 local icons = {
 	on = vim.fn.nr2char(0xf00c), -- check mark
 	off = vim.fn.nr2char(0xf00d), -- cross
-	entry = require("core.ui.select").text.start_icon,
+	entry = require("core.ui.dialogs.select").text.start_icon,
 }
 
 local headers = {

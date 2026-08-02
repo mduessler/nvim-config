@@ -1,7 +1,7 @@
 --- Runtime toggles for lsp servers, linters and formatters.
 ---
 --- Holds the session-only state of disabled tools and applies the side
---- effects of a toggle. The UI on top lives in core.ui.toggle. State is
+--- effects of a toggle. The UI on top lives in core.ui.dialogs.toggle. State is
 --- intentionally not persisted: every restart starts with the defaults.
 
 local M = {}
