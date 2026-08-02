@@ -11,12 +11,12 @@
 set -euo pipefail
 
 if [ -n "${VERSION_OVERRIDE:-}" ]; then
-    if ! [[ "${VERSION_OVERRIDE}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-        echo "Version '${VERSION_OVERRIDE}' does not match vMAJOR.MINOR.PATCH."
-        exit 1
-    fi
-    echo "version=${VERSION_OVERRIDE}" >>"${GITHUB_OUTPUT}"
-    exit 0
+	if ! [[ "${VERSION_OVERRIDE}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+		echo "Version '${VERSION_OVERRIDE}' does not match vMAJOR.MINOR.PATCH."
+		exit 1
+	fi
+	echo "version=${VERSION_OVERRIDE}" >>"${GITHUB_OUTPUT}"
+	exit 0
 fi
 
 # Release tags live on orphan commits, so they are never reachable from
@@ -27,9 +27,9 @@ last="${last:-v0.0.0}"
 
 base=$(git tag -l --format='%(contents:subject)' "${last}" 2>/dev/null | grep -oE '[0-9a-f]{40}' || true)
 if [ -n "${base}" ] && [ "${base}" = "$(git rev-parse HEAD)" ]; then
-    echo "No commits since ${last}. Skipping release."
-    echo "skip=true" >>"${GITHUB_OUTPUT}"
-    exit 0
+	echo "No commits since ${last}. Skipping release."
+	echo "skip=true" >>"${GITHUB_OUTPUT}"
+	exit 0
 fi
 
 range=""
@@ -39,11 +39,11 @@ commits=$(git log --format=%s ${range})
 
 IFS=. read -r major minor patch <<<"${last#v}"
 if echo "${commits}" | grep -qE '^[a-z]+(\(.+\))?!:|BREAKING CHANGE'; then
-    major=$((major + 1)) && minor=0 && patch=0
+	major=$((major + 1)) && minor=0 && patch=0
 elif echo "${commits}" | grep -qE '^feat(\(.+\))?:'; then
-    minor=$((minor + 1)) && patch=0
+	minor=$((minor + 1)) && patch=0
 else
-    patch=$((patch + 1))
+	patch=$((patch + 1))
 fi
 
 echo "Determined version v${major}.${minor}.${patch} (last tag ${last})."

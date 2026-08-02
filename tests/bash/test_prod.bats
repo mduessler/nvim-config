@@ -1,224 +1,224 @@
 #!/usr/bin/env bats
 
 @test "Test if script '${NVIM_CONFIG}/scripts/prod' exists." {
-    [ -f "${NVIM_CONFIG}/scripts/prod" ]
+	[ -f "${NVIM_CONFIG}/scripts/prod" ]
 }
 
 setup() {
-    source "${NVIM_CONFIG}/scripts/prod"
-    source "${NVIM_CONFIG}/dependencies"
+	source "${NVIM_CONFIG}/scripts/prod"
+	source "${NVIM_CONFIG}/dependencies"
 }
 
 @test "install_prod: Function executed successfully." {
-    install_prod_dependencies() { return 0; }
-    install_prod_requirements() { return 0; }
+	install_prod_dependencies() { return 0; }
+	install_prod_requirements() { return 0; }
 
-    run install_prod
+	run install_prod
 
-    [ ${status} -eq 0 ]
-    [[ ${output} == *"Installed production dependencies and requirements."* ]]
+	[ ${status} -eq 0 ]
+	[[ ${output} == *"Installed production dependencies and requirements."* ]]
 }
 
 @test "install_prod: Function cannot install production dependencies." {
-    install_prod_dependencies() { return 1; }
-    install_prod_requirements() { return 0; }
+	install_prod_dependencies() { return 1; }
+	install_prod_requirements() { return 0; }
 
-    run install_prod
+	run install_prod
 
-    [ ${status} -eq 2 ]
-    [[ ${output} == *"Can not install production dependencies."* ]]
+	[ ${status} -eq 2 ]
+	[[ ${output} == *"Can not install production dependencies."* ]]
 }
 
 @test "install_prod: Function cannot install production requirements." {
-    install_prod_dependencies() { return 0; }
-    install_prod_requirements() { return 1; }
+	install_prod_dependencies() { return 0; }
+	install_prod_requirements() { return 1; }
 
-    run install_prod
+	run install_prod
 
-    [ ${status} -eq 3 ]
-    [[ ${output} == *"Can not install production requirements."* ]]
+	[ ${status} -eq 3 ]
+	[[ ${output} == *"Can not install production requirements."* ]]
 }
 
 @test "rust_installer: Function executed successfully - rust has been installed." {
-    check_command() { return 1; }
-    curl() { return 0; }
-    sh() { return 0; }
+	check_command() { return 1; }
+	curl() { return 0; }
+	sh() { return 0; }
 
-    run install_rust
+	run install_rust
 
-    [ ${status} -eq 0 ]
-    [[ ${output} == *"Rust has been successfully installed."* ]]
+	[ ${status} -eq 0 ]
+	[[ ${output} == *"Rust has been successfully installed."* ]]
 }
 
 @test "rust_installer: Function executed successfully - rust is already installed." {
-    check_command() { return 0; }
-    curl() { return 1; }
-    sh() { return 0; }
+	check_command() { return 0; }
+	curl() { return 1; }
+	sh() { return 0; }
 
-    run install_rust
+	run install_rust
 
-    [ ${status} -eq 0 ]
-    [[ ${output} == *"Rust is already installed."* ]]
+	[ ${status} -eq 0 ]
+	[[ ${output} == *"Rust is already installed."* ]]
 }
 
 @test "rust_installer: Function can not download rust installer.." {
-    check_command() { return 1; }
-    curl() { return 1; }
-    sh() { return 1; }
+	check_command() { return 1; }
+	curl() { return 1; }
+	sh() { return 1; }
 
-    run install_rust
+	run install_rust
 
-    [ ${status} -eq 1 ]
-    [[ ${output} == *"Curl failed. Output:"* ]]
+	[ ${status} -eq 1 ]
+	[[ ${output} == *"Curl failed. Output:"* ]]
 }
 
 @test "rust_installer: Function can not execute rustup.rs with sh.." {
-    check_command() { return 1; }
-    curl() { return 0; }
-    sh() { return 1; }
+	check_command() { return 1; }
+	curl() { return 0; }
+	sh() { return 1; }
 
-    run install_rust
+	run install_rust
 
-    [ ${status} -eq 1 ]
-    [[ ${output} == *"Rust installation failed. Output:"* ]]
+	[ ${status} -eq 1 ]
+	[[ ${output} == *"Rust installation failed. Output:"* ]]
 }
 
 @test "install_prod_dependencies: Function executed successfully." {
-    identify_system_pkg_mgr() { return 0; }
-    install_packages_with_pkg_mgr() { return 0; }
-    install_dependencies_independent_of_pkg_mgr() { return 0; }
-    add_neovim_ppa() { return 0; }
+	identify_system_pkg_mgr() { return 0; }
+	install_packages_with_pkg_mgr() { return 0; }
+	install_dependencies_independent_of_pkg_mgr() { return 0; }
+	add_neovim_ppa() { return 0; }
 
-    PKG_MGR="apt-get" run install_prod_dependencies
+	PKG_MGR="apt-get" run install_prod_dependencies
 
-    [ ${status} -eq 0 ]
-    [[ ${output} == *"Dependencies have been successfully installed."* ]]
+	[ ${status} -eq 0 ]
+	[[ ${output} == *"Dependencies have been successfully installed."* ]]
 
-    PKG_MGR="dnf" run install_prod_dependencies
+	PKG_MGR="dnf" run install_prod_dependencies
 
-    [ ${status} -eq 0 ]
-    [[ ${output} == *"Dependencies have been successfully installed."* ]]
+	[ ${status} -eq 0 ]
+	[[ ${output} == *"Dependencies have been successfully installed."* ]]
 }
 
 @test "install_prod_dependencies: Function can not install packages without package manager." {
-    identify_system_pkg_mgr() { return 0; }
-    install_packages_with_pkg_mgr() { return 0; }
-    install_dependencies_independent_of_pkg_mgr() { return 1; }
-    add_neovim_ppa() { return 0; }
+	identify_system_pkg_mgr() { return 0; }
+	install_packages_with_pkg_mgr() { return 0; }
+	install_dependencies_independent_of_pkg_mgr() { return 1; }
+	add_neovim_ppa() { return 0; }
 
-    PKG_MGR="apt-get" run install_prod_dependencies
+	PKG_MGR="apt-get" run install_prod_dependencies
 
-    [ ${status} -eq 1 ]
-    [[ ${output} == *"Can not install dependencies independent of package manager."* ]]
+	[ ${status} -eq 1 ]
+	[[ ${output} == *"Can not install dependencies independent of package manager."* ]]
 
-    PKG_MGR="dnf" run install_prod_dependencies
+	PKG_MGR="dnf" run install_prod_dependencies
 
-    [ ${status} -eq 1 ]
-    [[ ${output} == *"Can not install dependencies independent of package manager."* ]]
+	[ ${status} -eq 1 ]
+	[[ ${output} == *"Can not install dependencies independent of package manager."* ]]
 }
 
 @test "install_prod_dependencies: Function can not idenify system package manager." {
-    identify_system_pkg_mgr() { return 1; }
-    install_packages_with_pkg_mgr() { return 0; }
-    install_dependencies_independent_of_pkg_mgr() { return 0; }
-    check_command() { return 0; }
+	identify_system_pkg_mgr() { return 1; }
+	install_packages_with_pkg_mgr() { return 0; }
+	install_dependencies_independent_of_pkg_mgr() { return 0; }
+	check_command() { return 0; }
 
-    run install_prod_dependencies
+	run install_prod_dependencies
 
-    [ ${status} -eq 2 ]
-    [[ ${output} == *"Can not identify system package manager."* ]]
+	[ ${status} -eq 2 ]
+	[[ ${output} == *"Can not identify system package manager."* ]]
 }
 
 @test "install_prod_dependencies: Function can not install packages with package manager." {
-    identify_system_pkg_mgr() { return 0; }
-    install_packages_with_pkg_mgr() { return 0; }
-    install_dependencies_independent_of_pkg_mgr() { return 0; }
-    check_command() { return 0; }
+	identify_system_pkg_mgr() { return 0; }
+	install_packages_with_pkg_mgr() { return 0; }
+	install_dependencies_independent_of_pkg_mgr() { return 0; }
+	check_command() { return 0; }
 
-    PKG_MGR="pacman" run install_prod_dependencies
+	PKG_MGR="pacman" run install_prod_dependencies
 
-    [ ${status} -eq 3 ]
-    [[ ${output} == *"Unsupported package manager: pacman"* ]]
+	[ ${status} -eq 3 ]
+	[[ ${output} == *"Unsupported package manager: pacman"* ]]
 }
 
 @test "install_prod_dependencies: Function can not install packages." {
-    identify_system_pkg_mgr() { return 0; }
-    install_packages_with_pkg_mgr() { return 1; }
-    install_dependencies_independent_of_pkg_mgr() { return 0; }
-    add_neovim_ppa() { return 0; }
+	identify_system_pkg_mgr() { return 0; }
+	install_packages_with_pkg_mgr() { return 1; }
+	install_dependencies_independent_of_pkg_mgr() { return 0; }
+	add_neovim_ppa() { return 0; }
 
-    PKG_MGR="apt-get" run install_prod_dependencies
+	PKG_MGR="apt-get" run install_prod_dependencies
 
-    [ ${status} -eq 5 ]
-    [[ ${output} == *"Can not install packages with the package manager."* ]]
+	[ ${status} -eq 5 ]
+	[[ ${output} == *"Can not install packages with the package manager."* ]]
 
-    PKG_MGR="dnf" run install_prod_dependencies
+	PKG_MGR="dnf" run install_prod_dependencies
 
-    [ ${status} -eq 5 ]
-    [[ ${output} == *"Can not install packages with the package manager."* ]]
+	[ ${status} -eq 5 ]
+	[[ ${output} == *"Can not install packages with the package manager."* ]]
 }
 
 @test "install_prod_dependencies: Function can not add neovim PPA.." {
-    identify_system_pkg_mgr() { return 0; }
-    install_packages_with_pkg_mgr() { return 0; }
-    install_dependencies_independent_of_pkg_mgr() { return 0; }
-    add_neovim_ppa() { return 1; }
+	identify_system_pkg_mgr() { return 0; }
+	install_packages_with_pkg_mgr() { return 0; }
+	install_dependencies_independent_of_pkg_mgr() { return 0; }
+	add_neovim_ppa() { return 1; }
 
-    PKG_MGR="apt-get" run install_prod_dependencies
+	PKG_MGR="apt-get" run install_prod_dependencies
 
-    [ ${status} -eq 4 ]
-    [[ ${output} == *"Can not add neovim PPA."* ]]
+	[ ${status} -eq 4 ]
+	[[ ${output} == *"Can not add neovim PPA."* ]]
 }
 
 @test "install_dependencies_independent_of_pkg_mgr: Function executed successfully." {
-    install_rust() { return 0; }
-    DEPS=(rust)
+	install_rust() { return 0; }
+	DEPS=(rust)
 
-    run install_dependencies_independent_of_pkg_mgr
+	run install_dependencies_independent_of_pkg_mgr
 
-    [ ${status} -eq 0 ]
-    [[ ${output} == *"Installed all production dependencies independent of package manger successfully."* ]]
+	[ ${status} -eq 0 ]
+	[[ ${output} == *"Installed all production dependencies independent of package manger successfully."* ]]
 }
 
 @test "install_dependencies_independent_of_pkg_mgr: Dependency installation function failed.." {
-    install_rust() { return 1; }
-    DEPS=(bash rust)
+	install_rust() { return 1; }
+	DEPS=(bash rust)
 
-    run install_dependencies_independent_of_pkg_mgr
+	run install_dependencies_independent_of_pkg_mgr
 
-    [ ${status} -eq 1 ]
-    [[ ${output} == *"No installer function defined for ${DEPS[0]}. Skipping ..."* ]]
-    [[ ${output} == *"Failed to install dependency: ${DEPS[1]}. Continue ..."* ]]
-    [[ ${output} == *"Can not install production dependencies independent of package manger."* ]]
+	[ ${status} -eq 1 ]
+	[[ ${output} == *"No installer function defined for ${DEPS[0]}. Skipping ..."* ]]
+	[[ ${output} == *"Failed to install dependency: ${DEPS[1]}. Continue ..."* ]]
+	[[ ${output} == *"Can not install production dependencies independent of package manger."* ]]
 }
 
 @test "install_dependencies_independent_of_pkg_mgr: Dependency installation function implemented.." {
-    install_rust() { return 0; }
-    DEPS=(bash rust)
+	install_rust() { return 0; }
+	DEPS=(bash rust)
 
-    run install_dependencies_independent_of_pkg_mgr
+	run install_dependencies_independent_of_pkg_mgr
 
-    [ ${status} -eq 2 ]
-    [[ ${output} == *"No installer function defined for ${DEPS[0]}. Skipping ..."* ]]
-    [[ ${output} == *"Can not install all production dependencies independent of package manger. Only installed ${DEPS[1]}"* ]]
+	[ ${status} -eq 2 ]
+	[[ ${output} == *"No installer function defined for ${DEPS[0]}. Skipping ..."* ]]
+	[[ ${output} == *"Can not install all production dependencies independent of package manger. Only installed ${DEPS[1]}"* ]]
 }
 
 @test "install_prod_requirements: Function executed successfully." {
-    install_cargo_pkg() { return 0; }
-    rust_req=(selene)
+	install_cargo_pkg() { return 0; }
+	rust_req=(selene)
 
-    RUST_REQ=${rust_req[*]} run install_prod_requirements
+	RUST_REQ=${rust_req[*]} run install_prod_requirements
 
-    [ ${status} -eq 0 ]
-    [[ ${output} == *"Requirements have been successfully installed."* ]]
+	[ ${status} -eq 0 ]
+	[[ ${output} == *"Requirements have been successfully installed."* ]]
 }
 
 @test "install_prod_requirements: Installation of rust requirements fail." {
-    install_cargo_pkg() { return 1; }
-    rust_req=(selene)
+	install_cargo_pkg() { return 1; }
+	rust_req=(selene)
 
-    RUST_REQ=${rust_req[*]} run install_prod_requirements
+	RUST_REQ=${rust_req[*]} run install_prod_requirements
 
-    [ ${status} -eq 3 ]
-    [[ ${output} == *"Can not install rust requirements."* ]]
+	[ ${status} -eq 3 ]
+	[[ ${output} == *"Can not install rust requirements."* ]]
 }

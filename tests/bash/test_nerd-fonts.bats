@@ -3,142 +3,142 @@
 TEST_DATA=${NVIM_CONFIG}/tests/bash/data
 
 @test "Test if script '${NVIM_CONFIG}/scripts/nerd-fonts' exists." {
-    [ -f "${NVIM_CONFIG}"/scripts/nerd-fonts ]
+	[ -f "${NVIM_CONFIG}"/scripts/nerd-fonts ]
 }
 
 setup() {
-    source "${NVIM_CONFIG}/dependencies"
-    source "${NVIM_CONFIG}/scripts/nerd-fonts"
-    unset XDG_DATA_HOME
-    mkdir -p "${HOME}/.local/share/src"
+	source "${NVIM_CONFIG}/dependencies"
+	source "${NVIM_CONFIG}/scripts/nerd-fonts"
+	unset XDG_DATA_HOME
+	mkdir -p "${HOME}/.local/share/src"
 }
 
 teardown() {
-    rm -rf "${HOME}/.local/share/src/nerd-fonts"
+	rm -rf "${HOME}/.local/share/src/nerd-fonts"
 }
 
 @test "init_nerd_process: Function executed successfully - repo is pulled." {
-    mkdir -p "${HOME}/.local/share/src/nerd-fonts"
-    is_repo() { return 0; }
-    pull_repo() { return 0; }
+	mkdir -p "${HOME}/.local/share/src/nerd-fonts"
+	is_repo() { return 0; }
+	pull_repo() { return 0; }
 
-    NVIM_DEV=true run init_nerd_process
+	NVIM_DEV=true run init_nerd_process
 
-    [ ${status} -eq 0 ]
-    [[ ${output} == *"Nerd-fonts git repo exists. Pulling ..."* ]]
+	[ ${status} -eq 0 ]
+	[[ ${output} == *"Nerd-fonts git repo exists. Pulling ..."* ]]
 }
 
 @test "init_nerd_process: Function executed successfully - repo is cloned." {
 
-    read() { return 0; }
-    clone_repo() { return 0; }
+	read() { return 0; }
+	clone_repo() { return 0; }
 
-    NVIM_DEV=true run init_nerd_process
+	NVIM_DEV=true run init_nerd_process
 
-    [ ${status} -eq 0 ]
-    [[ ${output} == *"Nerd-fonts git repo not exists. Cloning ..."* ]]
+	[ ${status} -eq 0 ]
+	[[ ${output} == *"Nerd-fonts git repo not exists. Cloning ..."* ]]
 }
 
 @test "init_nerd_process: Can not pull the git repo." {
-    mkdir -p "${HOME}/.local/share/src/nerd-fonts"
-    is_repo() { return 0; }
-    pull_repo() { return 1; }
+	mkdir -p "${HOME}/.local/share/src/nerd-fonts"
+	is_repo() { return 0; }
+	pull_repo() { return 1; }
 
-    run init_nerd_process
+	run init_nerd_process
 
-    [ ${status} -eq 2 ]
+	[ ${status} -eq 2 ]
 }
 
 @test "init_nerd_process: Can not clone the git repo." {
-    read() { return 1; }
-    clone_repo() { return 0; }
+	read() { return 1; }
+	clone_repo() { return 0; }
 
-    NVIM_DEV=true run init_nerd_process
+	NVIM_DEV=true run init_nerd_process
 
-    [ ${status} -eq 3 ]
-    [[ ${output} == *"Error occured during clone repo."* ]]
+	[ ${status} -eq 3 ]
+	[[ ${output} == *"Error occured during clone repo."* ]]
 }
 
 @test "init_nerd_process: Given directory is not a git repo." {
-    mkdir -p "${HOME}/.local/share/src/nerd-fonts"
-    is_repo() { return 1; }
+	mkdir -p "${HOME}/.local/share/src/nerd-fonts"
+	is_repo() { return 1; }
 
-    run init_nerd_process
+	run init_nerd_process
 
-    [ ${status} -eq 1 ]
-    [[ ${output} == *"Directory ${HOME}/.local/share/src/nerd-fonts already exists and is no git repo."* ]]
+	[ ${status} -eq 1 ]
+	[[ ${output} == *"Directory ${HOME}/.local/share/src/nerd-fonts already exists and is no git repo."* ]]
 }
 
 @test "kill_nerd_fonts_process: Function executed successfully." {
-    kill() { return 0; }
+	kill() { return 0; }
 
-    run kill_nerd_fonts_process
+	run kill_nerd_fonts_process
 
-    [ ${status} -eq 0 ]
+	[ ${status} -eq 0 ]
 }
 
 @test "kill_nerd_fonts_process: Can not kill nerd-fonts process." {
-    kill() { return 1; }
+	kill() { return 1; }
 
-    run kill_nerd_fonts_process
+	run kill_nerd_fonts_process
 
-    [ ${status} -eq 1 ]
+	[ ${status} -eq 1 ]
 }
 
 @test "install_nerd_fonts: Function executed successfully." {
-    wait_for_clone_process() { return 0; }
-    chmod() { return 0; }
+	wait_for_clone_process() { return 0; }
+	chmod() { return 0; }
 
-    NERD_FONTS_DIR="${TEST_DATA}/success" run install_nerd_fonts
+	NERD_FONTS_DIR="${TEST_DATA}/success" run install_nerd_fonts
 
-    [ ${status} -eq 0 ]
-    [[ ${output} == *"Installed nerd-fonts."* ]]
+	[ ${status} -eq 0 ]
+	[[ ${output} == *"Installed nerd-fonts."* ]]
 }
 
 @test "install_nerd_fonts: Can not install nerd-fonts." {
-    wait_for_clone_process() { return 0; }
-    chmod() { return 0; }
+	wait_for_clone_process() { return 0; }
+	chmod() { return 0; }
 
-    NERD_FONTS_DIR="${TEST_DATA}/fail" NVIM_DEV=true run install_nerd_fonts
+	NERD_FONTS_DIR="${TEST_DATA}/fail" NVIM_DEV=true run install_nerd_fonts
 
-    [ ${status} -eq 1 ]
-    [[ ${output} == *"Install nerd-fonts (instal.sh) exited (1) with: This test will fail.."* ]]
-    [[ ${output} == *"Can not install nerd-fonts."* ]]
+	[ ${status} -eq 1 ]
+	[[ ${output} == *"Install nerd-fonts (instal.sh) exited (1) with: This test will fail.."* ]]
+	[[ ${output} == *"Can not install nerd-fonts."* ]]
 }
 
 @test "install_nerd_fonts: Wait for clone process failed." {
-    wait_for_clone_process() { return 1; }
+	wait_for_clone_process() { return 1; }
 
-    run install_nerd_fonts
+	run install_nerd_fonts
 
-    [ ${status} -eq 2 ]
+	[ ${status} -eq 2 ]
 }
 
 @test "install_nerd_fonts: Nerd-fonts directory is not set." {
-    wait_for_clone_process() { return 0; }
+	wait_for_clone_process() { return 0; }
 
-    NERD_FONTS_DIR="" run install_nerd_fonts
+	NERD_FONTS_DIR="" run install_nerd_fonts
 
-    [ ${status} -eq 3 ]
-    [[ ${output} == *"Not Nerd-fonts directory defined."* ]]
+	[ ${status} -eq 3 ]
+	[[ ${output} == *"Not Nerd-fonts directory defined."* ]]
 }
 
 @test "install_nerd_fonts: Can not change directory" {
-    wait_for_clone_process() { return 0; }
-    cd() { return 1; }
+	wait_for_clone_process() { return 0; }
+	cd() { return 1; }
 
-    NERD_FONTS_DIR="${TEST_DATA}/success" run install_nerd_fonts
+	NERD_FONTS_DIR="${TEST_DATA}/success" run install_nerd_fonts
 
-    [ ${status} -eq 1 ]
-    [[ ${output} == *"Can not install nerd-fonts."* ]]
+	[ ${status} -eq 1 ]
+	[[ ${output} == *"Can not install nerd-fonts."* ]]
 }
 
 @test "install_nerd_fonts: Can not make file executable" {
-    wait_for_clone_process() { return 0; }
-    cd() { return 0; }
-    chmod() { return 1; }
+	wait_for_clone_process() { return 0; }
+	cd() { return 0; }
+	chmod() { return 1; }
 
-    NERD_FONTS_DIR="${TEST_DATA}/success" run install_nerd_fonts
+	NERD_FONTS_DIR="${TEST_DATA}/success" run install_nerd_fonts
 
-    [ ${status} -eq 4 ]
+	[ ${status} -eq 4 ]
 }

@@ -5,19 +5,19 @@
 # Colorize only when writing to a terminal and NO_COLOR is not set
 # (https://no-color.org/).
 if [ -t 1 ] && [ -z "${NO_COLOR:-}" ]; then
-    RESET="\033[0m"
-    BOLD="\033[1m"
-    RED="\033[91m"
-    GREEN="\033[92m"
-    ORANGE="\033[33m"
-    CYAN="\033[94m"
+	RESET="\033[0m"
+	BOLD="\033[1m"
+	RED="\033[91m"
+	GREEN="\033[92m"
+	ORANGE="\033[33m"
+	CYAN="\033[94m"
 else
-    RESET=""
-    BOLD=""
-    RED=""
-    GREEN=""
-    ORANGE=""
-    CYAN=""
+	RESET=""
+	BOLD=""
+	RED=""
+	GREEN=""
+	ORANGE=""
+	CYAN=""
 fi
 
 BASH_TESTS_DIR="${NVIM_CONFIG}/tests/bash"
@@ -29,121 +29,121 @@ BASH_COUNTER_SUCCESS_TESTS=()
 BASH_COUNTER_FAILURE_TESTS=()
 
 get_bash_test_files() {
-    local file
-    for file in "${BASH_TESTS_DIR}"/test_*.bats; do
-        [ -f "${file}" ] || continue
-        BASH_TEST_FILES+=("$(basename "${file}")")
-    done
+	local file
+	for file in "${BASH_TESTS_DIR}"/test_*.bats; do
+		[ -f "${file}" ] || continue
+		BASH_TEST_FILES+=("$(basename "${file}")")
+	done
 }
 
 execute_bash_test() {
-    local output status
-    output=$(bats --tap "${BASH_TESTS_DIR}/$1")
-    status="$?"
-    BASH_STATUS_TESTS+=("${status}")
-    BASH_OUTPUT_TESTS+=("${output}")
-    count_tests "${output}"
+	local output status
+	output=$(bats --tap "${BASH_TESTS_DIR}/$1")
+	status="$?"
+	BASH_STATUS_TESTS+=("${status}")
+	BASH_OUTPUT_TESTS+=("${output}")
+	count_tests "${output}"
 }
 
 count_tests() {
-    local output=$1
-    local regex_success="^(ok [0-9]+ ).*$"
-    local regex_failure="^(not ok [0-9]+ ).*$"
-    local counter_success=0
-    local counter_failure=0
-    while IFS= read -r line; do
-        if [[ ${line} =~ ${regex_success} ]]; then
-            ((counter_success++))
-        elif [[ ${line} =~ ${regex_failure} ]]; then
-            ((counter_failure++))
-        fi
-    done <<<"${output}"
-    BASH_COUNTER_SUCCESS_TESTS+=("${counter_success}")
-    BASH_COUNTER_FAILURE_TESTS+=("${counter_failure}")
+	local output=$1
+	local regex_success="^(ok [0-9]+ ).*$"
+	local regex_failure="^(not ok [0-9]+ ).*$"
+	local counter_success=0
+	local counter_failure=0
+	while IFS= read -r line; do
+		if [[ ${line} =~ ${regex_success} ]]; then
+			((counter_success++))
+		elif [[ ${line} =~ ${regex_failure} ]]; then
+			((counter_failure++))
+		fi
+	done <<<"${output}"
+	BASH_COUNTER_SUCCESS_TESTS+=("${counter_success}")
+	BASH_COUNTER_FAILURE_TESTS+=("${counter_failure}")
 }
 
 print_wrong_output() {
-    local output="$1"
-    local print_next=0
-    while IFS= read -r line; do
-        if [[ $line =~ ^not\ ok\ ([0-9]+)\ (.*) ]]; then
-            printf "%b[TEST]%b %b%s%b %b%s%b\n" "${RED}" "${RESET}" "${BOLD}" "${BASH_REMATCH[1]}" "${RESET}" "${ORANGE}" "${BASH_REMATCH[2]}" "${RESET}"
-            print_next=1
-        elif [[ $print_next -eq 1 && $line =~ ^# ]]; then
-            printf "%s\n" "${line}"
-        else
-            print_next=0
-        fi
-    done <<<"$output"
+	local output="$1"
+	local print_next=0
+	while IFS= read -r line; do
+		if [[ $line =~ ^not\ ok\ ([0-9]+)\ (.*) ]]; then
+			printf "%b[TEST]%b %b%s%b %b%s%b\n" "${RED}" "${RESET}" "${BOLD}" "${BASH_REMATCH[1]}" "${RESET}" "${ORANGE}" "${BASH_REMATCH[2]}" "${RESET}"
+			print_next=1
+		elif [[ $print_next -eq 1 && $line =~ ^# ]]; then
+			printf "%s\n" "${line}"
+		else
+			print_next=0
+		fi
+	done <<<"$output"
 }
 
 get_test_counter() {
-    bats -c "${BASH_TESTS_DIR}"
+	bats -c "${BASH_TESTS_DIR}"
 }
 
 main() {
-    get_bash_test_files
+	get_bash_test_files
 
-    local failures=false
-    local width=10
-    for test in "${BASH_TEST_FILES[@]}"; do
-        if [[ ${#test} -gt $width ]]; then
-            width=${#test}
-            if [[ $((width % 2)) -eq 1 ]]; then
-                width=$((width + 1))
-            fi
-        fi
-    done
-    # 24 - 16
-    width=$((width + 6))
-    local string=""
-    char="="
-    string=$(printf '%.0s'"${char}" $(seq 1 $(((width + 18) / 2))))
+	local failures=false
+	local width=10
+	for test in "${BASH_TEST_FILES[@]}"; do
+		if [[ ${#test} -gt $width ]]; then
+			width=${#test}
+			if [[ $((width % 2)) -eq 1 ]]; then
+				width=$((width + 1))
+			fi
+		fi
+	done
+	# 24 - 16
+	width=$((width + 6))
+	local string=""
+	char="="
+	string=$(printf '%.0s'"${char}" $(seq 1 $(((width + 18) / 2))))
 
-    end_string=$(printf '%.0s'"${char}" $(seq 1 $(((width + 24) / 2))))
+	end_string=$(printf '%.0s'"${char}" $(seq 1 $(((width + 24) / 2))))
 
-    printf "%s Starting Tests %s\n" "${string}" "${string}"
-    printf "Collected %b%d%b tests\n" "${BOLD}" "$(get_test_counter)" "${RESET}"
+	printf "%s Starting Tests %s\n" "${string}" "${string}"
+	printf "Collected %b%d%b tests\n" "${BOLD}" "$(get_test_counter)" "${RESET}"
 
-    for test in "${BASH_TEST_FILES[@]}"; do
-        execute_bash_test "${test}"
-        index=$(("${#BASH_STATUS_TESTS[@]}" - 1))
-        printf "%b[FILE]%b %-*s" "${CYAN}" "${BOLD}" "${width}" "${test}"
+	for test in "${BASH_TEST_FILES[@]}"; do
+		execute_bash_test "${test}"
+		index=$(("${#BASH_STATUS_TESTS[@]}" - 1))
+		printf "%b[FILE]%b %-*s" "${CYAN}" "${BOLD}" "${width}" "${test}"
 
-        if [[ ${BASH_COUNTER_FAILURE_TESTS[${index}]} -gt 0 ]]; then
-            failures=true
-            printf "%b" "${RED}"
-        else
-            printf "%b" "${GREEN}"
-        fi
+		if [[ ${BASH_COUNTER_FAILURE_TESTS[${index}]} -gt 0 ]]; then
+			failures=true
+			printf "%b" "${RED}"
+		else
+			printf "%b" "${GREEN}"
+		fi
 
-        printf "%-3d passed / %d failure" "${BASH_COUNTER_SUCCESS_TESTS[${index}]}" "${BASH_COUNTER_FAILURE_TESTS[${index}]}"
+		printf "%-3d passed / %d failure" "${BASH_COUNTER_SUCCESS_TESTS[${index}]}" "${BASH_COUNTER_FAILURE_TESTS[${index}]}"
 
-        if [[ ${BASH_COUNTER_FAILURE_TESTS[${index}]} -gt 0 ]]; then
-            printf "  %b" "${RESET}"
-        else
-            printf "  %b" "${RESET}"
-        fi
-        printf "\n"
-    done
+		if [[ ${BASH_COUNTER_FAILURE_TESTS[${index}]} -gt 0 ]]; then
+			printf "  %b" "${RESET}"
+		else
+			printf "  %b" "${RESET}"
+		fi
+		printf "\n"
+	done
 
-    if ${failures}; then
-        printf "%s FAILURES %s\n" "${end_string}" "${end_string}"
-    else
-        printf "%s%s%s\n" "${end_string}" "==========" "${end_string}"
-        return 0
-    fi
+	if ${failures}; then
+		printf "%s FAILURES %s\n" "${end_string}" "${end_string}"
+	else
+		printf "%s%s%s\n" "${end_string}" "==========" "${end_string}"
+		return 0
+	fi
 
-    char="-"
-    string=$(printf '%.0s'"${char}" $(seq 1 $((width + 34))))
-    local first=true
-    for i in "${!BASH_TEST_FILES[@]}"; do
-        [[ ${BASH_STATUS_TESTS[${i}]} -eq 0 ]] && continue
-        ${first} || printf "%s\n" "${string}"
-        first=false
-        printf "%b[FILE]%b %s\n" "${CYAN}" "${BOLD}" "${BASH_TEST_FILES[${i}]}"
-        print_wrong_output "${BASH_OUTPUT_TESTS[$i]}"
-    done
-    return 1
+	char="-"
+	string=$(printf '%.0s'"${char}" $(seq 1 $((width + 34))))
+	local first=true
+	for i in "${!BASH_TEST_FILES[@]}"; do
+		[[ ${BASH_STATUS_TESTS[${i}]} -eq 0 ]] && continue
+		${first} || printf "%s\n" "${string}"
+		first=false
+		printf "%b[FILE]%b %s\n" "${CYAN}" "${BOLD}" "${BASH_TEST_FILES[${i}]}"
+		print_wrong_output "${BASH_OUTPUT_TESTS[$i]}"
+	done
+	return 1
 }
 main
