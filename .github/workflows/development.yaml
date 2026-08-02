@@ -27,7 +27,7 @@ jobs:
       - name: Install hadolint
         run: |
           sudo curl -sSL -o /usr/local/bin/hadolint \
-            https://github.com/hadolint/hadolint/releases/download/v2.14.0/hadolint-Linux-x86_64
+            https://github.com/hadolint/hadolint/releases/download/v2.15.1/hadolint-Linux-x86_64
           sudo chmod +x /usr/local/bin/hadolint
       - name: Install pre-commit
         run: pipx install pre-commit
