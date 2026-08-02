@@ -70,7 +70,10 @@ WORKDIR /root/.config/nvim
 COPY ./init.lua ./lazy-lock.json ./
 COPY ./lua ./lua
 
-RUN timeout 60m nvim --headless "+InitNVIM"
+# No timeout wrapper here: nvim dies instantly when it runs under
+# timeout while writing to the buildkit output pipe. Hang protection
+# comes from the ci job timeouts instead.
+RUN nvim --headless "+InitNVIM"
 
 # Image that serves as the basis for creating environment images for remote
 # and local unit tests.
