@@ -4,6 +4,8 @@ local keymap = vim.keymap
 -- Tool toggles
 opts.desc = "Toggle lsp, linter and formatter tools"
 keymap.set("n", "<leader>iu", "<cmd>ToggleTools<CR>", opts)
+opts.desc = "Detect filetype and start tools"
+keymap.set("n", "<leader>if", "<cmd>DetectFiletype<CR>", opts)
 
 -- Navigaton
 -- Window navigation

@@ -219,6 +219,7 @@ local function lsp_keys()
 		{ "<leader>is", mode = "n", desc = "Restart LSP", icon = LOCAL.referesh },
 		{ "<leader>iw", mode = "n", desc = "Lint current buffer", icon = LOCAL.status },
 		{ "<leader>iu", mode = "n", desc = "Toggle lsp, linter and formatter tools", icon = LOCAL.toggle },
+		{ "<leader>if", mode = "n", desc = "Detect filetype and start tools", icon = LOCAL.referesh },
 	}
 end
 
