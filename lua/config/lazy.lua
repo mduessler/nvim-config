@@ -25,7 +25,7 @@ end
 lazy.setup({
 	spec = specs,
 	rocks = {
-		hererocks = true,
+		enabled = false,
 	},
 	ui = {
 		border = "rounded",
