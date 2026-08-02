@@ -37,7 +37,7 @@ return {
 		})
 
 		opts.expr = false
-		opts.desc = "Refactoring"
+		opts.desc = "Editing"
 		keymap.set({ "n", "x" }, "<leader>e", "<NOP>", opts)
 
 		opts.desc = "Selection to method"

@@ -73,6 +73,7 @@ return {
 		function _LAZYGIT_TOGGLE()
 			lazygit:toggle()
 		end
+		opts.desc = "Lazy git"
 		keymap.set({ "n" }, "<leader>gl", "<cmd>lua _LAZYGIT_TOGGLE()<CR>", opts)
 
 		local node = Terminal:new({ cmd = "node", hidden = true })
