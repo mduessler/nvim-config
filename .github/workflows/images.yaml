@@ -1,0 +1,58 @@
+name: Images
+# Builds and pushes the test environment images. Runs when the image
+# definition changes on main, weekly before the canary run to pick up new
+# neovim and package versions, and on demand.
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - env/**
+      - dependencies
+      - scripts/**
+  schedule:
+    - cron: "0 5 * * 1"
+  workflow_dispatch:
+permissions:
+  contents: read
+  packages: write
+jobs:
+  build:
+    name: images-${{ matrix.distro }}
+    strategy:
+      fail-fast: false
+      matrix:
+        distro: [fedora, ubuntu]
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Set up buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Login to the github container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push the unit test image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: env/Dockerfile.${{ matrix.distro }}
+          target: remote
+          push: true
+          tags: ghcr.io/mduessler/${{ matrix.distro }}-nvim:unit-test
+          cache-from: type=gha,scope=${{ matrix.distro }}
+          cache-to: type=gha,scope=${{ matrix.distro }},mode=max
+      - name: Build and push the install test image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: env/Dockerfile.${{ matrix.distro }}
+          target: install
+          push: true
+          tags: ghcr.io/mduessler/${{ matrix.distro }}-nvim:install-test
+          cache-from: type=gha,scope=${{ matrix.distro }}
+          cache-to: type=gha,scope=${{ matrix.distro }},mode=max

@@ -1,0 +1,30 @@
+name: Image validation
+# A pull request that changes the image definition would otherwise be
+# tested against the outdated registry images. This builds the images
+# fresh from the pull request and runs both test suites inside them,
+# with exactly the same commands that are used locally.
+on:
+  pull_request:
+    branches:
+      - main
+      - dev
+    paths:
+      - env/**
+      - dependencies
+      - scripts/**
+jobs:
+  validate:
+    name: image-validation-${{ matrix.distro }}
+    strategy:
+      fail-fast: false
+      matrix:
+        distro: [fedora, ubuntu]
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Build the image and run the unit tests
+        run: scripts/containers unit-test ${{ matrix.distro }}
+      - name: Build the image and run the install test
+        run: scripts/containers install-test ${{ matrix.distro }}

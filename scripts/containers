@@ -44,16 +44,15 @@ function unit_test() {
 function install_test() {
 	require_distro "${1:-}"
 
+	# On a detached head (ci checkouts) the entrypoint simply tests the
+	# copied working tree instead of switching to a branch.
 	local branch
 	branch="$(git branch --show-current)"
-	if [[ -z "${branch}" ]]; then
-		echo "ERROR: can not determine the branch to test." && exit 2
-	fi
 
 	docker build -f "$(dockerfile "$1")" \
 		--target=install-local \
 		-t "${1}-nvim:install-test" .
-	docker run --rm -e BRANCH_TO_TEST="${branch}" "${1}-nvim:install-test"
+	docker run --rm ${branch:+-e BRANCH_TO_TEST="${branch}"} "${1}-nvim:install-test"
 }
 
 function login() {
