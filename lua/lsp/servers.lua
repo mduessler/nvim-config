@@ -8,6 +8,7 @@ return {
 	["tailwindcss-language-server"] = "tailwindcss", -- "Tailwind ls"
 	["css-variables-language-server"] = "css_variables", -- "CSS ls"
 	["yaml-language-server"] = "yamlls", -- Yaml ls
+	["helm-ls"] = "helm_ls", -- Helm templates
 	["gitlab-ci-ls"] = "gitlab_ci_ls", -- Gitlab CI/CD
 	["ast-grep"] = "ast_grep", --A CLI tool for code structural search, lint and rewriting
 	["taplo"] = "taplo", -- For toml

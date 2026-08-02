@@ -15,6 +15,9 @@ local lazy = require("lazy")
 
 local specs = {
 	{ import = "plugins" },
+	-- Optional feature domains live in their own folder and can be
+	-- disabled as a whole by removing the import.
+	{ import = "plugins.kubernetes" },
 }
 
 lazy.setup({
