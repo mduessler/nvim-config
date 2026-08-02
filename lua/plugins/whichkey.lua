@@ -79,7 +79,7 @@ local function refacor_keys()
 			icon = { icon = signs.refactor.selection_to_variable, hl = "MyPurple" },
 		},
 		{
-			"<leader>iq",
+			"<leader>eq",
 			mode = "n",
 			desc = "Format current buffer",
 			icon = { icon = signs.refactor.format, hl = "MyOrange" },

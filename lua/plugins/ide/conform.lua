@@ -7,7 +7,7 @@ return {
 	},
 	keys = {
 		{
-			"<leader>iq",
+			"<leader>eq",
 			function()
 				local conform = require("conform")
 				local toggle = require("core.toggle")
