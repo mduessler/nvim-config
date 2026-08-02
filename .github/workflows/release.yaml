@@ -1,36 +1,47 @@
 name: Release current main branch.
 on:
   workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version tag (e.g. v1.0.0)"
+        required: true
+        type: string
+permissions:
+  contents: write
 jobs:
+  tests:
+    uses: ./.github/workflows/tests.yaml
+    secrets: inherit
   release:
     runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/mduessler/fedora-nvim:unit-test
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.PACKAGES_PAT }}
+    timeout-minutes: 20
+    needs: tests
     steps:
-      - name: Prepare Release.
+      - name: Validate the given version
         run: |
-          git clone https://github.com/mduessler/nvim-config ${NVIM_CONFIG}
-          cd ${NVIM_CONFIG}
-          if git rev-parse "v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ}" >/dev/null 2>&1; then
-            echo "Tag v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ} already exists. Stopping release." && exit 1
+          if ! [[ "${{ inputs.version }}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Version '${{ inputs.version }}' does not match vMAJOR.MINOR.PATCH."
+            exit 1
           fi
-          git checkout main
-          export USERNAME="${{ github.actor }}"
-          export TOKEN="${{ secrets.PACKAGES_PAT }}"
-          git config user.name "github-release-bot[${{ github.actor }}]"
-          git config user.email "github-release-bot@noreply.github.com"
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          ref: main
+          fetch-tags: true
+      - name: Stop when the tag already exists
+        run: |
+          if git rev-parse "${{ inputs.version }}" >/dev/null 2>&1; then
+            echo "Tag ${{ inputs.version }} already exists. Stopping release."
+            exit 1
+          fi
       - name: Select files from main to release.
         run: |
-          cd ${NVIM_CONFIG}
+          git config user.name "github-release-bot[${{ github.actor }}]"
+          git config user.email "github-release-bot@noreply.github.com"
           git checkout --orphan "Release"
-          git rm -rf .
-          ls -l
-          git status
+          git rm -rfq .
           git checkout main -- \
-            installs \
+            scripts \
             lua \
             .gitignore \
             dependencies \
@@ -39,17 +50,13 @@ jobs:
             lazy-lock.json \
             LICENSE \
             README.md
-          ls -l
-          git status
       - name: Remove development section from README.md
         run: |
-          cd ${NVIM_CONFIG}
           sed -i '/^## Development/,/^## Notes & Feedback/ {/^## Notes & Feedback/!d}' README.md
-      - name: Create release for nvim version.
+      - name: Commit, tag and push the release.
         run: |
-          cd ${NVIM_CONFIG}
           git add \
-            installs \
+            scripts \
             lua \
             .gitignore \
             dependencies \
@@ -58,12 +65,7 @@ jobs:
             lazy-lock.json \
             LICENSE \
             README.md
-          git commit -m "Release config for nvim v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ}"
-          git tag -a "v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ}" -m "Release for nvim v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ}"
+          git commit -m "Release ${{ inputs.version }}"
+          git tag -a "${{ inputs.version }}" -m "Release ${{ inputs.version }}"
           git tag -f latest
-          git checkout main
-          git branch -D "Release"
-          git push https://${USERNAME}:${TOKEN}@github.com/${{ github.repository }} HEAD --tags --force
-        env:
-          USERNAME: ${{ github.actor }}
-          TOKEN: ${{ secrets.PACKAGES_PAT }}
+          git push origin --tags --force
