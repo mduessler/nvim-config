@@ -4,10 +4,15 @@ This document holds all information needed for the Development process. Read it
 carefully before you execute the command to install the dependencies to execute
 the development environments.
 
-## Files to update before Release
+## Release
 
-1. **READEME.md** - Change NVIM version.
-2. **dependencies** - Change NVIM version.
+Releases are created automatically by the release workflow on every push to
+the main branch. The version is derived from the conventional commit messages
+since the last release: `feat` bumps the minor version, a breaking change
+(`!` or `BREAKING CHANGE`) bumps the major version, everything else bumps the
+patch version. The release itself is an orphan commit that only contains the
+files needed to run the configuration. A specific version can be set manually
+by dispatching the workflow with the version override input.
 
 ## Process
 
@@ -70,9 +75,9 @@ Ubuntu.
 1. **Environment tests** -- Running the installation script in an isolated
    environment to verify the installation of all required dependencies and
    requirements.
-   - `make fedora-install-tests-local` -- Runs install script in a fedora
+   - `make fedora-install-test-local` -- Runs install script in a fedora
      environment.
-   - `make ubuntu-install-tests-local` -- Runs install script in a ubuntu
+   - `make ubuntu-install-test-local` -- Runs install script in a ubuntu
      environment.
 2. **Unit tests**. -- Running tests in an environment with all dependencies
    and requirements installed.
@@ -83,7 +88,9 @@ Ubuntu.
 3. **Remote tests** -- *Environment test* and *unit tests* are also executed
    with github actions during a pull request to main or dev. The test
    environment images are built and pushed automatically by the images
-   workflow whenever the image definition changes on main.
+   workflow whenever the image definition changes on main. A pull request
+   that changes the image definition builds and tests the images freshly
+   with the image validation workflow instead of using the registry images.
 
 ### Naming
 
@@ -102,12 +109,13 @@ All functions must be tested in ascending order of return value.
 
 ### Named Commands
 
-Named commands for the initialization are stored under `lua/configs/cmd.lua`
+Named commands for the initialization are stored under `lua/config/cmds.lua`
 
 1. **InitNVIM** -- The operations of the command are only executed in headless
-   mode. The command executes the `Lazy sync` command to download and install
-   all plugins. After it all defined language servers, defined in
-   `lua/lsp/servers.lua` will be installed. Next all formater and linter which
-   are defined in the file `lua/plugins/mason.lua` in the tables *formater*
-   and *linter* will be installed with mason-tools-installer. At the end, the
-   languages of Treesitter will be installed.
+   mode. The command executes the `Lazy! sync` command to download and install
+   all plugins. After it all language servers defined in `lua/lsp/servers.lua`,
+   all formaters defined in `lua/lsp/formater.lua` and all linters defined in
+   `lua/lsp/linter.lua` will be installed through the mason registry. At the
+   end all Treesitter languages will be installed. The command exits with an
+   error if a package installation fails or if any deprecation or warning was
+   collected during the bootstrap (see `lua/config/warnings.lua`).
