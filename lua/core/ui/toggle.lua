@@ -9,11 +9,12 @@ local M = {}
 
 local ns = vim.api.nvim_create_namespace("core_ui_toggle")
 
--- Codepoints on purpose: private use glyphs survive every tooling.
+-- Codepoints on purpose: private use glyphs survive every tooling. The
+-- entry icon is shared with the custom select ui to keep the look uniform.
 local icons = {
-	on = vim.fn.nr2char(0xf00c) .. " ", -- check mark
-	off = vim.fn.nr2char(0xf00d) .. " ", -- cross
-	entry = vim.fn.nr2char(0xf111) .. " ", -- dot
+	on = vim.fn.nr2char(0xf00c), -- check mark
+	off = vim.fn.nr2char(0xf00d), -- cross
+	entry = require("core.ui.select").text.start_icon,
 }
 
 local headers = {
@@ -50,9 +51,11 @@ local border = {
 }
 
 --- Pads the content to the inner width and closes the box on the right.
-local function framed(content, width)
-	local fill = width - 4 - vim.fn.strdisplaywidth(content)
-	return border.vertical .. " " .. content .. string.rep(" ", math.max(fill, 0)) .. " " .. border.vertical
+--- An optional right part is aligned to the right border of the box.
+local function framed(content, width, right)
+	right = right or ""
+	local fill = width - 4 - vim.fn.strdisplaywidth(content) - vim.fn.strdisplaywidth(right)
+	return border.vertical .. " " .. content .. string.rep(" ", math.max(fill, 0)) .. right .. " " .. border.vertical
 end
 
 local function build(tools, width)
@@ -74,7 +77,7 @@ local function build(tools, width)
 			add(framed(string.rep("─", width - 4), width))
 			for _, name in ipairs(tools[kind]) do
 				local icon = toggle.is_enabled(kind, name) and icons.on or icons.off
-				add(framed(icons.entry .. icon .. name, width), { kind = kind, name = name })
+				add(framed(icons.entry .. name, width, icon), { kind = kind, name = name })
 			end
 			add(border.bottom_left .. string.rep(border.horizontal, width - 2) .. border.bottom_right)
 		end
