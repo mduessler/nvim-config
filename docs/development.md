@@ -81,14 +81,9 @@ Ubuntu.
    - `make ubuntu-unit-tests-local` -- Runs unit tests in a ubuntu
      environment.
 3. **Remote tests** -- *Environment test* and *unit tests* are also executed
-   with github actions during a pull request to main or dev.
-   - `make fedora-build-remote` -- Builds and uploads the fedora environment
-     for the github action tests. This image is also used to perform linting
-     with pre-commit.
-   - `make ubuntu-build-remote` -- Builds and uploads the ubuntu environment
-     for the github action test
-   - `make build-remote` -- Builds and uploads the fedora and ubuntu
-     environment for the github action test
+   with github actions during a pull request to main or dev. The test
+   environment images are built and pushed automatically by the images
+   workflow whenever the image definition changes on main.
 
 ### Naming
 

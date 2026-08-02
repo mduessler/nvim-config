@@ -2,19 +2,15 @@
 
 set -euo pipefail
 
-REGISTRY="ghcr.io/mduessler"
-
 function help() {
 	cat <<EOF
 Usage:
-  $(basename "$0") <command> [distro]
+  $(basename "$0") <command> <distro>
 
 Commands:
   help                    Shows this help message
   unit-test <distro>      Build the unit test image and run the bats suite
   install-test <distro>   Build the install test image and run the install script
-  build-remote [distro]   Build and push the remote images (default: both)
-  login                   Login to the github container registry
 
 Distros:
   fedora, ubuntu
@@ -55,37 +51,6 @@ function install_test() {
 	docker run --rm ${branch:+-e BRANCH_TO_TEST="${branch}"} "${1}-nvim:install-test"
 }
 
-function login() {
-	[[ -z "${GITHUB_USERNAME:-}" ]] && read -rp "Enter your GitHub username: " GITHUB_USERNAME
-	if [[ -z "${GITHUB_TOKEN:-}" ]]; then
-		read -rsp "Enter your GitHub PAT: " GITHUB_TOKEN && echo
-	fi
-	echo "${GITHUB_TOKEN}" | docker login ghcr.io -u "${GITHUB_USERNAME}" --password-stdin
-}
-
-function push_remote() {
-	docker build -f "$(dockerfile "$1")" \
-		--pull=false \
-		--target=remote \
-		-t "${REGISTRY}/${1}-nvim:unit-test" .
-	docker build -f "$(dockerfile "$1")" \
-		--target=install \
-		-t "${REGISTRY}/${1}-nvim:install-test" .
-	docker push "${REGISTRY}/${1}-nvim:unit-test"
-	docker push "${REGISTRY}/${1}-nvim:install-test"
-}
-
-function build_remote() {
-	login
-	if [[ -z "${1:-}" ]]; then
-		push_remote fedora
-		push_remote ubuntu
-		return 0
-	fi
-	require_distro "$1"
-	push_remote "$1"
-}
-
 if [[ $# -lt 1 || $# -gt 2 ]]; then
 	echo "ERROR: one command and at most one distro argument needed."
 	help && exit 1
@@ -95,10 +60,6 @@ elif [[ "$1" == "unit-test" ]]; then
 	unit_test "${2:-}"
 elif [[ "$1" == "install-test" ]]; then
 	install_test "${2:-}"
-elif [[ "$1" == "build-remote" ]]; then
-	build_remote "${2:-}"
-elif [[ "$1" == "login" ]]; then
-	login
 else
 	echo "ERROR: Unkown command."
 	help && exit 1
