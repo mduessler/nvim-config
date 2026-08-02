@@ -1,5 +1,5 @@
 # Image to build all dependencies.
-FROM fedora:42 AS builder
+FROM fedora:44 AS builder
 
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
@@ -71,7 +71,7 @@ RUN timeout 60m nvim --headless "+InitNVIM"
 
 # Image that serves as the basis for creating environment images for remote
 # and local unit tests.
-FROM fedora:42 AS base
+FROM fedora:44 AS base
 
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
@@ -165,7 +165,7 @@ WORKDIR ${NVIM_CONFIG}
 
 # Image that serves as the basis for creating environment images for remote
 # and local testing of the installation script.
-FROM fedora:42 AS install
+FROM fedora:44 AS install
 
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
