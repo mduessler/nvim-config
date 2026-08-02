@@ -1,3 +1,4 @@
+require("config.warnings").setup()
 require("config.options")
 require("config.lazy")
 require("config.cmds")

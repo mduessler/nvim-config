@@ -72,8 +72,22 @@ vim.api.nvim_create_user_command("InitNVIM", function()
 	log("Installing Treesitter languages.")
 	require("nvim-treesitter").install({ "all" }):wait(1800000)
 
-	if failures > 0 then
-		log("InitNVIM finished with " .. failures .. " failed package installation(s).")
+	local warnings = require("config.warnings").collected
+	if #warnings > 0 then
+		log("Collected " .. #warnings .. " warning(s) during the bootstrap:")
+		for _, warning in ipairs(warnings) do
+			log("  [WARNING] " .. warning)
+		end
+	end
+
+	if failures > 0 or #warnings > 0 then
+		log(
+			"InitNVIM finished with "
+				.. failures
+				.. " failed package installation(s) and "
+				.. #warnings
+				.. " warning(s)."
+		)
 		vim.cmd("cquit! 1")
 	end
 
