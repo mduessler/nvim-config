@@ -12,6 +12,8 @@ identify_system_pkg_mgr() {
             export PKG_MGR="apt-get"
         elif check_command dnf; then
             export PKG_MGR="dnf"
+        elif check_command brew; then
+            export PKG_MGR="brew"
         else
             warning "No valid package manager found."
             return 1
@@ -36,6 +38,19 @@ install_packages_with_pkg_mgr() {
 
     info "Installing: $* ..."
     debug "Updating repositories."
+
+    if [ "${PKG_MGR}" = "brew" ]; then
+        if ! brew update; then
+            warning "Can not update the package repositories."
+        fi
+        debug "Installing package(s)."
+        if ! brew install "$@"; then
+            error "Can not install package(s)."
+            return 1
+        fi
+        success "Installed packages: $*"
+        return 0
+    fi
 
     # 'dnf update' would upgrade the whole system; 'makecache' only
     # refreshes the repository metadata (what 'apt-get update' does).

@@ -36,6 +36,9 @@ install_dev_dependencies() {
             error "Can not install docker with ${PKG_MGR}"
             return 1
         } ;;
+        brew)
+            warning "The docker based development environment is not available on macOS. Skipping."
+            ;;
         *)
             error "Unsupported package manager: ${PKG_MGR}"
             return 3

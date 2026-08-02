@@ -65,6 +65,23 @@ DNF_DEPS=(
     unzip
 )
 
+BREW_DEPS=(
+    cmake
+    curl
+    gettext
+    git
+    go
+    maven
+    neovim
+    ninja
+    node
+    openjdk
+    openssl@3
+    pkgconf
+    pre-commit
+    python
+)
+
 #
 # Production requirements
 #

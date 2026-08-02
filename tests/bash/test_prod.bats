@@ -100,6 +100,25 @@ setup() {
 	[[ ${output} == *"Dependencies have been successfully installed."* ]]
 }
 
+@test "install_prod_dependencies: Function executed successfully - brew without ppa." {
+	export PKG_MGR="brew"
+	add_neovim_ppa() {
+		echo "mock ppa called"
+		return 0
+	}
+	install_packages_with_pkg_mgr() {
+		echo "mock install: $*"
+		return 0
+	}
+	install_dependencies_independent_of_pkg_mgr() { return 0; }
+
+	run install_prod_dependencies
+
+	[ ${status} -eq 0 ]
+	[[ ${output} == *"mock install: ${BREW_DEPS[*]}"* ]]
+	[[ ${output} != *"mock ppa called"* ]]
+}
+
 @test "install_prod_dependencies: Function can not install packages without package manager." {
 	identify_system_pkg_mgr() { return 0; }
 	install_packages_with_pkg_mgr() { return 0; }

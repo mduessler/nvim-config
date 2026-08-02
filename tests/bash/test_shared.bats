@@ -40,6 +40,16 @@ setup() {
 	[[ ${output} == *"Package manager was already defined as '${pkg_mgr}'"* ]]
 }
 
+@test "identify_system_pkg_mgr: Function executed successfully - case brew pkg manager identified." {
+	local pkg_mgr="brew"
+	check_command() { [ "$1" = "${pkg_mgr}" ] && return 0 || return 1; }
+
+	run identify_system_pkg_mgr
+
+	[ ${status} -eq 0 ]
+	[[ ${output} == *"Identified '${pkg_mgr}' as package manager."* ]]
+}
+
 @test "identify_system_pkg_mgr: Can not idenify a system pkg manager." {
 	local pkg_mgr="apk"
 	check_command() { [ "$1" = "${pkg_mgr}" ] && return 0 || return 1; }
@@ -63,6 +73,34 @@ setup() {
 @test "identify_system_pkg_mgr: Can not install packages - pkg manager can not install pgk." {
 	sudo() { return 1; }
 	identify_system_pkg_mgr
+
+	run install_packages_with_pkg_mgr neovim
+
+	[ ${status} -eq 1 ]
+	[[ ${output} == *"Can not install package(s)."* ]]
+}
+
+@test "identify_system_pkg_mgr: Function executed successfully - brew installs without sudo." {
+	export PKG_MGR="brew"
+	sudo() { return 1; }
+	brew() {
+		echo "mock brew $*"
+		return 0
+	}
+
+	run install_packages_with_pkg_mgr neovim
+
+	[ ${status} -eq 0 ]
+	[[ ${output} == *"mock brew install neovim"* ]]
+	[[ ${output} == *"Installed packages: neovim"* ]]
+}
+
+@test "identify_system_pkg_mgr: Can not install packages - brew can not install pkg." {
+	export PKG_MGR="brew"
+	brew() {
+		[ "$1" = "update" ] && return 0
+		return 1
+	}
 
 	run install_packages_with_pkg_mgr neovim
 
