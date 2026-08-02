@@ -37,6 +37,7 @@ APT_DEPS=(
     python3
     python3-pip
     python3-venv
+    unzip
 )
 
 DNF_DEPS=(
@@ -61,6 +62,7 @@ DNF_DEPS=(
     pre-commit
     python
     python-pip
+    unzip
 )
 
 #

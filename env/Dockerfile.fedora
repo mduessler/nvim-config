@@ -24,6 +24,7 @@ RUN dnf install -y --setopt=install_weak_deps=False \
     python \
     python3-pip \
     tree-sitter-cli \
+    unzip \
     && dnf clean all \
     && rm -rf /var/cache/dnf /var/lib/dnf /usr/share/doc/* /usr/share/man/* /usr/share/locale/* \
     && dnf autoremove -y
