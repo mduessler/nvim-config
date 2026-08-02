@@ -1,0 +1,18 @@
+return {
+	shellcheck = "shellcheck",
+	["markdownlint-cli2"] = "markdownlint-cli2",
+	selene = "selene",
+	eslint_d = "eslint_d",
+	jsonlint = "jsonlint",
+	stylelint = "stylelint",
+	hadolint = "hadolint",
+	djlint = "djlint",
+	flake8 = "flake8",
+	mypy = "mypy",
+	cpplint = "cpplint",
+	cmakelint = "cmakelint",
+	yamllint = "yamllint",
+	["sonarlint-language-server"] = "sonarlint-language-server",
+	checkstyle = "checkstyle",
+	terraform = "terraform",
+}

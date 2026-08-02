@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2034
+#
+# This file defines system package dependencies for this project.
+# It should be sourced by installer scripts (not executed directly).
+# Example:
+#   source "./dependencies"
+
+#
+# Production dependencies
+#
+
+DEPS=(
+    rust
+)
+
+APT_DEPS=(
+    build-essential
+    clang
+    cmake
+    curl
+    g++
+    gcc
+    gettext
+    git
+    golang
+    libssl-dev
+    libstdc++-14-dev
+    maven
+    neovim
+    ninja-build
+    nodejs
+    npm
+    openjdk-21-jdk
+    pkg-config
+    pre-commit
+    python3
+    python3-pip
+    python3-venv
+    unzip
+)
+
+DNF_DEPS=(
+    clang
+    cmake
+    curl
+    gcc
+    gcc-c++
+    gettext
+    git
+    glibc-gconv-extra
+    golang
+    java-latest-openjdk-devel
+    libstdc++-static
+    make
+    maven
+    neovim
+    ninja-build
+    nodejs
+    openssl-devel
+    pkg-config
+    pre-commit
+    python
+    python-pip
+    unzip
+)
+
+#
+# Production requirements
+#
+
+RUST_REQ=(
+    selene
+    tree-sitter-cli
+)
+
+#
+# Development dependencies
+#
+
+APT_DEV_DEPS=(
+    ca-certificates
+    docker-ce
+    docker-ce-cli
+    containerd.io
+    docker-buildx-plugin
+)
+
+DNF_DEV_DEPS=(
+    docker-ce
+    docker-ce-cli
+    containerd.io
+    docker-buildx-plugin
+)
