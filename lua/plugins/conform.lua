@@ -9,7 +9,10 @@ return {
 		{
 			"<leader>rq",
 			function()
-				require("conform").format({
+				local conform = require("conform")
+				local toggle = require("core.toggle")
+				conform.format({
+					formatters = toggle.filter("formatter", conform.formatters_by_ft[vim.bo.filetype] or {}),
 					lsp_fallback = true,
 					async = false,
 					timeout_ms = 500,

@@ -5,7 +5,9 @@ return {
 		{
 			"<leader>w",
 			function()
-				require("lint").try_lint()
+				local lint = require("lint")
+				local toggle = require("core.toggle")
+				lint.try_lint(toggle.filter("linter", lint.linters_by_ft[vim.bo.filetype] or {}))
 			end,
 			noremap = true,
 			silent = true,
@@ -43,14 +45,15 @@ return {
 		table.insert(yamllint.args, "-c ~/.config/nvim/configs/yamllint.yaml")
 
 		local checkstyle = lint.linters.checkstyle
-		table.insert(checkstyle.args, "-c ~/.config/checkstyle-doc.xml")
+		table.insert(checkstyle.args, "-c ~/.config/nvim/configs/checkstyle.xml")
 
 		local lint_augroup = vim.api.nvim_create_augroup("lint", { clear = true })
 
 		vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave" }, {
 			group = lint_augroup,
 			callback = function()
-				lint.try_lint()
+				local toggle = require("core.toggle")
+				lint.try_lint(toggle.filter("linter", lint.linters_by_ft[vim.bo.filetype] or {}))
 			end,
 		})
 	end,

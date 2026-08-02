@@ -1,6 +1,10 @@
 local opts = { noremap = true, silent = true }
 local keymap = vim.keymap
 
+-- Tool toggles
+opts.desc = "Toggle lsp, linter and formatter tools"
+keymap.set("n", "<leader>ut", "<cmd>ToggleTools<CR>", opts)
+
 -- Navigaton
 -- Window navigation
 opts.desc = "Move cursor to right buffer"
