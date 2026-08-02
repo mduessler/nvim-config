@@ -15,10 +15,12 @@ local lazy = require("lazy")
 
 local specs = {
 	{ import = "plugins" },
-	-- Optional feature domains live in their own folder and can be
-	-- disabled as a whole by removing the import.
-	{ import = "plugins.kubernetes" },
 }
+for name, kind in vim.fs.dir(vim.fn.stdpath("config") .. "/lua/plugins") do
+	if kind == "directory" then
+		table.insert(specs, { import = "plugins." .. name })
+	end
+end
 
 lazy.setup({
 	spec = specs,
