@@ -232,8 +232,16 @@ local function dialogs_hl()
 	set(0, "DialogTitle", { fg = title.fg, bg = normal.bg, bold = true })
 end
 
+local function code_hl()
+	local normal = vim.api.nvim_get_hl(0, { name = "Normal", link = false })
+	local str = vim.api.nvim_get_hl(0, { name = "String", link = false })
+
+	set(0, "Base64Decoded", { fg = str.fg, bg = normal.bg, italic = true })
+end
+
 statuslineHL()
 tablineHL()
 winbar_hl()
 vim_ui_hl()
 dialogs_hl()
+code_hl()
