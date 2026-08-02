@@ -1,3 +1,4 @@
+local float = require("core.ui.dialogs.float")
 local keymap = require("utils.key")
 local mode = require("core.ui.utils.mode")
 local window = require("core.ui.windows.utils")
@@ -10,23 +11,6 @@ local M = {
 }
 
 local ns = vim.api.nvim_create_namespace("vim_ui_select")
-
-local function float_config(height, prompt)
-	local ui = vim.api.nvim_list_uis()[1]
-	height = math.min(math.floor(ui.height / 2), height)
-
-	return {
-		relative = "editor",
-		row = math.floor(ui.height / 4),
-		col = math.floor(ui.width / 4),
-		width = math.floor(ui.width / 2),
-		height = height,
-		style = "minimal",
-		border = "rounded",
-		title = prompt,
-		title_pos = "center",
-	}
-end
 
 local function render(bufnr, winid)
 	vim.api.nvim_buf_clear_namespace(bufnr, -1, 0, -1)
@@ -102,23 +86,20 @@ M.select = function(items, opts, on_choice)
 	opts = opts or { format_item = nil }
 	local map = create_mapping(items, opts.format_item)
 	local original_mode = vim.api.nvim_get_mode().mode
-	local ui = vim.api.nvim_list_uis()[1]
+	local ui = vim.api.nvim_list_uis()[1] or { width = 80, height = 24 }
 	local width = math.floor(ui.width / 2)
 
 	local lines = format_lines(map, "", width)
-	local bufnr = vim.api.nvim_create_buf(false, true)
-	local winid = vim.api.nvim_open_win(bufnr, true, float_config(#lines, opts.prompt or ""))
+	local bufnr, winid = float.open(float.editor_config(width, #lines, opts.prompt or ""), {
+		on_leave = function()
+			mode.restore(original_mode)
+		end,
+	})
 
 	vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
-
-	vim.bo[bufnr].swapfile = false
-	vim.bo[bufnr].bufhidden = "wipe"
-	vim.bo[bufnr].modifiable = true
-	vim.bo[bufnr].filetype = "nofile"
-	vim.b[bufnr].cmp_enabled = false -- vim.b is correct!!
 	render(bufnr, winid)
 
-	local key_options = { buffer = bufnr, nowait = true, silent = true }
+	local key_options = float.key_options(bufnr)
 
 	keymap.set({ "i", "n" }, "<CR>", function()
 		local line = get_line(bufnr, winid)
@@ -146,15 +127,6 @@ M.select = function(items, opts, on_choice)
 				first_row_handler(winid, col)
 			end
 		end,
-	})
-
-	vim.api.nvim_create_autocmd("WinLeave", {
-		buffer = bufnr,
-		callback = function()
-			window.close(winid)
-			mode.restore(original_mode)
-		end,
-		once = true,
 	})
 
 	vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {

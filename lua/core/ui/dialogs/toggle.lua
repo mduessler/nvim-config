@@ -1,6 +1,8 @@
 --- Floating window to toggle lsp servers, linters and formatters at
 --- runtime. The toggle state and side effects live in core.toggle.
 
+local float = require("core.ui.dialogs.float")
+local frame = require("core.ui.dialogs.frame")
 local keymap = require("utils.key")
 local toggle = require("core.toggle")
 local window = require("core.ui.windows.utils")
@@ -23,41 +25,6 @@ local headers = {
 	formatter = "Formatter",
 }
 
-local function float_config(height, title)
-	local ui = vim.api.nvim_list_uis()[1] or { width = 80, height = 24 }
-	local width = math.floor(ui.width / 3)
-	height = math.min(math.floor(ui.height / 2), height)
-
-	return {
-		relative = "editor",
-		row = math.floor(ui.height / 4),
-		col = math.floor((ui.width - width) / 2),
-		width = width,
-		height = math.max(height, 1),
-		style = "minimal",
-		border = "rounded",
-		title = title,
-		title_pos = "center",
-	}
-end
-
-local border = {
-	top_left = "╭",
-	top_right = "╮",
-	bottom_left = "╰",
-	bottom_right = "╯",
-	horizontal = "─",
-	vertical = "│",
-}
-
---- Pads the content to the inner width and closes the box on the right.
---- An optional right part is aligned to the right border of the box.
-local function framed(content, width, right)
-	right = right or ""
-	local fill = width - 4 - vim.fn.strdisplaywidth(content) - vim.fn.strdisplaywidth(right)
-	return border.vertical .. " " .. content .. string.rep(" ", math.max(fill, 0)) .. right .. " " .. border.vertical
-end
-
 local function build(tools, width)
 	local lines = {}
 	local meta = {}
@@ -72,14 +39,14 @@ local function build(tools, width)
 			if #lines > 0 then
 				add("", { frame = true })
 			end
-			add(border.top_left .. string.rep(border.horizontal, width - 2) .. border.top_right)
-			add(framed(headers[kind] .. ":", width), { header = true })
-			add(framed(string.rep("─", width - 4), width))
+			add(frame.top(width))
+			add(frame.framed(headers[kind] .. ":", width), { header = true })
+			add(frame.framed(string.rep("─", width - 4), width))
 			for _, name in ipairs(tools[kind]) do
 				local icon = toggle.is_enabled(kind, name) and icons.on or icons.off
-				add(framed(icons.entry .. name, width, icon), { kind = kind, name = name })
+				add(frame.framed(icons.entry .. name, width, icon), { kind = kind, name = name })
 			end
-			add(border.bottom_left .. string.rep(border.horizontal, width - 2) .. border.bottom_right)
+			add(frame.bottom(width))
 		end
 	end
 
@@ -95,7 +62,7 @@ local function render(bufnr, lines, meta)
 	vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
 	vim.bo[bufnr].modifiable = false
 
-	local edge = #border.vertical + 1 -- byte length of the "│ " prefix
+	local edge = #frame.border.vertical + 1 -- byte length of the "│ " prefix
 
 	vim.api.nvim_buf_clear_namespace(bufnr, ns, 0, -1)
 	for lnum, entry in pairs(meta) do
@@ -105,7 +72,7 @@ local function render(bufnr, lines, meta)
 				end_col = #line,
 				hl_group = "FloatBorder",
 			})
-		elseif not vim.startswith(line, border.vertical) then
+		elseif not vim.startswith(line, frame.border.vertical) then
 			vim.api.nvim_buf_set_extmark(bufnr, ns, lnum - 1, 0, {
 				end_col = #line,
 				hl_group = "Title",
@@ -151,17 +118,12 @@ M.open = function()
 	local scope = ft
 	local lines, meta = build(toggle.tools(scope), width)
 
-	local bufnr = vim.api.nvim_create_buf(false, true)
-	local winid = vim.api.nvim_open_win(bufnr, true, float_config(#lines, title(scope)))
-
-	vim.bo[bufnr].swapfile = false
-	vim.bo[bufnr].bufhidden = "wipe"
-	vim.bo[bufnr].filetype = "nofile"
+	local bufnr, winid = float.open(float.editor_config(width, #lines, title(scope)))
 	vim.api.nvim_set_option_value("cursorline", true, { scope = "local", win = winid })
 
 	render(bufnr, lines, meta)
 
-	local key_options = { buffer = bufnr, nowait = true, silent = true }
+	local key_options = float.key_options(bufnr)
 
 	keymap.set("n", "<CR>", function()
 		local row = vim.api.nvim_win_get_cursor(winid)[1]
@@ -177,7 +139,7 @@ M.open = function()
 	keymap.set("n", "a", function()
 		scope = scope == nil and ft or nil
 		lines, meta = build(toggle.tools(scope), width)
-		vim.api.nvim_win_set_config(winid, float_config(#lines, title(scope)))
+		vim.api.nvim_win_set_config(winid, float.editor_config(width, #lines, title(scope)))
 		render(bufnr, lines, meta)
 	end, key_options)
 
@@ -186,14 +148,6 @@ M.open = function()
 			window.close(winid)
 		end, key_options)
 	end
-
-	vim.api.nvim_create_autocmd("WinLeave", {
-		buffer = bufnr,
-		once = true,
-		callback = function()
-			window.close(winid)
-		end,
-	})
 end
 
 M.setup = function()

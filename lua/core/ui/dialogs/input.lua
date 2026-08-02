@@ -1,3 +1,4 @@
+local float = require("core.ui.dialogs.float")
 local mode = require("core.ui.utils.mode")
 local signs = require("config.signs")
 local window = require("core.ui.windows.utils")
@@ -47,14 +48,8 @@ M.input = function(opts, on_confirm)
 	local default = opts.default or ""
 	local original_mode = vim.api.nvim_get_mode().mode
 
-	local bufnr = vim.api.nvim_create_buf(false, true)
-	vim.bo[bufnr].swapfile = false
-	vim.bo[bufnr].bufhidden = "wipe"
-	vim.bo[bufnr].modifiable = true
-	vim.bo[bufnr].filetype = "nofile"
-	vim.b[bufnr].cmp_enabled = false
-
-	local win = vim.api.nvim_open_win(bufnr, true, float_config(default, opts.prompt))
+	-- Lifetime is managed via BufWipeout below, not via WinLeave.
+	local bufnr, win = float.open(float_config(default, opts.prompt), { winleave_close = false })
 	vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, { default })
 	vim.keymap.set("i", "<CR>", function()
 		local line = vim.api.nvim_get_current_line()
