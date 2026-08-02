@@ -41,9 +41,6 @@ return {
 		local flake8 = lint.linters.flake8
 		tables.merge_array(flake8.args, { "--max-line-length=120", "--max-doc-length=120" })
 
-		local yamllint = lint.linters.yamllint
-		table.insert(yamllint.args, "-c ~/.config/nvim/configs/yamllint.yaml")
-
 		local checkstyle = lint.linters.checkstyle
 		table.insert(checkstyle.args, "-c ~/.config/nvim/configs/checkstyle.xml")
 
