@@ -2,6 +2,13 @@
 
 set -e
 
+# Github actions require the container to run as root, but the install
+# script must prove that it works for a normal user with sudo rights.
+if [ "$(id -u)" -eq 0 ]; then
+    chown -R tester:tester .
+    exec sudo -u tester -E HOME=/home/tester "$0" "$@"
+fi
+
 # Local docker runs pass the branch to test; in CI actions/checkout has
 # already placed the correct revision in the workdir.
 if [ -n "${BRANCH_TO_TEST:-}" ]; then
