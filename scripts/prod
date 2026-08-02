@@ -99,6 +99,9 @@ install_prod_dependencies() {
 
 add_neovim_ppa() {
     info "Adding neovim PPA to provide a current neovim via apt ..."
+    if ! sudo apt-get update; then
+        warning "Can not update the package repositories."
+    fi
     if ! sudo apt-get install -y software-properties-common; then
         error "Can not install software-properties-common."
         return 1
