@@ -39,27 +39,48 @@ local function float_config(height, title)
 	}
 end
 
+local border = {
+	top_left = "╭",
+	top_right = "╮",
+	bottom_left = "╰",
+	bottom_right = "╯",
+	horizontal = "─",
+	vertical = "│",
+}
+
+--- Pads the content to the inner width and closes the box on the right.
+local function framed(content, width)
+	local fill = width - 4 - vim.fn.strdisplaywidth(content)
+	return border.vertical .. " " .. content .. string.rep(" ", math.max(fill, 0)) .. " " .. border.vertical
+end
+
 local function build(tools, width)
 	local lines = {}
 	local meta = {}
 
+	local function add(line, entry)
+		table.insert(lines, line)
+		meta[#lines] = entry or { frame = true }
+	end
+
 	for _, kind in ipairs(toggle.kinds) do
 		if #tools[kind] > 0 then
-			table.insert(lines, headers[kind] .. ":")
-			meta[#lines] = { header = true }
-			table.insert(lines, string.rep("─", width))
-			meta[#lines] = { separator = true }
+			if #lines > 0 then
+				add("", { frame = true })
+			end
+			add(border.top_left .. string.rep(border.horizontal, width - 2) .. border.top_right)
+			add(framed(headers[kind] .. ":", width), { header = true })
+			add(framed(string.rep("─", width - 4), width))
 			for _, name in ipairs(tools[kind]) do
 				local icon = toggle.is_enabled(kind, name) and icons.on or icons.off
-				table.insert(lines, icons.entry .. icon .. name)
-				meta[#lines] = { kind = kind, name = name }
+				add(framed(icons.entry .. icon .. name, width), { kind = kind, name = name })
 			end
+			add(border.bottom_left .. string.rep(border.horizontal, width - 2) .. border.bottom_right)
 		end
 	end
 
 	if #lines == 0 then
-		lines = { "No tools available for this filetype." }
-		meta[1] = { header = true }
+		add("No tools available for this filetype.", { header = true })
 	end
 
 	return lines, meta
@@ -70,24 +91,41 @@ local function render(bufnr, lines, meta)
 	vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
 	vim.bo[bufnr].modifiable = false
 
+	local edge = #border.vertical + 1 -- byte length of the "│ " prefix
+
 	vim.api.nvim_buf_clear_namespace(bufnr, ns, 0, -1)
 	for lnum, entry in pairs(meta) do
-		if entry.header then
+		local line = lines[lnum]
+		if entry.frame then
 			vim.api.nvim_buf_set_extmark(bufnr, ns, lnum - 1, 0, {
-				end_col = #lines[lnum],
-				hl_group = "Title",
-			})
-		elseif entry.separator then
-			vim.api.nvim_buf_set_extmark(bufnr, ns, lnum - 1, 0, {
-				end_col = #lines[lnum],
+				end_col = #line,
 				hl_group = "FloatBorder",
 			})
-		else
-			local enabled = toggle.is_enabled(entry.kind, entry.name)
-			vim.api.nvim_buf_set_extmark(bufnr, ns, lnum - 1, #icons.entry, {
-				end_col = #lines[lnum],
-				hl_group = enabled and "DiagnosticOk" or "DiagnosticError",
+		elseif not vim.startswith(line, border.vertical) then
+			vim.api.nvim_buf_set_extmark(bufnr, ns, lnum - 1, 0, {
+				end_col = #line,
+				hl_group = "Title",
 			})
+		else
+			-- Frame edges of header and entry lines.
+			for _, range in ipairs({ { 0, edge }, { #line - edge, #line } }) do
+				vim.api.nvim_buf_set_extmark(bufnr, ns, lnum - 1, range[1], {
+					end_col = range[2],
+					hl_group = "FloatBorder",
+				})
+			end
+			if entry.header then
+				vim.api.nvim_buf_set_extmark(bufnr, ns, lnum - 1, edge, {
+					end_col = #line - edge,
+					hl_group = "Title",
+				})
+			else
+				local enabled = toggle.is_enabled(entry.kind, entry.name)
+				vim.api.nvim_buf_set_extmark(bufnr, ns, lnum - 1, edge + #icons.entry, {
+					end_col = #line - edge,
+					hl_group = enabled and "DiagnosticOk" or "DiagnosticError",
+				})
+			end
 		end
 	end
 end
@@ -124,7 +162,7 @@ M.open = function()
 	keymap.set("n", "<CR>", function()
 		local row = vim.api.nvim_win_get_cursor(winid)[1]
 		local entry = meta[row]
-		if not entry or entry.header or entry.separator then
+		if not entry or entry.header or entry.frame then
 			return
 		end
 		toggle.toggle(entry.kind, entry.name)
