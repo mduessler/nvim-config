@@ -6,7 +6,7 @@ return {
 		{ "<leader>df", "<cmd>Neogen function<CR>", desc = "Neogen function" },
 		{ "<leader>dc", "<cmd>Neogen class<CR>", desc = "Neogen class" },
 		{ "<leader>dp", "<cmd>Neogen type<CR>", desc = "Neogen type" },
-		{ "<leader>df", "<cmd>Neogen file<CR>", desc = "Neogen file" },
+		{ "<leader>dF", "<cmd>Neogen file<CR>", desc = "Neogen file" },
 	},
 	opts = {
 		snippet_engine = "luasnip",
