@@ -11,13 +11,7 @@ local M = {}
 
 local ns = vim.api.nvim_create_namespace("core_ui_toggle")
 
--- Codepoints on purpose: private use glyphs survive every tooling. The
--- entry icon is shared with the custom select ui to keep the look uniform.
-local icons = {
-	on = vim.fn.nr2char(0xf00c), -- check mark
-	off = vim.fn.nr2char(0xf00d), -- cross
-	entry = require("core.ui.dialogs.select").text.start_icon,
-}
+local icons = require("config.signs").ui.dialogs
 
 local headers = {
 	lsp = "LSP",

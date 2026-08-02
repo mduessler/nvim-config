@@ -3,10 +3,12 @@ local keymap = require("utils.key")
 local mode = require("core.ui.utils.mode")
 local window = require("core.ui.windows.utils")
 
+local signs = require("config.signs")
+
 local M = {
 	text = {
-		search_icon = " ",
-		start_icon = " ",
+		search_icon = signs.ui.dialogs.search,
+		start_icon = signs.ui.dialogs.entry,
 	},
 }
 
