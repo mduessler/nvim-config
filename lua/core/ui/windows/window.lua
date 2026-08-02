@@ -1,10 +1,4 @@
-local require_safe = require("utils.require_safe")
-
-local buffers = require_safe("core.ui.buffers.handler")
-
-if not buffers then
-	return
-end
+local buffers = require("core.ui.buffers.handler")
 
 local function window(winid)
 	local self = { id = winid, position = { row = 1, col = 1 } }

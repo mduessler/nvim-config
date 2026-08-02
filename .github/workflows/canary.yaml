@@ -1,0 +1,11 @@
+name: Canary
+# Weekly run against the current package manager state: the install tests
+# set up neovim from apt/dnf at runtime, so this catches new neovim
+# versions that break the config.
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+jobs:
+  tests:
+    uses: ./.github/workflows/tests.yaml

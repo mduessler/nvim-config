@@ -1,0 +1,38 @@
+name: Tests
+# Every job builds its own test image from the checkout, so no registry
+# image has to exist beforehand. The github actions layer cache keeps the
+# builds fast; the images workflow warms it up on main.
+on:
+  workflow_call:
+
+jobs:
+  test:
+    name: ${{ matrix.suite }}-test-${{ matrix.distro }}
+    strategy:
+      fail-fast: false
+      matrix:
+        distro: [fedora, ubuntu]
+        suite: [unit, install]
+        include:
+          - suite: unit
+            target: local
+          - suite: install
+            target: install-local
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Set up buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build the ${{ matrix.suite }} test image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: env/Dockerfile.${{ matrix.distro }}
+          target: ${{ matrix.target }}
+          load: true
+          tags: ${{ matrix.distro }}-nvim:${{ matrix.suite }}-test
+          cache-from: type=gha,scope=${{ matrix.distro }}
+      - name: Run the ${{ matrix.suite }} tests on ${{ matrix.distro }}
+        run: docker run --rm ${{ matrix.distro }}-nvim:${{ matrix.suite }}-test

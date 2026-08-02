@@ -1,12 +1,6 @@
-local require_safe = require("utils.require_safe")
-
-local buffers = require_safe("core.ui.buffers.handler")
-local str = require_safe("utils.str")
-local signs = require_safe("config.signs")
-
-if not (buffers and str and signs) then
-	return
-end
+local buffers = require("core.ui.buffers.handler")
+local str = require("utils.str")
+local signs = require("config.signs")
 
 local close = signs.ui.tabline.close.sign
 local more_left = signs.ui.tabline.boundaries.more.left

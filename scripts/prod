@@ -1,0 +1,155 @@
+#!/usr/bin/env bash
+
+
+SCRIPT_DIR="${SCRIPT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
+DEPENDENCIES="${DEPENDENCIES:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../dependencies}"
+
+source "${DEPENDENCIES}" || exit 1
+source "${SCRIPT_DIR}/shared" || exit 1
+
+install_prod() {
+    if ! install_prod_dependencies; then
+        error "Can not install production dependencies."
+        return 2
+    fi
+
+    if ! install_prod_requirements; then
+        error "Can not install production requirements."
+        return 3
+    fi
+    success "Installed production dependencies and requirements."
+    return 0
+}
+
+install_rust() {
+    if check_command rustc; then
+        info "Rust is already installed."
+        return 0
+    fi
+    export CARGO_HOME="${CARGO_HOME:-$HOME/.cargo}"
+    debug "CARGO_HOME is set to '${CARGO_HOME}'."
+    info "Downloading and installing rust..."
+
+    local output
+    debug "Download rust ..."
+    if ! output=$(curl -o /tmp/rust.sh --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs 2>&1); then
+        error "Curl failed. Output: ${output}"
+        return 1
+    fi
+
+    debug "Installing rust ... "
+    if ! output=$(sh /tmp/rust.sh -y 2>&1); then
+        error "Rust installation failed. Output: ${output}"
+        debug "Deleting rust install script."
+        rm -f /tmp/rust.sh
+        return 1
+    fi
+
+    debug "Deleting rust install script."
+    rm -f /tmp/rust.sh
+
+    echo ":$PATH:" | grep -q ":${CARGO_HOME}/bin:" || export PATH="${CARGO_HOME}/bin:${PATH}"
+
+    debug "Added '${CARGO_HOME}/bin' to PATH"
+    success "Rust has been successfully installed."
+    return 0
+}
+
+install_prod_dependencies() {
+    info "Installing production dependencies ..."
+
+    if [ -z "${PKG_MGR}" ]; then
+        if ! identify_system_pkg_mgr; then
+            error "Can not identify system package manager."
+            return 2
+        fi
+    fi
+
+    case "${PKG_MGR}" in
+        "apt-get")
+            if ! add_neovim_ppa; then
+                error "Can not add neovim PPA."
+                return 4
+            fi
+            if ! install_packages_with_pkg_mgr "${APT_DEPS[@]}"; then
+                error "Can not install packages with the package manager."
+                return 5
+            fi
+            ;;
+        "dnf")
+            if ! install_packages_with_pkg_mgr "${DNF_DEPS[@]}"; then
+                error "Can not install packages with the package manager."
+                return 5
+            fi
+            ;;
+        *)
+            error "Unsupported package manager: ${PKG_MGR}"
+            return 3
+            ;;
+    esac
+
+    if ! install_dependencies_independent_of_pkg_mgr; then
+        error "Can not install dependencies independent of package manager."
+        return 1
+    fi
+
+    success "Dependencies have been successfully installed."
+    return 0
+}
+
+add_neovim_ppa() {
+    info "Adding neovim PPA to provide a current neovim via apt ..."
+    if ! sudo apt-get update; then
+        warning "Can not update the package repositories."
+    fi
+    if ! sudo apt-get install -y software-properties-common; then
+        error "Can not install software-properties-common."
+        return 1
+    fi
+    if ! sudo add-apt-repository -y ppa:neovim-ppa/unstable; then
+        error "Can not add ppa:neovim-ppa/unstable."
+        return 1
+    fi
+    success "Added neovim PPA."
+    return 0
+}
+
+install_dependencies_independent_of_pkg_mgr() {
+    local installed=()
+    local status=0
+    local dep func
+    for dep in "${DEPS[@]}"; do
+        func="install_${dep}"
+        if declare -f "$func" >/dev/null; then
+            if ! "$func"; then
+                status=1
+                info "Failed to install dependency: ${dep}. Continue ..."
+            else
+                installed+=("${dep}")
+            fi
+        else
+            [[ ${status} -eq 0 ]] && status=2
+            info "No installer function defined for ${dep}. Skipping ..."
+        fi
+    done
+    if [ ${status} -gt 0 ]; then
+        if [ "${installed[*]}" = "" ]; then
+            error "Can not install production dependencies independent of package manger."
+        else
+            warning "Can not install all production dependencies independent of package manger. Only installed ${installed[*]}"
+        fi
+    else
+        success "Installed all production dependencies independent of package manger successfully."
+    fi
+    return ${status}
+}
+
+install_prod_requirements() {
+    if ! install_cargo_pkg "${RUST_REQ[@]}"; then
+        error "Can not install rust requirements."
+        return 3
+    fi
+
+    success "Requirements have been successfully installed."
+    return 0
+}

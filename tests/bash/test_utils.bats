@@ -1,358 +1,358 @@
 #!/usr/bin/env bats
 
-@test "Test if script '${NVIM_CONFIG}/installs/utils' exists." {
-    [ -f "${NVIM_CONFIG}"/installs/utils ]
+@test "Test if script '${NVIM_CONFIG}/scripts/utils' exists." {
+	[ -f "${NVIM_CONFIG}"/scripts/utils ]
 }
 
 setup() {
-    source "${NVIM_CONFIG}/installs/utils"
+	source "${NVIM_CONFIG}/scripts/utils"
 }
 
 @test "get_log_color: Verify that the debug colour is correct." {
-    run get_log_color "DEBUG"
+	run get_log_color "DEBUG"
 
-    [ ${status} -eq 0 ]
-    [ "${output}" = $'\033[37m' ]
+	[ ${status} -eq 0 ]
+	[ "${output}" = $'\033[37m' ]
 }
 
 @test "get_log_color: Verify that the info colour is correct." {
-    run get_log_color "INFO"
+	run get_log_color "INFO"
 
-    [ ${status} -eq 0 ]
-    [ "${output}" = $'\033[34m' ]
+	[ ${status} -eq 0 ]
+	[ "${output}" = $'\033[34m' ]
 }
 
 @test "get_log_color: Verify that the success colour is correct." {
-    run get_log_color "SUCCESS"
+	run get_log_color "SUCCESS"
 
-    [ ${status} -eq 0 ]
-    [ "${output}" = $'\033[32m' ]
+	[ ${status} -eq 0 ]
+	[ "${output}" = $'\033[32m' ]
 }
 
 @test "get_log_color: Verify that the warning colour is correct." {
-    run get_log_color "WARNING"
+	run get_log_color "WARNING"
 
-    [ ${status} -eq 0 ]
-    [ "${output}" = $'\033[33m' ]
+	[ ${status} -eq 0 ]
+	[ "${output}" = $'\033[33m' ]
 }
 
 @test "get_log_color: Verify that the error colour is correct." {
-    run get_log_color "ERROR"
+	run get_log_color "ERROR"
 
-    [ ${status} -eq 0 ]
-    [ "${output}" = $'\033[31m' ]
+	[ ${status} -eq 0 ]
+	[ "${output}" = $'\033[31m' ]
 }
 
 @test "get_log_color: Verify that the no log colour is correct." {
-    run get_log_color "WRONG"
+	run get_log_color "WRONG"
 
-    [ ${status} -eq 0 ]
-    [ "${output}" = $'\033[0m' ]
+	[ ${status} -eq 0 ]
+	[ "${output}" = $'\033[0m' ]
 }
 
 @test "debug: Verify message is not printed." {
-    local msg="This is a test message"
+	local msg="This is a test message"
 
-    NVIM_DEV=false run debug "${msg}"
+	NVIM_DEV=false run debug "${msg}"
 
-    [ ${status} -eq 0 ]
-    [ -z "${output}" ]
+	[ ${status} -eq 0 ]
+	[ -z "${output}" ]
 }
 
 @test "debug: Verify message is printed." {
-    local msg="This is a test message"
+	local msg="This is a test message"
 
-    NVIM_DEV=true run debug "${msg}"
+	NVIM_DEV=true run debug "${msg}"
 
-    [ ${status} -eq 0 ]
-    [[ ${output} == *"${msg}"* ]]
-    [[ ${output} == *"DEBUG"* ]]
+	[ ${status} -eq 0 ]
+	[[ ${output} == *"${msg}"* ]]
+	[[ ${output} == *"DEBUG"* ]]
 }
 
 @test "info: Verify message is printed." {
-    local msg="This is a test message"
+	local msg="This is a test message"
 
-    run info "${msg}"
+	run info "${msg}"
 
-    [ ${status} -eq 0 ]
-    [[ ${output} == *"${msg}"* ]]
-    [[ ${output} == *"INFO"* ]]
+	[ ${status} -eq 0 ]
+	[[ ${output} == *"${msg}"* ]]
+	[[ ${output} == *"INFO"* ]]
 }
 
 @test "success: Verify message is printed." {
-    local msg="This is a test message"
+	local msg="This is a test message"
 
-    run success "${msg}"
+	run success "${msg}"
 
-    [ ${status} -eq 0 ]
-    [[ ${output} == *"${msg}"* ]]
-    [[ ${output} == *"SUCCESS"* ]]
+	[ ${status} -eq 0 ]
+	[[ ${output} == *"${msg}"* ]]
+	[[ ${output} == *"SUCCESS"* ]]
 }
 
 @test "warning: Verify message is printed." {
-    local msg="This is a test message"
+	local msg="This is a test message"
 
-    run warning "${msg}"
+	run warning "${msg}"
 
-    [ ${status} -eq 0 ]
-    [[ ${output} == *"${msg}"* ]]
-    [[ ${output} == *"WARNING"* ]]
+	[ ${status} -eq 0 ]
+	[[ ${output} == *"${msg}"* ]]
+	[[ ${output} == *"WARNING"* ]]
 }
 
 @test "error: Verify message is printed." {
-    local msg="This is a test message"
+	local msg="This is a test message"
 
-    run error "${msg}"
+	run error "${msg}"
 
-    [ ${status} -eq 0 ]
-    [[ ${output} == *"${msg}"* ]]
-    [[ ${output} == *"ERROR"* ]]
+	[ ${status} -eq 0 ]
+	[[ ${output} == *"${msg}"* ]]
+	[[ ${output} == *"ERROR"* ]]
 }
 
 @test "check_command: Function executed successfully." {
-    run check_command ls
+	run check_command ls
 
-    [ ${status} -eq 0 ]
+	[ ${status} -eq 0 ]
 }
 
 @test "check_command: Function execution failed" {
-    run check_command fakecmd123
+	run check_command fakecmd123
 
-    [ ${status} -eq 1 ]
+	[ ${status} -eq 1 ]
 }
 
-@test "dir_is_git_repo: Function executed successfully." {
-    git() { return 0; }
+@test "is_repo: Function executed successfully." {
+	git() { return 0; }
 
-    run dir_is_git_repo "${HOME}"
+	run is_repo "${HOME}"
 
-    [ ${status} -eq 0 ]
-    [[ ${output} == *"Path '${HOME}' is a git repo."* ]]
+	[ ${status} -eq 0 ]
+	[[ ${output} == *"Path '${HOME}' is a git repo."* ]]
 }
 
-@test "dir_is_git_repo: Given path is not a git repo." {
-    run dir_is_git_repo "${HOME}"
+@test "is_repo: Given path is not a git repo." {
+	run is_repo "${HOME}"
 
-    [ ${status} -eq 1 ]
-    [[ ${output} == *"Path '${HOME}' is not a git repo."* ]]
+	[ ${status} -eq 1 ]
+	[[ ${output} == *"Path '${HOME}' is not a git repo."* ]]
 }
 
-@test "dir_is_git_repo: Function arguments do not match - no argument is given." {
-    run dir_is_git_repo
+@test "is_repo: Function arguments do not match - no argument is given." {
+	run is_repo
 
-    [ ${status} -eq 2 ]
-    [[ ${output} == *"Function needs exactly one 'path' argument."* ]]
+	[ ${status} -eq 2 ]
+	[[ ${output} == *"Function needs exactly one 'path' argument."* ]]
 }
 
-@test "dir_is_git_repo: Function arguments do not match - two arguments are given." {
-    run dir_is_git_repo "${HOME}" "test"
+@test "is_repo: Function arguments do not match - two arguments are given." {
+	run is_repo "${HOME}" "test"
 
-    [ ${status} -eq 2 ]
-    [[ ${output} == *"Function needs exactly one 'path' argument."* ]]
+	[ ${status} -eq 2 ]
+	[[ ${output} == *"Function needs exactly one 'path' argument."* ]]
 }
 
-@test "dir_is_git_repo: Given path does not exist." {
-    run dir_is_git_repo "fake/pater/aasd"
+@test "is_repo: Given path does not exist." {
+	run is_repo "fake/pater/aasd"
 
-    [ ${status} -eq 3 ]
-    [[ ${output} == *"Path 'fake/pater/aasd' does not exist."* ]]
+	[ ${status} -eq 1 ]
+	[[ ${output} == *"Path 'fake/pater/aasd' does not exist or is not a directory."* ]]
 }
 
-@test "pull_git_dir: Function executed successfully." {
-    git() { return 0; }
-    cd() { return 0; }
+@test "pull_repo: Function executed successfully." {
+	git() { return 0; }
+	cd() { return 0; }
 
-    run pull_git_dir "${HOME}"
+	run pull_repo "${HOME}"
 
-    [ ${status} -eq 0 ]
-    [[ ${output} == *"Pulled repo at '${HOME}'."* ]]
+	[ ${status} -eq 0 ]
+	[[ ${output} == *"Pulled repo at '${HOME}'."* ]]
 }
 
-@test "pull_git_dir: The pull of the repository failed." {
-    git() { return 1; }
-    cd() { return 0; }
+@test "pull_repo: The pull of the repository failed." {
+	git() { return 1; }
+	cd() { return 0; }
 
-    run pull_git_dir "${HOME}"
+	run pull_repo "${HOME}"
 
-    [ ${status} -eq 1 ]
-    [[ ${output} == *"Can not pull repo at '${HOME}'."* ]]
+	[ ${status} -eq 1 ]
+	[[ ${output} == *"Can not pull repo at '${HOME}'."* ]]
 }
 
-@test "pull_git_dir: Function arguments do not match - no argument is given." {
-    run pull_git_dir
+@test "pull_repo: Function arguments do not match - no argument is given." {
+	run pull_repo
 
-    [ ${status} -eq 2 ]
-    [[ ${output} == *"Function needs exactly one 'path' argument."* ]]
+	[ ${status} -eq 2 ]
+	[[ ${output} == *"Function needs exactly one 'path' argument."* ]]
 }
 
-@test "pull_git_dir: Function arguments do not match - two argument are given." {
-    run pull_git_dir "fake" "fake2"
+@test "pull_repo: Function arguments do not match - two argument are given." {
+	run pull_repo "fake" "fake2"
 
-    [ ${status} -eq 2 ]
-    [[ ${output} == *"Function needs exactly one 'path' argument."* ]]
+	[ ${status} -eq 2 ]
+	[[ ${output} == *"Function needs exactly one 'path' argument."* ]]
 }
 
-@test "pull_git_dir: Given path does not exist." {
-    run pull_git_dir "fake/pater/aasd"
+@test "pull_repo: Given path does not exist." {
+	run pull_repo "fake/pater/aasd"
 
-    [ ${status} -eq 3 ]
+	[ ${status} -eq 1 ]
 }
 
 @test "clone_repo: Function executed successfully." {
-    git() {
-        echo "mock git called with: $*"
-        sleep 1
-        return 0
-    }
+	git() {
+		echo "mock git called with: $*"
+		sleep 1
+		return 0
+	}
 
-    run clone_repo "https://github.com/mduessler/nvim-config.git" "simply-the-best"
+	run clone_repo "https://github.com/mduessler/nvim-config.git" "simply-the-best"
 
-    pid=$(echo "${output}" | awk '{print $1}' | xargs)
-    tmpfile=$(echo "${output}" | awk '{print $2}' | xargs)
+	pid=$(echo "${output}" | awk '{print $1}' | xargs)
+	tmpfile=$(echo "${output}" | awk '{print $2}' | xargs)
 
-    [ ${status} -eq 0 ]
-    [[ ${pid} =~ ^[0-9]+$ ]]
-    [[ -f "${tmpfile}" ]]
+	[ ${status} -eq 0 ]
+	[[ ${pid} =~ ^[0-9]+$ ]]
+	[[ -f "${tmpfile}" ]]
 }
 
 @test "clone_repo: Git clone command fails." {
-    git() {
-        echo "mock git called with: $*"
-        sleep 1
-        return 1
-    }
-    run clone_repo "https://github.com/mduessler/nvim-config.git" "simply-the-best"
+	git() {
+		echo "mock git called with: $*"
+		sleep 1
+		return 1
+	}
+	run clone_repo "https://github.com/mduessler/nvim-config.git" "simply-the-best"
 
-    echo ${output}
-    pid=$(echo ${output} | awk '{print $1}' | xargs)
-    tmpfile=$(echo ${output} | awk '{print $2}' | xargs)
+	echo "${output}"
+	pid=$(echo "${output}" | awk '{print $1}' | xargs)
+	tmpfile=$(echo "${output}" | awk '{print $2}' | xargs)
 
-    [ ${status} -eq 0 ]
-    [[ ${pid} =~ ^[0-9]+$ ]]
-    [[ -f "${tmpfile}" ]]
+	[ ${status} -eq 0 ]
+	[[ ${pid} =~ ^[0-9]+$ ]]
+	[[ -f "${tmpfile}" ]]
 }
 
 @test "clone_repo: Function arguments do not match - no argument is given." {
-    run clone_repo
+	run clone_repo
 
-    [ ${status} -eq 2 ]
-    [[ ${output} == *"Function needs exactly two arguments, 'repo-url' and 'dest-dir'."* ]]
+	[ ${status} -eq 2 ]
+	[[ ${output} == *"Function needs exactly two arguments, 'repo-url' and 'dest-dir'."* ]]
 }
 
 @test "clone_repo: Function arguments do not match - one argument is given." {
-    run clone_repo "fake-argument"
+	run clone_repo "fake-argument"
 
-    [ ${status} -eq 2 ]
-    [[ ${output} == *"Function needs exactly two arguments, 'repo-url' and 'dest-dir'."* ]]
+	[ ${status} -eq 2 ]
+	[[ ${output} == *"Function needs exactly two arguments, 'repo-url' and 'dest-dir'."* ]]
 }
 
 @test "wait_for_clone_process: Function executed successfully." {
-    tmpfile=$(mktemp)
-    pid=12345
+	tmpfile=$(mktemp)
+	pid=12345
 
-    tail() {
-        echo "mock tail $*"
-        return 0
-    }
-    wait() {
-        echo "mock wait $*"
-        return 0
-    }
+	tail() {
+		echo "mock tail $*"
+		return 0
+	}
+	wait() {
+		echo "mock wait $*"
+		return 0
+	}
 
-    run wait_for_clone_process "$pid" "$tmpfile"
+	run wait_for_clone_process "$pid" "$tmpfile"
 
-    [ ${status} -eq 0 ]
-    [[ ${output} == *"Waiting for clone process $pid to finish."* ]]
+	[ ${status} -eq 0 ]
+	[[ ${output} == *"Waiting for clone process $pid to finish."* ]]
 
-    rm -f "$tmpfile"
+	rm -f "$tmpfile"
 }
 
 @test "wait_for_clone_process: Wait process fails." {
-    tmpfile=$(mktemp)
-    pid=12345
+	tmpfile=$(mktemp)
+	pid=12345
 
-    tail() {
-        echo "mock tail $*"
-        return 0
-    }
-    wait() {
-        echo "mock wait $*"
-        return 1
-    }
+	tail() {
+		echo "mock tail $*"
+		return 0
+	}
+	wait() {
+		echo "mock wait $*"
+		return 1
+	}
 
-    run wait_for_clone_process "$pid" "$tmpfile"
+	run wait_for_clone_process "$pid" "$tmpfile"
 
-    [ ${status} -eq 1 ]
-    [[ ${output} == *"Can not wait ${pid}."* ]]
+	[ ${status} -eq 1 ]
+	[[ ${output} == *"Can not wait ${pid}."* ]]
 
-    rm -f "$tmpfile"
+	rm -f "$tmpfile"
 }
 
 @test "wait_for_clone_process: Function arguments do not match - no argument is given." {
-    run wait_for_clone_process
+	run wait_for_clone_process
 
-    [ ${status} -eq 2 ]
-    [[ ${output} == *"Function needs exactly two arguments, 'pid' and 'tmpfile'."* ]]
+	[ ${status} -eq 2 ]
+	[[ ${output} == *"Function needs exactly two arguments, 'pid' and 'tmpfile'."* ]]
 }
 
 @test "wait_for_clone_process: Function arguments do not match - one argument is given." {
-    run wait_for_clone_process "sack"
+	run wait_for_clone_process "sack"
 
-    [ ${status} -eq 2 ]
-    [[ ${output} == *"Function needs exactly two arguments, 'pid' and 'tmpfile'."* ]]
+	[ ${status} -eq 2 ]
+	[[ ${output} == *"Function needs exactly two arguments, 'pid' and 'tmpfile'."* ]]
 }
 
 @test "wait_for_clone_process: Tail process fails." {
-    tmpfile=$(mktemp)
-    pid=12345
+	tmpfile=$(mktemp)
+	pid=12345
 
-    tail() {
-        echo "mock tail $*"
-        return 1
-    }
-    wait() {
-        echo "mock wait $*"
-        return 0
-    }
+	tail() {
+		echo "mock tail $*"
+		return 1
+	}
+	wait() {
+		echo "mock wait $*"
+		return 0
+	}
 
-    run wait_for_clone_process "$pid" "$tmpfile"
+	run wait_for_clone_process "$pid" "$tmpfile"
 
-    [ ${status} -eq 3 ]
-    [[ ${output} == *"Can not tail ${tmpfile}."* ]]
+	[ ${status} -eq 3 ]
+	[[ ${output} == *"Can not tail ${tmpfile}."* ]]
 
-    rm -f "$tmpfile"
+	rm -f "$tmpfile"
 }
 
 @test "kill_clone_process: Function executed successfully." {
-    kill() { return 0; }
+	kill() { return 0; }
 
-    pid=12345
-    run kill_clone_process ${pid}
+	pid=12345
+	run kill_clone_process ${pid}
 
-    [ ${status} -eq 0 ]
-    [[ ${output} == *"Killed process ${pid}."* ]]
+	[ ${status} -eq 0 ]
+	[[ ${output} == *"Killed process ${pid}."* ]]
 }
 
 @test "kill_clone_process: Command to kill failed." {
-    kill() { return 1; }
-    pid=12345
+	kill() { return 1; }
+	pid=12345
 
-    run kill_clone_process ${pid}
+	run kill_clone_process ${pid}
 
-    [ ${status} -eq 1 ]
-    [[ ${output} == *"Can not kill nerd-fonts process '${pid}'."* ]]
+	[ ${status} -eq 1 ]
+	[[ ${output} == *"Can not kill process '${pid}'."* ]]
 }
 
 @test "kill_clone_process: Function arguments do not match - no argument is given." {
-    run kill_clone_process
+	run kill_clone_process
 
-    [ ${status} -eq 2 ]
-    [[ ${output} == *"Function needs exactly one 'pid' argument."* ]]
+	[ ${status} -eq 2 ]
+	[[ ${output} == *"Function needs exactly one 'pid' argument."* ]]
 }
 
 @test "kill_clone_process: Function arguments do not match - two arguments are given." {
-    run kill_clone_process
+	run kill_clone_process
 
-    [ ${status} -eq 2 ]
-    [[ ${output} == *"Function needs exactly one 'pid' argument."* ]]
+	[ ${status} -eq 2 ]
+	[[ ${output} == *"Function needs exactly one 'pid' argument."* ]]
 }

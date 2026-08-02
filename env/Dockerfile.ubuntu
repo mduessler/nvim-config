@@ -1,0 +1,164 @@
+# Shared neovim base: every stage that needs a working editor inherits
+# from here. The neovim PPA is added exactly once. The install stages stay
+# on the bare distro image on purpose, so the install script proves that
+# it can set up the PPA and neovim itself.
+FROM ubuntu:24.04 AS nvim
+
+SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    gpg-agent \
+    software-properties-common \
+    && add-apt-repository -y ppa:neovim-ppa/unstable \
+    && apt-get update && apt-get install -y --no-install-recommends \
+    git \
+    neovim \
+    && rm -rf /var/lib/apt/lists/*
+
+# Image to build all dependencies.
+FROM nvim AS builder
+
+SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    bash \
+    binutils \
+    coreutils \
+    curl \
+    gcc \
+    g++ \
+    libc6 \
+    libc6-dev \
+    libclang-dev \
+    libgcc1 \
+    libstdc++6 \
+    make \
+    nodejs \
+    npm \
+    python3 \
+    python3-pip \
+    python3-venv \
+    unzip \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install rust dependency
+ENV CARGO_HOME="/usr/local/cargo"
+ENV RUSTUP_HOME="/usr/local/rustup"
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y || exit 1
+ENV PATH="${CARGO_HOME}/bin:${PATH}"
+
+# Install rust requirements (tree-sitter-cli has no apt package)
+RUN cargo install selene tree-sitter-cli
+
+# Clean rust overhead - clean build cache, remove toolchain and strip installed binaries
+WORKDIR ${CARGO_HOME}
+RUN rm -rf "./registry" "./git" \
+    && (rustup component remove rust-docs rust-src || true) \
+    && (find "./bin" -type f -exec strip {} \; || true)
+
+# Install bats
+RUN git clone --depth=1 --branch v1.12.0 https://github.com/bats-core/bats-core /root/.local/share/src/bats-core
+WORKDIR /root/.local/share/src/bats-core
+RUN ./install.sh /usr/local \
+    && (find "/usr/local/libexec/bats-core" -type f -exec strip {} \; || true) \
+    && (find "/usr/local/lib/bats-core/" -type f -exec strip {} \; || true) \
+    && (strip --strip-unneeded /usr/local/bats || true)
+
+# Install nvim plugins and set them up. This validates that the editor
+# bootstrap works; the produced data is not shipped in the test images.
+WORKDIR /root/.config/nvim
+COPY ./init.lua ./lazy-lock.json ./
+COPY ./lua ./lua
+
+# No timeout wrapper here: nvim dies instantly when it runs under
+# timeout while writing to the buildkit output pipe. Hang protection
+# comes from the ci job timeouts instead.
+RUN nvim --headless "+InitNVIM"
+
+# Image that serves as the basis for creating environment images for remote
+# and local unit tests.
+FROM nvim AS base
+
+SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
+
+ARG USER_TEST=tester
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    sudo \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY env/create-user /usr/local/bin/create-user
+RUN create-user "${USER_TEST}"
+
+ENV USER_TEST=${USER_TEST}
+ENV HOME="/home/${USER_TEST}"
+ENV XDG_CONFIG_HOME="${HOME}/.config"
+ENV XDG_CACHE_HOME="${HOME}/.cache"
+ENV XDG_DATA_HOME="${HOME}/.local/share"
+ENV XDG_STATE_HOME="${HOME}/.local/state"
+ENV NVIM_CONFIG="${HOME}/.config/nvim"
+
+# Copy selene
+COPY --from=builder /usr/local/cargo/bin/selene /usr/local/bin/selene
+
+# Copy bats
+COPY --from=builder /usr/local/bin/bats /usr/local/bin/bats
+COPY --from=builder /usr/local/libexec/bats-core /usr/local/libexec/bats-core
+COPY --from=builder /usr/local/lib/bats-core/ /usr/local/lib/bats-core/
+
+# Image from which the environment for local unit test is build.
+FROM base AS local
+
+WORKDIR "${NVIM_CONFIG}"
+COPY . .
+
+ENTRYPOINT ["./env/entrypoint"]
+
+# Image from which the environment for remote unit test and linting is build.
+FROM base AS remote
+
+SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
+
+# Install dependencies to execute unit tests
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR ${HOME}
+
+# Image that serves as the basis for creating environment images for remote
+# and local testing of the installation script. Stays on the bare distro
+# image on purpose (see above).
+FROM ubuntu:24.04 AS install
+
+SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
+
+ARG USER_TEST=tester
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    git \
+    sudo \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY env/create-user /usr/local/bin/create-user
+RUN create-user "${USER_TEST}"
+
+ENV HOME=/home/${USER_TEST}
+ENV NVIM_CONFIG=$HOME/.config/nvim
+
+RUN chown -R tester:tester ${HOME}
+
+# Image from which the environment for local testing of the installation script
+# is built.
+FROM install AS install-local
+
+RUN mkdir -p "${NVIM_CONFIG}"
+WORKDIR ${NVIM_CONFIG}
+
+COPY ./ .
+
+RUN chown -R tester:tester "${HOME}"
+
+ENTRYPOINT ["./env/entrypoint-install"]

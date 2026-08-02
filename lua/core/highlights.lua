@@ -1,10 +1,4 @@
-local require_safe = require("utils.require_safe")
-
-local colors = require_safe("core.colors")
-
-if not colors then
-	return
-end
+local colors = require("core.colors")
 
 local set = vim.api.nvim_set_hl
 
@@ -28,8 +22,8 @@ local function statuslineHL()
 		set(0, "StatuslineBatterySeperator", { bg = datetime_bg, fg = battery_color })
 	end
 
-	local function branch_hl()
-		local name = "StatuslineBranch"
+	local function reference_hl()
+		local name = "StatuslineReference"
 		set(0, name .. "IsModified", { bg = colors.ui.git.modified.bg.is, fg = colors.ui.git.fg })
 		set(0, name .. "NotModified", { bg = colors.ui.git.modified.bg._not, fg = colors.ui.git.fg })
 		set(0, name .. "IsModifiedSeperator", { bg = colors.ui.statusline.bg, fg = colors.ui.git.modified.bg.is })
@@ -115,7 +109,7 @@ local function statuslineHL()
 	set(0, "StatuslineInvisible", { bg = statusline_hl.bg, fg = statusline_hl.bg })
 
 	battery_hl()
-	branch_hl()
+	reference_hl()
 	datetime_hl()
 	dirname_hl()
 	diagnostics_hl()
@@ -227,7 +221,27 @@ local function vim_ui_hl()
 	vim.api.nvim_set_hl(0, "VimUiInputStartIcon", { fg = colors.default.green.light })
 end
 
+--- The dialog floats blend into the editor: border and title keep their
+--- theme foreground but run on the normal editor background.
+local function dialogs_hl()
+	local normal = vim.api.nvim_get_hl(0, { name = "Normal", link = false })
+	local border = vim.api.nvim_get_hl(0, { name = "FloatBorder", link = false })
+	local title = vim.api.nvim_get_hl(0, { name = "FloatTitle", link = false })
+
+	set(0, "DialogBorder", { fg = border.fg, bg = normal.bg })
+	set(0, "DialogTitle", { fg = title.fg, bg = normal.bg, bold = true })
+end
+
+local function code_hl()
+	local normal = vim.api.nvim_get_hl(0, { name = "Normal", link = false })
+	local str = vim.api.nvim_get_hl(0, { name = "String", link = false })
+
+	set(0, "Base64Decoded", { fg = str.fg, bg = normal.bg, italic = true })
+end
+
 statuslineHL()
 tablineHL()
 winbar_hl()
 vim_ui_hl()
+dialogs_hl()
+code_hl()

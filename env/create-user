@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+#
+# Creates the unprivileged test user for the container images.
+
+set -e
+
+user="${1:?usage: create-user <name>}"
+
+mkdir -p "/home/${user}"
+groupadd "${user}"
+useradd -m -g "${user}" "${user}"
+echo "${user} ALL=(ALL) NOPASSWD:ALL" >"/etc/sudoers.d/${user}"
+echo "Defaults:${user} !requiretty" >>"/etc/sudoers.d/${user}"
+chmod 0440 "/etc/sudoers.d/${user}"

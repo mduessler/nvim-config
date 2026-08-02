@@ -1,12 +1,6 @@
-local require_safe = require("utils.require_safe")
-
-local project = require_safe("core.ui.utils.project")
-local signs = require_safe("config.signs")
-local str = require_safe("utils.str")
-
-if not (project and str and signs) then
-	return
-end
+local project = require("core.ui.utils.project")
+local signs = require("config.signs")
+local str = require("utils.str")
 
 local padding = signs.ui.padding
 

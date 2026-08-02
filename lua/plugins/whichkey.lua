@@ -1,10 +1,4 @@
-local require_safe = require("utils.require_safe")
-
-local signs = require_safe("config.signs")
-
-if not signs then
-	return
-end
+local signs = require("config.signs")
 
 local LOCAL = {
 	toggle = { icon = signs.whichkey.toggle, hl = "MyGrey" },
@@ -35,89 +29,78 @@ end
 
 local function nvim_tree_keys()
 	return {
-		{ "<leader>n", group = "NvimTree", mode = "n", icon = { icon = signs.whichkey.tree, hl = "MyGreenLight" } },
+		{ "<leader>n", group = "Navigation", mode = "n", icon = { icon = signs.whichkey.tree, hl = "MyGreenLight" } },
+		{ "<leader>ne", group = "Explorer", mode = "n", icon = LOCAL.focus },
 		{ "<leader>nt", mode = "n", desc = "Toggle", icon = LOCAL.toggle },
-		{ "<leader>no", mode = "n", desc = "Open", icon = LOCAL.open },
-		{ "<leader>nc", mode = "n", desc = "Close", icon = LOCAL.delete },
-		{ "<leader>nf", mode = "n", desc = "Focus", icon = LOCAL.focus },
-		{ "<leader>nz", mode = "n", desc = "Fold to root", icon = LOCAL.break_line },
-		{ "<leader>nr", mode = "n", desc = "Refresh", icon = LOCAL.referesh },
+		{ "<leader>neo", mode = "n", desc = "Open", icon = LOCAL.open },
+		{ "<leader>nec", mode = "n", desc = "Close", icon = LOCAL.delete },
+		{ "<leader>nef", mode = "n", desc = "Focus", icon = LOCAL.focus },
+		{ "<leader>nez", mode = "n", desc = "Fold to root", icon = LOCAL.break_line },
+		{ "<leader>ner", mode = "n", desc = "Refresh", icon = LOCAL.referesh },
 	}
 end
 
 local function refacor_keys()
 	return {
 		{
-			"<leader>r",
-			group = "Refactoring",
+			"<leader>e",
+			group = "Editing",
 			mode = { "n", "x" },
 			icon = { icon = signs.refactor.icon, hl = "MyRed" },
 		},
 		{
-			"<leader>rm",
+			"<leader>em",
 			mode = "x",
 			desc = "Selection to method",
 			icon = { icon = signs.refactor.selection_to_method, hl = "MyGreen" },
 		},
 		{
-			"<leader>rf",
+			"<leader>ef",
 			mode = "x",
 			desc = "Selection to method in new file",
 			icon = { icon = signs.refactor.selection_to_file, hl = "MyYellow" },
 		},
 		{
-			"<leader>rv",
+			"<leader>ev",
 			mode = "x",
 			desc = "Create variable of selection",
 			icon = { icon = signs.refactor.selection_to_variable, hl = "MyCyan" },
 		},
 		{
-			"<leader>ri",
+			"<leader>ei",
 			mode = { "n", "x" },
 			desc = "Create inline variable",
 			icon = { icon = signs.refactor.inline_variable, hl = "MyRed" },
 		},
 		{
-			"<leader>rn",
+			"<leader>er",
 			mode = { "n", "x" },
-			desc = "Create variable of selection",
+			desc = "Rename symbol",
 			icon = { icon = signs.refactor.selection_to_variable, hl = "MyPurple" },
 		},
 		{
-			"<leader>rq",
-			mode = { "n", "x" },
+			"<leader>eq",
+			mode = "n",
 			desc = "Format current buffer",
 			icon = { icon = signs.refactor.format, hl = "MyOrange" },
 		},
 		{
-			"<leader>rI",
+			"<leader>eI",
 			mode = "n",
 			desc = "Create inline method",
 			icon = { icon = signs.refactor.inline_method, hl = "MyGreen" },
 		},
 		{
-			"<leader>rb",
+			"<leader>eb",
 			mode = "n",
 			desc = "Extract block",
 			icon = { icon = signs.refactor.extract_block, hl = "MyGray" },
 		},
 		{
-			"<leader>rB",
+			"<leader>eB",
 			mode = "n",
 			desc = "Extract block to file",
 			icon = { icon = signs.refactor.block_to_file, hl = "MyWhite" },
-		},
-		{
-			"<leader>rc",
-			mode = "n",
-			desc = "Conceal classes",
-			icon = { icon = signs.refactor.conceal, hl = "MyGreenLight" },
-		},
-		{
-			"<leader>rv",
-			mode = "n",
-			desc = "TailwindColorToggle",
-			icon = { icon = signs.refactor.color, hl = "MyPink" },
 		},
 	}
 end
@@ -125,113 +108,130 @@ end
 local function telescope_keys()
 	return {
 		{
-			"<leader>t",
+			"<leader>nx",
 			mode = "n",
-			group = "whichkey.telescope",
-			desc = "whichkey.telescope",
+			group = "Telescope extras",
 			icon = { icon = signs.whichkey.telescope.icon, hl = "MyGreen" },
 		},
 		{
-			"<leader>tt",
+			"<leader>nxt",
 			mode = "n",
 			desc = "Open",
 			icon = open,
 		},
 		{
-			"<leader>tn",
+			"<leader>nn",
 			mode = "n",
 			desc = "Open nvim config",
 			icon = { icon = signs.whichkey.telescope.nvim, hl = "MyGreen" },
 		},
 		{
-			"<leader>tb",
+			"<leader>nb",
 			mode = "n",
 			desc = "Browse files",
 			icon = { icon = signs.whichkey.telescope.browse, hl = "MyPurple" },
 		},
 		{
-			"<leader>tp",
+			"<leader>np",
 			mode = "n",
 			desc = "Browse projects",
 			icon = { icon = signs.whichkey.telescope.projects, hl = "MyYellow" },
 		},
 		{
-			"<leader>tf",
+			"<leader>nf",
 			mode = "n",
 			desc = "Find files",
 			icon = { icon = signs.whichkey.telescope.find_file, hl = "MyGreenLight" },
 		},
 		{
-			"<leader>to",
+			"<leader>nxo",
 			mode = "n",
 			desc = "Browse oldfiles",
 			icon = { icon = signs.whichkey.telescope.browse_old, hl = "MyGray" },
 		},
 		{
-			"<leader>tg",
+			"<leader>ng",
 			mode = "n",
 			desc = "Search string in cwd",
 			icon = { icon = signs.whichkey.telescope.grep, hl = "MyRed" },
 		},
 		{
-			"<leader>ts",
+			"<leader>ns",
 			mode = "n",
 			desc = "Search string under cursor",
 			icon = { icon = signs.whichkey.telescope.search, hl = "MyPink" },
 		},
 		{
-			"<leader>td",
+			"<leader>nxd",
 			mode = "n",
 			desc = "Browse docker",
 			icon = { icon = signs.whichkey.telescope.docker, hl = "MyBlueLight" },
+		},
+		{
+			"<leader>nxm",
+			mode = "n",
+			desc = "Import modules",
+			icon = { icon = signs.whichkey.telescope.find_file, hl = "MyOrange" },
 		},
 	}
 end
 
 local function lsp_keys()
 	return {
-		{ "<leader>l", mode = { "n", "x" }, group = "LSP functions", icon = { icon = signs.lsp.icon, hl = "MyPink" } },
-		{ "<leader>lr", mode = "n", desc = "Show references", icon = { icon = signs.lsp.reference, hl = "MyBlue" } },
-		{ "<leader>lg", mode = "n", desc = "Go to declaration", icon = { icon = signs.lsp._goto, hl = "MyYellow" } },
-		{ "<leader>ld", mode = "n", desc = "Show definitions", icon = { icon = signs.lsp.show_def, hl = "MyOrange" } },
-		{ "<leader>lu", mode = "n", desc = "Show usage", icon = { icon = signs.lsp.show_def, hl = "MyPurple" } },
-		{ "<leader>lt", mode = "n", desc = "Show type definitions", icon = { icon = signs.lsp.def, hl = "MyTeal" } },
+		{ "<leader>i", mode = "n", group = "IDE", icon = LOCAL.toggle },
+		{ "<leader>c", mode = { "n", "x" }, group = "Code", icon = { icon = signs.lsp.icon, hl = "MyPink" } },
+		{ "<leader>cr", mode = "n", desc = "Show references", icon = { icon = signs.lsp.reference, hl = "MyBlue" } },
+		{ "<leader>cg", mode = "n", desc = "Go to declaration", icon = { icon = signs.lsp._goto, hl = "MyYellow" } },
+		{ "<leader>cd", mode = "n", desc = "Show definitions", icon = { icon = signs.lsp.show_def, hl = "MyOrange" } },
 		{
-			"<leader>lb",
+			"<leader>ci",
+			mode = "n",
+			desc = "Show LSP implementations",
+			icon = { icon = signs.lsp.show_def, hl = "MyPurple" },
+		},
+		{ "<leader>ct", mode = "n", desc = "Show type definitions", icon = { icon = signs.lsp.def, hl = "MyTeal" } },
+		{
+			"<leader>xb",
 			mode = "n",
 			desc = "Show buffer diagnostics",
 			icon = { icon = signs.diagnostics.icon, hl = "MyGrey" },
 		},
 		{
-			"<leader>ll",
+			"<leader>xl",
 			mode = "n",
 			desc = "Show line diagnostics",
 			icon = { icon = signs.diagnostics.icon, hl = "MyGreenLight" },
 		},
-		{ "<leader>lp", mode = "n", desc = "Go to previous diagnostics", icon = LOCAL.previous },
-		{ "<leader>ln", mode = "n", desc = "Go to next diagnostics", icon = LOCAL.next },
+		{ "<leader>xp", mode = "n", desc = "Go to previous diagnostic", icon = LOCAL.previous },
+		{ "<leader>xn", mode = "n", desc = "Go to next diagnostic", icon = LOCAL.next },
 		{
-			"<leader>lC",
+			"<leader>cc",
 			mode = "n",
 			desc = "Show documentation of word under the cursor",
 			icon = { icon = "󱘞 ", color = "green" },
 		},
 		{
-			"<leader>la",
-			mode = "n",
+			"<leader>ca",
+			mode = { "n", "v" },
 			desc = "See available code actions",
 			icon = { icon = signs.lsp.def, hl = "MyWhite" },
 		},
+		{ "<leader>is", mode = "n", desc = "Restart LSP", icon = LOCAL.referesh },
+		{ "<leader>iw", mode = "n", desc = "Lint current buffer", icon = LOCAL.status },
+		{ "<leader>iu", mode = "n", desc = "Toggle lsp, linter and formatter tools", icon = LOCAL.toggle },
+		{ "<leader>if", mode = "n", desc = "Detect filetype and start tools", icon = LOCAL.referesh },
+		{ "<leader>cb", mode = "n", desc = "Toggle decoded base64 view", icon = LOCAL.toggle },
+		{ "<leader>cB", mode = "n", desc = "Reset all decoded base64 views", icon = LOCAL.delete },
+		{ "<leader>x", mode = "n", group = "Diagnostics", icon = { icon = signs.diagnostics.icon, hl = "MyRed" } },
 	}
 end
 
 local function generel_devel()
 	return {
-		{ "<leader>d", mode = "n", desc = "General devel", icon = { icon = signs.system.file.md, hl = "MyYellow" } },
-		{ "<leader>db", mode = "n", desc = "Lazy git", icon = LOCAL.break_line },
-		{ "<leader>do", mode = "n", desc = "Open MarkdownPreview", icon = LOCAL.open },
-		{ "<leader>dq", mode = "n", desc = "Close MarkdownPreview", icon = LOCAL.quit },
-		{ "<leader>dm", mode = "n", desc = "Toggle MarkdownPreview", icon = LOCAL.toggle },
+		{ "<leader>d", mode = "n", group = "Docs", icon = { icon = signs.system.file.md, hl = "MyYellow" } },
+		{ "<leader>gl", mode = "n", desc = "Lazy git", icon = LOCAL.break_line },
+		{ "<leader>do", mode = "n", desc = "Open markdown preview", icon = LOCAL.open },
+		{ "<leader>dq", mode = "n", desc = "Close markdown preview", icon = LOCAL.quit },
 		{
 			"<leader>df",
 			mode = "n",
@@ -251,68 +251,41 @@ local function generel_devel()
 			icon = { icon = signs.development.type_parameter, hl = "MyCyan" },
 		},
 		{
-			"<leader>df",
+			"<leader>dF",
 			mode = "n",
 			desc = "Neogen file",
 			icon = { icon = signs.development.file, hl = "MyGrey" },
 		},
 		{
-			"<leader>dg",
+			"<leader>gg",
 			mode = "n",
 			desc = "Neogit",
 			icon = { icon = signs.development.git, hl = "MyYellow" },
 		},
-		{ "<leader>dt", mode = "n", desc = "Toggle Terminal", icon = toggle },
-	}
-end
-
-local function ai_keys()
-	return {
-		{ "<leader>c", mode = "n", desc = "Copilot", icon = { icon = signs.whichkey.copilot, hl = "MyOrange" } },
-		{ "<leader>ce", mode = "n", desc = "Enable Copilot", icon = LOCAL.login },
-		{ "<leader>cd", mode = "n", desc = "Disable Copilot", icon = LOCAL.logout },
-		{
-			"<leader>ca",
-			mode = "n",
-			desc = "Authenticate Copilot",
-			icon = { icon = signs.whichkey.copilot, hl = "MyCyan" },
-		},
-		{ "<leader>cm", mode = "n", desc = "Status Copilot", icon = LOCAL.status },
-		{ "<leader>ch", mode = "n", desc = "Copilot Help", icon = LOCAL.help },
-		{
-			"<leader>cp",
-			mode = "n",
-			desc = "Suggest output with Copilot",
-			icon = { icon = signs.whichkey.list, hl = "MyOrange" },
-		},
-		{ "<leader>co", mode = "n", desc = "Open copilot chat window", icon = LOCAL.open },
-		{ "<leader>cq", mode = "n", desc = "Close copilot chat window", icon = LOCAL.quit },
-		{ "<leader>ct", mode = "n", desc = "Toggle copilot chat window", icon = LOCAL.toggle },
-		{ "<leader>cs", mode = "n", desc = "Stops copilot chat window", icon = LOCAL.close },
-		{ "<leader>cr", mode = "n", desc = "Restart copilot chat window", icon = LOCAL.referesh },
+		{ "<leader>tt", mode = "n", desc = "Toggle Terminal", icon = toggle },
 	}
 end
 
 local function ssh_keys()
 	return {
-		{ "<leader>s", mode = "n", desc = "SSH", icon = { icon = signs.whichkey.ssh.icon, hl = "MyPurple" } },
-		{ "<leader>sg", mode = "n", desc = "Start ssh", icon = LOCAL.open },
-		{ "<leader>sq", mode = "n", desc = "Quit ssh", icon = LOCAL.quit },
-		{ "<leader>si", mode = "n", desc = "Ssh info", icon = { icon = signs.whichkey.ssh.info, hl = "MyCyan" } },
+		{ "<leader>ts", mode = "n", desc = "SSH", icon = { icon = signs.whichkey.ssh.icon, hl = "MyPurple" } },
+		{ "<leader>tsg", mode = "n", desc = "Start ssh", icon = LOCAL.open },
+		{ "<leader>tsq", mode = "n", desc = "Quit ssh", icon = LOCAL.quit },
+		{ "<leader>tsi", mode = "n", desc = "Ssh info", icon = { icon = signs.whichkey.ssh.info, hl = "MyCyan" } },
 		{
-			"<leader>sc",
+			"<leader>tsc",
 			mode = "n",
 			desc = "Cleanup workspace and config of remote nvim",
 			icon = { icon = signs.whichkey.ssh.clean_up, hl = "MyPink" },
 		},
 		{
-			"<leader>sd",
+			"<leader>tsd",
 			mode = "n",
 			desc = "Delete record or remote instance",
 			icon = { icon = signs.whichkey.ssh.clean, hl = "MyOrange" },
 		},
 		{
-			"<leader>sl",
+			"<leader>tsl",
 			mode = "n",
 			desc = "Open ssh logs.",
 			icon = { icon = signs.whichkey.ssh.log, hl = "MyYellow" },
@@ -350,13 +323,15 @@ return {
 			},
 		})
 		local config = merge({
-			{ "<leader><F5>", mode = "n", desc = "Undotree", icon = { icon = signs.whichkey.undo, hl = "MyPurple" } },
+			{ "<leader>tu", mode = "n", desc = "Undotree", icon = { icon = signs.whichkey.undo, hl = "MyPurple" } },
+			{ "<leader>t", mode = "n", group = "Tools", icon = LOCAL.status },
+			{ "<leader>th", mode = "n", group = "HTTP", icon = LOCAL.open },
+			{ "<leader>g", mode = "n", group = "Git", icon = { icon = signs.development.git, hl = "MyYellow" } },
 		}, nvim_tree_keys())
 		config = merge(config, refacor_keys())
 		config = merge(config, telescope_keys())
 		config = merge(config, lsp_keys())
 		config = merge(config, generel_devel())
-		config = merge(config, ai_keys())
 		config = merge(config, ssh_keys())
 		wk.add(config)
 	end,

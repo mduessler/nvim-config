@@ -6,9 +6,12 @@ return {
 	black = "black",
 	isort = "isort",
 	djlint = "djlint",
-	docformatter = "docformatter",
 	["clang-format"] = "clang-format",
 	cmakelang = "cmakelang",
 	yamlfmt = "yamlfmt",
 	beautysh = "beautysh",
+	rustfmt = "rustfmt",
+	xmlformatter = "xmlformatter",
+	["google-java-format"] = "google-java-format",
+	terraform = "terraform",
 }

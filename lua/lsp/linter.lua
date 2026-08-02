@@ -9,8 +9,10 @@ return {
 	djlint = "djlint",
 	flake8 = "flake8",
 	mypy = "mypy",
-	htmlhint = "htmlhint",
 	cpplint = "cpplint",
 	cmakelint = "cmakelint",
 	yamllint = "yamllint",
+	["sonarlint-language-server"] = "sonarlint-language-server",
+	checkstyle = "checkstyle",
+	terraform = "terraform",
 }

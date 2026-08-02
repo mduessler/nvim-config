@@ -36,7 +36,7 @@ local options = {
 	termguicolors = true, -- needed for tabline
 	foldcolumn = "auto",
 	foldlevelstart = 99,
-	foldenable = true,
+	foldenable = false,
 	foldmethod = "syntax",
 	foldlevel = 99,
 	foldnestmax = 1, -- Avoids nested folds if = 1

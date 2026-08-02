@@ -10,10 +10,6 @@
 # Production dependencies
 #
 
-export NVIM_MAJOR_REQ=0
-export NVIM_MINOR_REQ=11
-export NVIM_PATCH_REQ=4
-
 DEPS=(
     rust
 )
@@ -30,8 +26,6 @@ APT_DEPS=(
     golang
     libssl-dev
     libstdc++-14-dev
-    lua5.4
-    luarocks
     maven
     neovim
     ninja-build
@@ -43,6 +37,7 @@ APT_DEPS=(
     python3
     python3-pip
     python3-venv
+    unzip
 )
 
 DNF_DEPS=(
@@ -57,8 +52,6 @@ DNF_DEPS=(
     golang
     java-latest-openjdk-devel
     libstdc++-static
-    lua
-    luarocks
     make
     maven
     neovim
@@ -69,18 +62,16 @@ DNF_DEPS=(
     pre-commit
     python
     python-pip
+    unzip
 )
 
 #
 # Production requirements
 #
 
-LUA_REQ=(
-    lpeglabel
-)
-
 RUST_REQ=(
     selene
+    tree-sitter-cli
 )
 
 #
@@ -100,11 +91,4 @@ DNF_DEV_DEPS=(
     docker-ce-cli
     containerd.io
     docker-buildx-plugin
-)
-
-#
-# Development requirements
-#
-LUA_DEV_REQ=(
-    luaunit
 )

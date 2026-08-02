@@ -1,10 +1,4 @@
-local require_safe = require("utils.require_safe")
-
-local buffer = require_safe("core.ui.buffers.buffer")
-
-if not buffer then
-	return
-end
+local buffer = require("core.ui.buffers.buffer")
 
 local M = { items = {} }
 

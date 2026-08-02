@@ -11,17 +11,22 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-local status, lazy = pcall(require, "lazy")
-if not status then
-	return
-end
+local lazy = require("lazy")
 
 local specs = {
 	{ import = "plugins" },
 }
+for name, kind in vim.fs.dir(vim.fn.stdpath("config") .. "/lua/plugins") do
+	if kind == "directory" then
+		table.insert(specs, { import = "plugins." .. name })
+	end
+end
 
 lazy.setup({
 	spec = specs,
+	rocks = {
+		enabled = false,
+	},
 	ui = {
 		border = "rounded",
 	},

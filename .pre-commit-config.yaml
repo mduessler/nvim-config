@@ -9,7 +9,7 @@ repos:
         types:
           - lua
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v6.0.0
     hooks:
       - id: check-executables-have-shebangs
       - id: check-json
@@ -22,20 +22,20 @@ repos:
       - id: sort-simple-yaml
       - id: trailing-whitespace
   - repo: https://github.com/JohnnyMorganz/StyLua
-    rev: v0.20.0
+    rev: v2.5.2
     hooks:
       - id: stylua
   - repo: https://github.com/DavidAnson/markdownlint-cli2
-    rev: v0.12.1
+    rev: v0.23.2
     hooks:
       - id: markdownlint-cli2
   - repo: https://github.com/executablebooks/mdformat
-    rev: 0.7.17
+    rev: 1.0.0
     hooks:
       - id: mdformat
         args: ["--number"]
   - repo: https://github.com/hadolint/hadolint
-    rev: v2.14.0
+    rev: v2.15.1
     hooks:
       - id: hadolint
         args:
@@ -47,8 +47,15 @@ repos:
           - "--ignore=DL3041"
         files: |
           (?x)^(
-            env/fedora/Dockerfile |
-            env/ubuntu/Dockerfile |
-            env/Dockerfile.dev-ubuntu |
-            env/Dockerfile.ubuntu-install |
+            env/Dockerfile\.fedora |
+            env/Dockerfile\.ubuntu |
           )
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.11.0.1
+    hooks:
+      - id: shellcheck
+  - repo: https://github.com/scop/pre-commit-shfmt
+    rev: v3.13.1-1
+    hooks:
+      - id: shfmt
+        args: ["-w"]

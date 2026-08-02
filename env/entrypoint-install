@@ -1,14 +1,49 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
 
 set -e
 
-git checkout "${BRANCH_TO_TEST}" -q
-
-./install dev
-status=$?
-
-if [ ${status} -gt 0 ]; then
-    exit 1
-else
-    exit 0
+# Github actions require the container to run as root, but the install
+# script must prove that it works for a normal user with sudo rights.
+if [ "$(id -u)" -eq 0 ]; then
+	chown -R tester:tester .
+	exec sudo -u tester -E HOME=/home/tester "$0" "$@"
 fi
+
+# Local docker runs pass the branch to test; in CI actions/checkout has
+# already placed the correct revision in the workdir.
+if [ -n "${BRANCH_TO_TEST:-}" ]; then
+	git checkout "${BRANCH_TO_TEST}" -q
+fi
+
+if ! ./install dev; then
+	echo "[VERIFY] ./install dev failed."
+	exit 1
+fi
+
+# Verify that the installation actually produced a working toolchain.
+export PATH="${CARGO_HOME:-$HOME/.cargo}/bin:${PATH}"
+
+status=0
+for cmd in nvim rustc cargo selene tree-sitter; do
+	if command -v "${cmd}" >/dev/null 2>&1; then
+		echo "[VERIFY] ${cmd} is available."
+	else
+		echo "[VERIFY] ${cmd} is MISSING."
+		status=1
+	fi
+done
+
+if nvim --headless "+lua print('BOOT OK')" +qa; then
+	echo "[VERIFY] nvim boots with this config."
+else
+	echo "[VERIFY] nvim FAILED to boot with this config."
+	status=1
+fi
+
+parser_count=$(find "${XDG_DATA_HOME:-$HOME/.local/share}/nvim/site/parser" -name '*.so' 2>/dev/null | wc -l)
+echo "[VERIFY] ${parser_count} treesitter parsers installed."
+if [ "${parser_count}" -eq 0 ]; then
+	status=1
+fi
+
+exit ${status}

@@ -1,11 +1,5 @@
-local require_safe = require("utils.require_safe")
-
-local signs = require_safe("config.signs")
-local str = require_safe("utils.str")
-
-if not (str and signs) then
-	return
-end
+local signs = require("config.signs")
+local str = require("utils.str")
 
 local icon = signs.ui.winbar.active
 local padding = signs.ui.padding

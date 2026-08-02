@@ -1,12 +1,6 @@
-local require_safe = require("utils.require_safe")
-
-local mode = require_safe("core.ui.utils.mode")
-local signs = require_safe("config.signs")
-local str = require_safe("utils.str")
-
-if not (mode and signs and str) then
-	return
-end
+local mode = require("core.ui.utils.mode")
+local signs = require("config.signs")
+local str = require("utils.str")
 
 local LOCAL = {
 	hl = {

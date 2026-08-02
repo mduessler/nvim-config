@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+#
+# Determines the next release version and writes it to ${GITHUB_OUTPUT}.
+#
+# VERSION_OVERRIDE  forces a specific version (vMAJOR.MINOR.PATCH).
+# Without an override the version is derived from the conventional commit
+# subjects since the last v* tag: breaking changes bump major, feat bumps
+# minor, everything else bumps patch. When the last tag already points to
+# HEAD, "skip=true" is emitted instead.
+
+set -euo pipefail
+
+if [ -n "${VERSION_OVERRIDE:-}" ]; then
+	if ! [[ "${VERSION_OVERRIDE}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+		echo "Version '${VERSION_OVERRIDE}' does not match vMAJOR.MINOR.PATCH."
+		exit 1
+	fi
+	echo "version=${VERSION_OVERRIDE}" >>"${GITHUB_OUTPUT}"
+	exit 0
+fi
+
+# Release tags live on orphan commits, so they are never reachable from
+# main. The latest version therefore comes from the tag list and the
+# commit range from the main sha recorded in the tag message.
+last=$(git tag --list 'v[0-9]*.[0-9]*.[0-9]*' | sort -V | tail -1)
+last="${last:-v0.0.0}"
+
+base=$(git tag -l --format='%(contents:subject)' "${last}" 2>/dev/null | grep -oE '[0-9a-f]{40}' || true)
+if [ -n "${base}" ] && [ "${base}" = "$(git rev-parse HEAD)" ]; then
+	echo "No commits since ${last}. Skipping release."
+	echo "skip=true" >>"${GITHUB_OUTPUT}"
+	exit 0
+fi
+
+range=""
+[ -n "${base}" ] && range="${base}..HEAD"
+# shellcheck disable=SC2086
+commits=$(git log --format=%s ${range})
+
+IFS=. read -r major minor patch <<<"${last#v}"
+if echo "${commits}" | grep -qE '^[a-z]+(\(.+\))?!:|BREAKING CHANGE'; then
+	major=$((major + 1)) && minor=0 && patch=0
+elif echo "${commits}" | grep -qE '^feat(\(.+\))?:'; then
+	minor=$((minor + 1)) && patch=0
+else
+	patch=$((patch + 1))
+fi
+
+echo "Determined version v${major}.${minor}.${patch} (last tag ${last})."
+echo "version=v${major}.${minor}.${patch}" >>"${GITHUB_OUTPUT}"

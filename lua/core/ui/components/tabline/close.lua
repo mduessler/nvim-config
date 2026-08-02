@@ -1,11 +1,5 @@
-local require_safe = require("utils.require_safe")
-
-local str = require_safe("utils.str")
-local signs = require_safe("config.signs")
-
-if not (str and signs) then
-	return
-end
+local str = require("utils.str")
+local signs = require("config.signs")
 
 local M = {}
 

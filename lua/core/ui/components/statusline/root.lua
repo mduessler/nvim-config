@@ -1,13 +1,7 @@
-local require_safe = require("utils.require_safe")
-
-local directory = require_safe("core.ui.utils.directory")
-local project = require_safe("core.ui.utils.project")
-local signs = require_safe("config.signs")
-local str = require_safe("utils.str")
-
-if not (directory and project and signs and str) then
-	return
-end
+local directory = require("core.ui.utils.directory")
+local project = require("core.ui.utils.project")
+local signs = require("config.signs")
+local str = require("utils.str")
 
 local LOCAL = {
 	hl = {
@@ -44,7 +38,7 @@ M.get = function(buf)
 
 	local function get_separator_hl_group()
 		if path == "" then
-			if project.is_git_repo and project.git.branch then
+			if project.is_git_repo and project.git.reference then
 				return project.git.modified and LOCAL.hl.modified.is or LOCAL.hl.modified._not
 			else
 				return LOCAL.hl.file

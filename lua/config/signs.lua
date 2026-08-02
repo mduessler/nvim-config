@@ -41,7 +41,7 @@ return {
 	},
 	git = {
 		add = "+",
-		branch = "",
+		reference = "",
 		change = "│",
 		changes = {
 			added = "+",
@@ -131,6 +131,12 @@ return {
 		selection = "",
 	},
 	ui = {
+		dialogs = {
+			entry = " ",
+			search = " ",
+			on = vim.fn.nr2char(0xf00c), -- check mark
+			off = vim.fn.nr2char(0xf00d), -- cross
+		},
 		input = {
 			title = "",
 		},
@@ -220,7 +226,6 @@ return {
 	whichkey = {
 		break_line = "󰘌",
 		close = "",
-		copilot = "",
 		deleted = "",
 		focus = "",
 		help = "󰋖",

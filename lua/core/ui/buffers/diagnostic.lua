@@ -1,6 +1,4 @@
-local require_safe = require("utils.require_safe")
-
-local signs = require_safe("config.signs")
+local signs = require("config.signs")
 
 local M = {}
 

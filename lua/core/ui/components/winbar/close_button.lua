@@ -1,12 +1,6 @@
-local require_safe = require("utils.require_safe")
-
-local windows = require_safe("core.ui.windows.handler")
-local signs = require_safe("config.signs")
-local str = require_safe("utils.str")
-
-if not (str and windows and signs) then
-	return
-end
+local windows = require("core.ui.windows.handler")
+local signs = require("config.signs")
+local str = require("utils.str")
 
 local sign = signs.quit.icon
 

@@ -86,31 +86,20 @@ M.setup = function()
 
 	local function lsp_keymaps(bufnr)
 		local function set(mode, keys, operation, desc)
-			local status, utils = pcall(require, "utils.key")
-			if not status then
-				print("Can not load utils.")
-				return
-			end
+			local utils = require("utils.key")
 			utils.set(mode, keys, operation, { noremap = true, silent = true, buffer = bufnr, desc = desc })
 		end
 
-		set("n", "<leader>l", "<NOP>", "LSP functions")
-		set("n", "<leader>lr", "<cmd>Telescope lsp_references<CR>", "Show LSP references")
-		set("n", "<leader>lg", vim.lsp.buf.declaration, "Go to declaration")
-		set("n", "<leader>ld", "<cmd>Telescope lsp_definitions<CR>", "Show LSP definitions")
-		set("n", "<leader>li", "<cmd>Telescope lsp_implementations<CR>", "Show LSP implementations")
-		set("n", "<leader>lt", "<cmd>Telescope lsp_type_definitions<CR>", "Show LSP type definitions")
-		set("n", "<leader>lb", "<cmd>Teshow_line_diagnosticsscope diagnostics bufnr=0<CR>", "Show buffer diagnostics")
-		set("n", "<leader>ll", vim.diagnostic.open_float, "Show line diagnostics")
-		set("n", "<leader>lp", function()
-			vim.diagnostic.jump({ count = -1, border = "rounded" })
-		end, "Go to previous diagnostic")
-		set("n", "<leader>ln", function()
-			vim.diagnostic.jump({ count = 1, border = "rounded" })
-		end, "Go to next diagnostic")
-		set("n", "lc", vim.lsp.buf.hover, "Show documentation for what is under cursor")
-		set({ "n", "v" }, "<leader>la", vim.lsp.buf.code_action, "See available code actions")
-		set("n", "<leader>ls", ":LspRestart<CR>", "Restart LSP")
+		set("n", "<leader>i", "<NOP>", "IDE")
+		set("n", "<leader>c", "<NOP>", "Code")
+		set("n", "<leader>cr", "<cmd>Telescope lsp_references<CR>", "Show LSP references")
+		set("n", "<leader>cg", vim.lsp.buf.declaration, "Go to declaration")
+		set("n", "<leader>cd", "<cmd>Telescope lsp_definitions<CR>", "Show LSP definitions")
+		set("n", "<leader>ci", "<cmd>Telescope lsp_implementations<CR>", "Show LSP implementations")
+		set("n", "<leader>ct", "<cmd>Telescope lsp_type_definitions<CR>", "Show LSP type definitions")
+		set("n", "<leader>cc", vim.lsp.buf.hover, "Show documentation for what is under cursor")
+		set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, "See available code actions")
+		set("n", "<leader>is", ":LspRestart<CR>", "Restart LSP")
 	end
 
 	for _, server in pairs(servers) do
@@ -132,6 +121,8 @@ M.setup = function()
 			end,
 			capabilities = capabilities,
 		}
+		-- Intentionally optional: a server only has settings when a
+		-- matching lua/lsp/<server>.lua file exists.
 		local status_opts, conf_opts = pcall(require, "lsp." .. server)
 
 		if status_opts then

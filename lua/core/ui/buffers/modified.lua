@@ -1,9 +1,4 @@
-local require_safe = require("utils.require_safe")
-local signs = require_safe("config.signs")
-
-if not signs then
-	return
-end
+local signs = require("config.signs")
 
 local isNotModified = signs.ui.modified.isNotModified
 local isModified = signs.ui.modified.isModified

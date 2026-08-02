@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+#
+# Creates and pushes the release tag for the given version: collects the
+# runtime files from main on an orphan branch, strips the development
+# section from the README and force-updates the "latest" tag.
+
+set -euo pipefail
+
+version="${1:?usage: create-release <version>}"
+
+release_files=(
+	scripts
+	lua
+	.gitignore
+	dependencies
+	init.lua
+	install
+	lazy-lock.json
+	LICENSE
+	README.md
+)
+
+if git rev-parse "${version}" >/dev/null 2>&1; then
+	echo "Tag ${version} already exists. Stopping release."
+	exit 1
+fi
+
+# Recorded in the tag subject so determine-version can compute the next
+# commit range (release tags themselves sit on unreachable orphan commits).
+main_sha=$(git rev-parse main)
+
+git config user.name "github-release-bot[${GITHUB_ACTOR:-release}]"
+git config user.email "github-release-bot@noreply.github.com"
+
+git checkout --orphan "Release"
+git rm -rfq .
+git checkout main -- "${release_files[@]}"
+
+sed -i '/^## Development/,/^## Notes & Feedback/ {/^## Notes & Feedback/!d}' README.md
+
+git add "${release_files[@]}"
+git commit -m "Release ${version}"
+git tag -a "${version}" -m "Release ${version} for main commit ${main_sha}"
+git tag -f latest
+git push origin --tags --force

@@ -1,12 +1,6 @@
-local require_safe = require("utils.require_safe")
-
-local modified = require_safe("core.ui.utils.modified")
-local str = require_safe("utils.str")
-local signs = require_safe("config.signs")
-
-if not (modified and str and signs) then
-	return
-end
+local modified = require("core.ui.utils.modified")
+local str = require("utils.str")
+local signs = require("config.signs")
 
 local function pad_new(hl_group, sign_name, active)
 	local pad_hl = active and "TabLinePaddingActive" or "TabLinePaddingInactive"

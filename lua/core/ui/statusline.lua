@@ -1,21 +1,19 @@
-local require_safe = require("utils.require_safe")
+local buffers = require("core.ui.buffers.handler")
+local project = require("core.ui.utils.project")
+local windows = require("core.ui.windows.handler")
 
-local buffers = require_safe("core.ui.buffers.handler")
-local project = require_safe("core.ui.utils.project")
-local windows = require_safe("core.ui.windows.handler")
+local mode = require("core.ui.components.statusline.mode")
+local root = require("core.ui.components.statusline.root")
+local dirname = require("core.ui.components.statusline.dirname")
+local git = require("core.ui.components.statusline.git")
+local file = require("core.ui.components.statusline.file")
+local position = require("core.ui.components.statusline.position")
 
-local mode = require_safe("core.ui.components.statusline.mode")
-local root = require_safe("core.ui.components.statusline.root")
-local dirname = require_safe("core.ui.components.statusline.dirname")
-local git = require_safe("core.ui.components.statusline.git")
-local file = require_safe("core.ui.components.statusline.file")
-local position = require_safe("core.ui.components.statusline.position")
-
-local my_os = require_safe("core.ui.components.statusline.os")
-local battery = require_safe("core.ui.components.statusline.battery")
-local datetime = require_safe("core.ui.components.statusline.datetime")
-local diagnostic = require_safe("core.ui.components.statusline.diagnostic")
-local encoding = require_safe("core.ui.components.statusline.encoding")
+local my_os = require("core.ui.components.statusline.os")
+local battery = require("core.ui.components.statusline.battery")
+local datetime = require("core.ui.components.statusline.datetime")
+local diagnostic = require("core.ui.components.statusline.diagnostic")
+local encoding = require("core.ui.components.statusline.encoding")
 
 if
 	not (

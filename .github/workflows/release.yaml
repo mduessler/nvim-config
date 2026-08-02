@@ -1,69 +1,38 @@
 name: Release current main branch.
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
+    inputs:
+      version:
+        description: "Override the version tag (e.g. v1.2.3). Empty = automatic semantic version."
+        required: false
+        type: string
+permissions:
+  contents: write
+concurrency:
+  group: release
+  cancel-in-progress: false
 jobs:
+  tests:
+    uses: ./.github/workflows/tests.yaml
   release:
     runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/mduessler/fedora-nvim:unit-test
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.PACKAGES_PAT }}
+    timeout-minutes: 20
+    needs: tests
     steps:
-      - name: Prepare Release.
-        run: |
-          git clone https://github.com/mduessler/nvim-config ${NVIM_CONFIG}
-          cd ${NVIM_CONFIG}
-          if git rev-parse "v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ}" >/dev/null 2>&1; then
-            echo "Tag v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ} already exists. Stopping release." && exit 1
-          fi
-          git checkout main
-          export USERNAME="${{ github.actor }}"
-          export TOKEN="${{ secrets.PACKAGES_PAT }}"
-          git config user.name "github-release-bot[${{ github.actor }}]"
-          git config user.email "github-release-bot@noreply.github.com"
-      - name: Select files from main to release.
-        run: |
-          cd ${NVIM_CONFIG}
-          git checkout --orphan "Release"
-          git rm -rf .
-          ls -l
-          git status
-          git checkout main -- \
-            installs \
-            lua \
-            .gitignore \
-            dependencies \
-            init.lua \
-            install \
-            lazy-lock.json \
-            LICENSE \
-            README.md
-          ls -l
-          git status
-      - name: Remove development section from README.md
-        run: |
-          cd ${NVIM_CONFIG}
-          sed -i '/^## Development/,/^## Notes & Feedback/ {/^## Notes & Feedback/!d}' README.md
-      - name: Create release for nvim version.
-        run: |
-          cd ${NVIM_CONFIG}
-          git add \
-            installs \
-            lua \
-            .gitignore \
-            dependencies \
-            init.lua \
-            install \
-            lazy-lock.json \
-            LICENSE \
-            README.md
-          git commit -m "Release config for nvim v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ}"
-          git tag -a "v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ}" -m "Release for nvim v${MAJOR_REQ}.${MINOR_REQ}.${PATCH_REQ}"
-          git tag -f latest
-          git checkout main
-          git branch -D "Release"
-          git push https://${USERNAME}:${TOKEN}@github.com/${{ github.repository }} HEAD --tags --force
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          ref: main
+          fetch-depth: 0
+          fetch-tags: true
+      - name: Determine the release version
+        id: version
         env:
-          USERNAME: ${{ github.actor }}
-          TOKEN: ${{ secrets.PACKAGES_PAT }}
+          VERSION_OVERRIDE: ${{ inputs.version }}
+        run: .github/scripts/determine-version
+      - name: Create and push the release
+        if: steps.version.outputs.skip != 'true'
+        run: .github/scripts/create-release "${{ steps.version.outputs.version }}"
