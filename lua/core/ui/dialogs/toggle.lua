@@ -118,7 +118,7 @@ M.open = function()
 	local scope = ft
 	local lines, meta = build(toggle.tools(scope), width)
 
-	local bufnr, winid = float.open(float.editor_config(width, #lines, title(scope)))
+	local bufnr, winid = float.open(float.editor_config(width, #lines, title(scope)), { hide_cursor = true })
 	vim.api.nvim_set_option_value("cursorline", true, { scope = "local", win = winid })
 
 	render(bufnr, lines, meta)

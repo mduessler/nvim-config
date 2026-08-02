@@ -28,6 +28,8 @@ end
 --- opts.winleave_close (default true) closes the window when it is left;
 --- opts.on_leave runs afterwards. Dialogs that manage their own lifetime
 --- (like input via BufWipeout) disable winleave_close explicitly.
+--- opts.hide_cursor blends the cursor away while the dialog is open, so
+--- only the cursorline marks the position.
 M.open = function(config, opts)
 	opts = opts or {}
 
@@ -40,11 +42,20 @@ M.open = function(config, opts)
 	vim.bo[bufnr].filetype = "nofile"
 	vim.b[bufnr].cmp_enabled = false
 
+	local guicursor = vim.o.guicursor
+	if opts.hide_cursor then
+		vim.api.nvim_set_hl(0, "DialogHiddenCursor", { blend = 100, nocombine = true })
+		vim.o.guicursor = "a:DialogHiddenCursor"
+	end
+
 	if opts.winleave_close ~= false then
 		vim.api.nvim_create_autocmd("WinLeave", {
 			buffer = bufnr,
 			once = true,
 			callback = function()
+				if opts.hide_cursor then
+					vim.o.guicursor = guicursor
+				end
 				window.close(winid)
 				if opts.on_leave then
 					opts.on_leave()
