@@ -44,7 +44,7 @@ All dependencies are stored in the file `dependencies` in the root of the
 project. In this file exists **production** dependencies and requirements.
 These dependencies are always needed to run the NVIM configuration.
 NVIM itself is always installed via the system package manager; on apt-based
-systems the `ppa:neovim-ppa/stable` PPA is added first to provide a current
+systems the `ppa:neovim-ppa/unstable` PPA is added first to provide a current
 version.
 
 The **development** dependencies only needed to run tests or to run the

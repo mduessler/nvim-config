@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     gpg-agent \
     software-properties-common \
-    && add-apt-repository -y ppa:neovim-ppa/stable \
+    && add-apt-repository -y ppa:neovim-ppa/unstable \
     && rm -rf /var/lib/apt/lists/*
 
 # Installing all necessary dependencies.
@@ -107,7 +107,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     gpg-agent \
     software-properties-common \
-    && add-apt-repository -y ppa:neovim-ppa/stable \
+    && add-apt-repository -y ppa:neovim-ppa/unstable \
     && apt-get update && apt-get install -y --no-install-recommends neovim \
     && rm -rf /var/lib/apt/lists/*
 

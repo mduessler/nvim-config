@@ -106,8 +106,8 @@ add_neovim_ppa() {
         error "Can not install software-properties-common."
         return 1
     fi
-    if ! sudo add-apt-repository -y ppa:neovim-ppa/stable; then
-        error "Can not add ppa:neovim-ppa/stable."
+    if ! sudo add-apt-repository -y ppa:neovim-ppa/unstable; then
+        error "Can not add ppa:neovim-ppa/unstable."
         return 1
     fi
     success "Added neovim PPA."
