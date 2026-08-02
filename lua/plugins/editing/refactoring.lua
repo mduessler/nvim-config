@@ -76,10 +76,5 @@ return {
 		end, opts)
 		opts.desc = "Rename"
 		vim.keymap.set({ "n", "x" }, "<leader>er", vim.lsp.buf.rename, opts)
-
-		-- opts.desc = "Format current buffer"
-		-- keymap.set({ "n", "x" }, "<leader>eq", function()
-		-- 	vim.lsp.buf.format({ async = true })
-		-- end, opts)
 	end,
 }
