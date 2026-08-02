@@ -1,13 +1,19 @@
 name: Release current main branch.
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
     inputs:
       version:
-        description: "Release version tag (e.g. v1.0.0)"
-        required: true
+        description: "Override the version tag (e.g. v1.2.3). Empty = automatic semantic version."
+        required: false
         type: string
 permissions:
   contents: write
+concurrency:
+  group: release
+  cancel-in-progress: false
 jobs:
   tests:
     uses: ./.github/workflows/tests.yaml
@@ -17,24 +23,56 @@ jobs:
     timeout-minutes: 20
     needs: tests
     steps:
-      - name: Validate the given version
-        run: |
-          if ! [[ "${{ inputs.version }}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "Version '${{ inputs.version }}' does not match vMAJOR.MINOR.PATCH."
-            exit 1
-          fi
       - name: Checkout
         uses: actions/checkout@v7
         with:
           ref: main
+          fetch-depth: 0
           fetch-tags: true
-      - name: Stop when the tag already exists
+      - name: Determine the release version
+        id: version
         run: |
-          if git rev-parse "${{ inputs.version }}" >/dev/null 2>&1; then
-            echo "Tag ${{ inputs.version }} already exists. Stopping release."
+          override="${{ inputs.version }}"
+          if [ -n "${override}" ]; then
+            if ! [[ "${override}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              echo "Version '${override}' does not match vMAJOR.MINOR.PATCH."
+              exit 1
+            fi
+            echo "version=${override}" >> "${GITHUB_OUTPUT}"
+            exit 0
+          fi
+
+          last=$(git describe --tags --abbrev=0 --match 'v[0-9]*' 2>/dev/null || echo "v0.0.0")
+          if [ "$(git rev-parse "${last}^{commit}" 2>/dev/null)" = "$(git rev-parse HEAD)" ]; then
+            echo "No commits since ${last}. Skipping release."
+            echo "skip=true" >> "${GITHUB_OUTPUT}"
+            exit 0
+          fi
+
+          range=""
+          git rev-parse "${last}" >/dev/null 2>&1 && range="${last}..HEAD"
+          commits=$(git log --format=%s ${range})
+
+          IFS=. read -r major minor patch <<<"${last#v}"
+          if echo "${commits}" | grep -qE '^[a-z]+(\(.+\))?!:|BREAKING CHANGE'; then
+            major=$((major + 1)) && minor=0 && patch=0
+          elif echo "${commits}" | grep -qE '^feat(\(.+\))?:'; then
+            minor=$((minor + 1)) && patch=0
+          else
+            patch=$((patch + 1))
+          fi
+
+          echo "Determined version v${major}.${minor}.${patch} (last tag ${last})."
+          echo "version=v${major}.${minor}.${patch}" >> "${GITHUB_OUTPUT}"
+      - name: Stop when the tag already exists
+        if: steps.version.outputs.skip != 'true'
+        run: |
+          if git rev-parse "${{ steps.version.outputs.version }}" >/dev/null 2>&1; then
+            echo "Tag ${{ steps.version.outputs.version }} already exists. Stopping release."
             exit 1
           fi
       - name: Select files from main to release.
+        if: steps.version.outputs.skip != 'true'
         run: |
           git config user.name "github-release-bot[${{ github.actor }}]"
           git config user.email "github-release-bot@noreply.github.com"
@@ -51,9 +89,11 @@ jobs:
             LICENSE \
             README.md
       - name: Remove development section from README.md
+        if: steps.version.outputs.skip != 'true'
         run: |
           sed -i '/^## Development/,/^## Notes & Feedback/ {/^## Notes & Feedback/!d}' README.md
       - name: Commit, tag and push the release.
+        if: steps.version.outputs.skip != 'true'
         run: |
           git add \
             scripts \
@@ -65,7 +105,7 @@ jobs:
             lazy-lock.json \
             LICENSE \
             README.md
-          git commit -m "Release ${{ inputs.version }}"
-          git tag -a "${{ inputs.version }}" -m "Release ${{ inputs.version }}"
+          git commit -m "Release ${{ steps.version.outputs.version }}"
+          git tag -a "${{ steps.version.outputs.version }}" -m "Release ${{ steps.version.outputs.version }}"
           git tag -f latest
           git push origin --tags --force
