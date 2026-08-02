@@ -1,0 +1,13 @@
+# Dependabot keeps the github actions and the docker base images current.
+# It can not track: the bats-core pin and the neovim PPA in the Dockerfiles,
+# cargo installed tools, mason packages or the lazy-lock.json plugins.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+  - package-ecosystem: docker
+    directory: /env
+    schedule:
+      interval: weekly

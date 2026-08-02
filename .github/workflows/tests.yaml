@@ -1,0 +1,36 @@
+name: Tests
+on:
+  workflow_call:
+    secrets:
+      PACKAGES_PAT:
+        required: true
+
+jobs:
+  test:
+    name: ${{ matrix.suite }}-test-${{ matrix.distro }}
+    strategy:
+      fail-fast: false
+      matrix:
+        distro: [fedora, ubuntu]
+        suite: [unit, install]
+        include:
+          - suite: unit
+            command: env/entrypoint
+            timeout: 30
+          - suite: install
+            command: env/entrypoint-install
+            timeout: 90
+    runs-on: ubuntu-latest
+    timeout-minutes: ${{ matrix.timeout }}
+    container:
+      image: ghcr.io/mduessler/${{ matrix.distro }}-nvim:${{ matrix.suite }}-test
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.PACKAGES_PAT }}
+    env:
+      HOME: /home/tester
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Run the ${{ matrix.suite }} tests on ${{ matrix.distro }}
+        run: NVIM_CONFIG="${PWD}" ${{ matrix.command }}

@@ -2,7 +2,11 @@
 
 set -e
 
-git checkout "${BRANCH_TO_TEST}" -q
+# Local docker runs pass the branch to test; in CI actions/checkout has
+# already placed the correct revision in the workdir.
+if [ -n "${BRANCH_TO_TEST:-}" ]; then
+    git checkout "${BRANCH_TO_TEST}" -q
+fi
 
 if ! ./install dev; then
     echo "[VERIFY] ./install dev failed."
