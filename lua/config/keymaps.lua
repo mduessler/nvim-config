@@ -7,6 +7,28 @@ keymap.set("n", "<leader>iu", "<cmd>ToggleTools<CR>", opts)
 opts.desc = "Detect filetype and start tools"
 keymap.set("n", "<leader>if", "<cmd>DetectFiletype<CR>", opts)
 
+-- Base64 view
+opts.desc = "Toggle decoded base64 view"
+keymap.set("n", "<leader>cb", "<cmd>ToggleBase64<CR>", opts)
+opts.desc = "Reset all decoded base64 views"
+keymap.set("n", "<leader>cB", "<cmd>ResetBase64<CR>", opts)
+
+-- Diagnostics
+opts.desc = "Diagnostics"
+keymap.set("n", "<leader>x", "<NOP>", opts)
+opts.desc = "Show buffer diagnostics"
+keymap.set("n", "<leader>xb", "<cmd>Telescope diagnostics bufnr=0<CR>", opts)
+opts.desc = "Show line diagnostics"
+keymap.set("n", "<leader>xl", vim.diagnostic.open_float, opts)
+opts.desc = "Go to previous diagnostic"
+keymap.set("n", "<leader>xp", function()
+	vim.diagnostic.jump({ count = -1, border = "rounded" })
+end, opts)
+opts.desc = "Go to next diagnostic"
+keymap.set("n", "<leader>xn", function()
+	vim.diagnostic.jump({ count = 1, border = "rounded" })
+end, opts)
+
 -- Navigaton
 -- Window navigation
 opts.desc = "Move cursor to right buffer"

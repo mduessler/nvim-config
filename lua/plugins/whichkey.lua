@@ -191,19 +191,19 @@ local function lsp_keys()
 		},
 		{ "<leader>ct", mode = "n", desc = "Show type definitions", icon = { icon = signs.lsp.def, hl = "MyTeal" } },
 		{
-			"<leader>cb",
+			"<leader>xb",
 			mode = "n",
 			desc = "Show buffer diagnostics",
 			icon = { icon = signs.diagnostics.icon, hl = "MyGrey" },
 		},
 		{
-			"<leader>cl",
+			"<leader>xl",
 			mode = "n",
 			desc = "Show line diagnostics",
 			icon = { icon = signs.diagnostics.icon, hl = "MyGreenLight" },
 		},
-		{ "<leader>cp", mode = "n", desc = "Go to previous diagnostic", icon = LOCAL.previous },
-		{ "<leader>cn", mode = "n", desc = "Go to next diagnostic", icon = LOCAL.next },
+		{ "<leader>xp", mode = "n", desc = "Go to previous diagnostic", icon = LOCAL.previous },
+		{ "<leader>xn", mode = "n", desc = "Go to next diagnostic", icon = LOCAL.next },
 		{
 			"<leader>cc",
 			mode = "n",
@@ -220,6 +220,9 @@ local function lsp_keys()
 		{ "<leader>iw", mode = "n", desc = "Lint current buffer", icon = LOCAL.status },
 		{ "<leader>iu", mode = "n", desc = "Toggle lsp, linter and formatter tools", icon = LOCAL.toggle },
 		{ "<leader>if", mode = "n", desc = "Detect filetype and start tools", icon = LOCAL.referesh },
+		{ "<leader>cb", mode = "n", desc = "Toggle decoded base64 view", icon = LOCAL.toggle },
+		{ "<leader>cB", mode = "n", desc = "Reset all decoded base64 views", icon = LOCAL.delete },
+		{ "<leader>x", mode = "n", group = "Diagnostics", icon = { icon = signs.diagnostics.icon, hl = "MyRed" } },
 	}
 end
 
