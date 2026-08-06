@@ -7,6 +7,7 @@ return {
 	keys = {
 		{ "<leader>n", "<NOP>", desc = "Navigation" },
 		{ "<leader>nt", "<cmd>NvimTreeToggle<CR>", desc = "Toggle" },
+		{ "<leader>ny", "<cmd>NvimTreeFocus<CR>", desc = "Focus" },
 		{ "<leader>neo", "<cmd>NvimTreeOpen<CR>", desc = "Open" },
 		{ "<leader>nec", "<cmd>NvimTreeClose<CR>", desc = "Close" },
 		{ "<leader>nef", "<cmd>NvimTreeFocus<CR>", desc = "Focus" },
