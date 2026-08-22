@@ -2,7 +2,7 @@
 
 set -e
 
-CONFIG_VERSION=latest
+CONFIG_VERSION=main
 NVIM_DEV=false
 INSTALL_NERD_FONTS=false
 
