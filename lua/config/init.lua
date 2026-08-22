@@ -1,4 +1,5 @@
 require("config.warnings").setup()
+require("config.clipboard")
 require("config.options")
 require("config.lazy")
 require("config.cmds")
