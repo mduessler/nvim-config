@@ -34,8 +34,11 @@ always contains the most recent version. Cloned it with
 
 ### Actual Installation
 
-To install the NVIM config, simply run `./install`. By default, the [latest
-version](https://github.com/mduessler/nvim-config/tree/latest) is installed.
+To install the NVIM config, simply run `./install`. By default, the [main
+branch](https://github.com/mduessler/nvim-config/tree/main) is installed. The
+[latest tag](https://github.com/mduessler/nvim-config/tree/latest) always holds
+the most recent released version and can be selected with
+`--config-version latest`.
 The installation can be modified by using the arguments:
 
 - **--config-version** -- Set the tag or branch which will be installed. Set it
