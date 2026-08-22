@@ -1,0 +1,29 @@
+local close_process = require("core.utils.async.close_process")
+
+local function git_status(M)
+	if M._running.status then
+		return
+	end
+
+	close_process(M._handle.status)
+	M._running.status = true
+
+	M._handle.status = vim.loop.spawn("sh", {
+		args = {
+			"-c",
+			'[ -n "$(git status --porcelain)" ] && exit 1 || exit 0',
+		},
+		cwd = M.cwd,
+	}, function(code, _)
+		M.modified = (code ~= 0)
+		close_process(M._handle.status)
+		M._running.status = false
+	end)
+
+	if not M._handle.status then
+		M.modified = false
+		M._running.status = false
+	end
+end
+
+return git_status

@@ -1,0 +1,8 @@
+require("config.warnings").setup()
+require("config.clipboard")
+require("config.options")
+require("config.lazy")
+require("config.cmds")
+require("config.highlights")
+require("config.keymaps")
+require("config.tab")

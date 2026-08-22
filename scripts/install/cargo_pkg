@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+SCRIPT_DIR="${SCRIPT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
+
+. "${SCRIPT_DIR}/utils" || exit 1
+
+install_cargo_pkg() {
+	if ! check_command rustc || ! check_command cargo; then
+		error "Rust is not installed or rust and cargo not in '\$PATH'."
+		return 2
+	elif [ $# -eq 0 ]; then
+		error "No package given. Please provide at least one packge."
+		return 3
+	fi
+
+	local pkg
+	for pkg in "$@"; do
+		if cargo install --list | grep -q "^${pkg} "; then
+			info "${pkg} is already installed, skipping ..."
+			continue
+		fi
+
+		info "Installing ${pkg} ..."
+		if ! cargo install "${pkg}"; then
+			error "Failed to install ${pkg}."
+			return 1
+		fi
+		success "Installed ${pkg}."
+	done
+
+	success "Finished package installation."
+	return 0
+}
