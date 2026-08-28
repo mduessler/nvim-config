@@ -302,27 +302,6 @@ setup() {
 	[[ ${output} == *"Function needs exactly two arguments, 'pid' and 'tmpfile'."* ]]
 }
 
-@test "wait_for_clone_process: Tail process fails." {
-	tmpfile=$(mktemp)
-	pid=12345
-
-	tail() {
-		echo "mock tail $*"
-		return 1
-	}
-	wait() {
-		echo "mock wait $*"
-		return 0
-	}
-
-	run wait_for_clone_process "$pid" "$tmpfile"
-
-	[ ${status} -eq 3 ]
-	[[ ${output} == *"Can not tail ${tmpfile}."* ]]
-
-	rm -f "$tmpfile"
-}
-
 @test "kill_clone_process: Function executed successfully." {
 	kill() { return 0; }
 

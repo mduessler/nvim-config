@@ -82,6 +82,12 @@ install_prod_dependencies() {
                 return 5
             fi
             ;;
+        "brew")
+            if ! install_packages_with_pkg_mgr "${BREW_DEPS[@]}"; then
+                error "Can not install packages with the package manager."
+                return 5
+            fi
+            ;;
         *)
             error "Unsupported package manager: ${PKG_MGR}"
             return 3

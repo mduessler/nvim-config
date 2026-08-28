@@ -36,3 +36,12 @@ jobs:
           cache-from: type=gha,scope=${{ matrix.distro }}
       - name: Run the ${{ matrix.suite }} tests on ${{ matrix.distro }}
         run: docker run --rm ${{ matrix.distro }}-nvim:${{ matrix.suite }}-test
+  test-macos:
+    name: install-test-macos
+    runs-on: macos-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Run the install test on macos
+        run: env/entrypoint-install

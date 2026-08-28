@@ -59,6 +59,15 @@ setup() {
 	[[ ${output} == *"Can not install docker with dnf"* ]]
 }
 
+@test "install_dev_dependencies: Function executed successfully - brew skips docker." {
+	export PKG_MGR="brew"
+
+	run install_dev_dependencies
+
+	[ ${status} -eq 0 ]
+	[[ ${output} == *"not available on macOS"* ]]
+}
+
 @test "install_dev_dependencies: Function can not idenify system package manager." {
 	identify_system_pkg_mgr() { return 1; }
 

@@ -62,6 +62,8 @@ dependencies:
    - **DEPS** -- Dependencies independent of the systems package manager.
    - **APT_DEPS** -- Dependencies installed by apt-get package manager.
    - **DNF_DEPS** -- Dependencies installed by dnf package manger.
+   - **BREW_DEPS** -- Dependencies installed by the brew package manager on
+     macos.
    - **RUST_REQ** -- Requirements installed with cargo.
 2. *development*
    - **APT_DEPS** -- Dependencies installed by apt-get package manager.
@@ -89,7 +91,9 @@ Ubuntu.
    with github actions during a pull request to main or dev. Every test job
    builds its own image from the checkout, so no registry image has to
    exist beforehand. The images workflow warms the shared build cache and
-   pushes the images whenever the image definition changes on main.
+   pushes the images whenever the image definition changes on main. On
+   macos the install test runs natively on a macos runner instead of a
+   container, as part of the same test suite as the other tests.
 
 ### Naming
 
