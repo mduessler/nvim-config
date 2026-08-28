@@ -2,7 +2,7 @@
 # from here. The neovim PPA is added exactly once. The install stages stay
 # on the bare distro image on purpose, so the install script proves that
 # it can set up the PPA and neovim itself.
-FROM ubuntu:24.04 AS nvim
+FROM ubuntu:26.04 AS nvim
 
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
@@ -130,7 +130,7 @@ WORKDIR ${HOME}
 # Image that serves as the basis for creating environment images for remote
 # and local testing of the installation script. Stays on the bare distro
 # image on purpose (see above).
-FROM ubuntu:24.04 AS install
+FROM ubuntu:26.04 AS install
 
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
