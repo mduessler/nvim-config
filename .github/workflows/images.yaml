@@ -38,7 +38,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push the unit test image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: env/Dockerfile.${{ matrix.distro }}
@@ -48,7 +48,7 @@ jobs:
           cache-from: type=gha,scope=${{ matrix.distro }}
           cache-to: type=gha,scope=${{ matrix.distro }},mode=max
       - name: Build and push the install test image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: env/Dockerfile.${{ matrix.distro }}
