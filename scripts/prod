@@ -22,11 +22,11 @@ install_prod() {
 }
 
 install_rust() {
-    if check_command rustc; then
+    export CARGO_HOME="${CARGO_HOME:-$HOME/.cargo}"
+    if check_command rustc || [ -x "${CARGO_HOME}/bin/rustc" ]; then
         info "Rust is already installed."
         return 0
     fi
-    export CARGO_HOME="${CARGO_HOME:-$HOME/.cargo}"
     debug "CARGO_HOME is set to '${CARGO_HOME}'."
     info "Downloading and installing rust..."
 
