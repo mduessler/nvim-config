@@ -9,7 +9,7 @@ return {
 		"nvim-telescope/telescope-media-files.nvim",
 		"nvim-tree/nvim-web-devicons",
 		"ahmedkhalf/project.nvim",
-		"lpoto/telescope-docker.nvim",
+		-- "lpoto/telescope-docker.nvim",
 		{
 			"piersolenski/telescope-import.nvim",
 			dependencies = "nvim-telescope/telescope.nvim",
@@ -77,13 +77,13 @@ return {
 			silent = true,
 			desc = "Search string under cursor",
 		},
-		{
-			"<leader>nxd",
-			"<cmd>Telescope docker<CR>",
-			noremap = true,
-			silent = true,
-			desc = "Browse docker",
-		},
+		-- {
+		-- 	"<leader>nxd",
+		-- 	"<cmd>Telescope docker<CR>",
+		-- 	noremap = true,
+		-- 	silent = true,
+		-- 	desc = "Browse docker",
+		-- },
 		{
 			"<leader>nxm",
 			"<cmd>Telescope import<CR>",
@@ -178,10 +178,10 @@ return {
 					find_cmd = "rg",
 				},
 				theme = "ivy",
-				binary = "docker", -- in case you want to use podman or something
-				compose_binary = "docker compose",
-				buildx_binary = "docker buildx",
-				machine_binary = "docker --version",
+				-- binary = "docker", -- in case you want to use podman or something
+				-- compose_binary = "docker compose",
+				-- buildx_binary = "docker buildx",
+				-- machine_binary = "docker --version",
 				log_level = vim.log.levels.INFO,
 			},
 		}
@@ -195,6 +195,6 @@ return {
 		telescope.load_extension("project")
 		telescope.load_extension("projects")
 		telescope.load_extension("media_files")
-		telescope.load_extension("docker")
+		-- telescope.load_extension("docker")
 	end,
 }
