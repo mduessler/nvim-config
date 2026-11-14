@@ -1,4 +1,4 @@
-FROM ubuntu:26.10 AS nvim
+FROM ubuntu:26.04 AS nvim
 
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
@@ -126,7 +126,7 @@ WORKDIR ${HOME}
 # Image that serves as the basis for creating environment images for remote
 # and local testing of the installation script. Stays on the bare distro
 # image on purpose (see above).
-FROM ubuntu:26.10 AS install
+FROM ubuntu:26.04 AS install
 
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
