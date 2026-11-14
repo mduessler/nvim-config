@@ -39,6 +39,7 @@ APT_DEPS=(
     python3-venv
     unzip
     xclip
+    rustc
     cargo
 )
 
@@ -66,6 +67,7 @@ DNF_DEPS=(
     python-pip
     unzip
     xclip
+    rust
     cargo
 )
 
