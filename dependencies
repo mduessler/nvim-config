@@ -63,6 +63,7 @@ DNF_DEPS=(
     python
     python-pip
     unzip
+    xclip
 )
 
 #
