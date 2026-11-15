@@ -14,8 +14,20 @@ local function install_gfm()
 	end)
 end
 
+local function check_gfm()
+	vim.system({ mdformat_pip, "show", "mdformat-gfm" }, {}, function(res)
+		if res.code ~= 0 then
+			vim.schedule(install_gfm)
+		end
+	end)
+end
+
 M.install_plugins = function()
 	install_gfm()
+end
+
+M.check_plugins = function()
+	check_gfm()
 end
 
 return M
