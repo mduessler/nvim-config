@@ -35,6 +35,8 @@ return {
 			lsp[#lsp + 1] = value
 		end
 
+        require("lsp.mason_extras")
+
 		mason.setup({
 			ui = {
 				border = "rounded",
